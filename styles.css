@@ -1072,3 +1072,5 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
 }
 
 a { color: var(--accent); text-underline-offset: 3px; }
+
+#release-label { display: inline-block; margin-top: 8px; font: 10px var(--mono); color: var(--text-3); }

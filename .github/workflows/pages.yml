@@ -22,10 +22,7 @@ jobs:
           node-version: '22'
       - run: npm test
       - name: Prepare static site
-        run: |
-          mkdir -p /tmp/shpnhyd-site
-          cp index.html lessen.html styles.css .nojekyll LICENSE THIRD-PARTY-NOTICES.md /tmp/shpnhyd-site/
-          cp -R src docs examples /tmp/shpnhyd-site/
+        run: node scripts/build-site.js /tmp/shpnhyd-site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

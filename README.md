@@ -1,5 +1,9 @@
 # SH PN · HYD
 
+**[Open de simulator — Licht atelier + motoren](https://dhrhermans.github.io/SHPNHYD/?v=lichtatelier-motoren-2)** · [Lessen en oefeningen](https://dhrhermans.github.io/SHPNHYD/lessen.html?v=lichtatelier-motoren-2)
+
+GitHub toont hier de bronbestanden. De simulator draait via de bovenstaande website. Onderaan de componentbibliotheek staat het geladen versienummer; met **Motoren** open je de zes motorcomponenten.
+
 Nederlandstalige onderwijssimulator voor **pneumatica, hydraulica, elektropneumatica en elektrohydraulica**, op één gezamenlijk werkvlak.
 
 Onderwijsversie voor Stijn Hermans, gebaseerd op [FluidLab van Alexander Hahn](https://github.com/alex-hahn/fluidlab). De oorspronkelijke simulatiekern is behouden. Dit is een afgeleide versie; er zijn geen FluidSIM-programmabestanden of -bibliotheken in opgenomen.
@@ -14,15 +18,18 @@ Onderwijsversie voor Stijn Hermans, gebaseerd op [FluidLab van Alexander Hahn](h
 - Nieuw startvoorbeeld: **Elektrohydraulica: cilinder met eindschakelaars**.
 - De oorspronkelijke netwerkberekeningen, 80 componenten, GRAFCET, exports en tests zijn behouden; zes eigen motorcomponenten breiden de bibliotheek uit tot 86 componenten.
 
-## Meteen op GitHub Pages gebruiken
+## Publiceren via GitHub Pages
 
-1. Maak een repository met de naam `SH-PN-HYD`.
-2. Pak het ZIP-bestand uit. Upload **de inhoud** naar de hoofdmap van de repository: `index.html`, `styles.css`, `src`, `docs`, `tests`, enzovoort. Upload niet alleen het ZIP-bestand.
-3. Open **Settings → Pages**.
-4. Kies **Deploy from a branch**, branch **main**, map **/(root)** en klik **Save**.
-5. Open de website via de link die GitHub onder Pages toont.
+De bestanden staan al in `DHRHermans/SHPNHYD`. Gebruik één publicatieroute:
 
-Er is geen build, database, account voor leerlingen of betaalde server nodig. De repository bevat ook de oorspronkelijke GitHub Actions-testworkflow.
+1. Open **Settings → Pages** in deze repository.
+2. Kies bij **Build and deployment → Source** voor **GitHub Actions** (niet voor publicatie vanaf een branch).
+3. Open **Actions → GitHub Pages** en controleer of de uitvoering bij de nieuwste commit groen is. Alleen een groene **CI**-test betekent nog niet dat de website is bijgewerkt.
+4. Open de simulator via de link bovenaan deze README. De actie publiceert het lichte thema, de motorcatalogus en de lespagina samen.
+
+De publicatie geeft CSS en alle JavaScript-modules een inhoudsgebonden assetpad. Zo gebruikt een nieuwe websiteversie geen oude componentbibliotheek uit de browsercache. De geladen versie staat onderaan de componentbibliotheek en in `version.json`. Zie je daar nog geen versie of zie je geen knop **Motoren**, controleer dan of je de eigen SHPNHYD-website opent en of de nieuwste **GitHub Pages**-uitvoering is afgerond. Een eenmalige harde verversing kan nodig zijn als de browser nog het oude HTML-document heeft.
+
+Er is geen database of account voor leerlingen nodig. De publicatie gebruikt alleen Node.js; er worden geen pakketten geïnstalleerd.
 
 ## Lokaal openen
 
@@ -87,7 +94,7 @@ Zie de [Nederlandse handleiding](docs/HANDLEIDING-NL.md#gemengde-oefening-pneuma
 Voor deze repository is een GitHub Pages-workflow toegevoegd. Kies in **Settings → Pages → Source** de optie **GitHub Actions**.
 Na plaatsing van de bestanden op `main` voert deze workflow eerst de simulatietests uit en publiceert bij succes de website.
 De workflow kan ook handmatig worden gestart via **Actions → GitHub Pages → Run workflow**.
-Gebruik deze optie als alternatief voor de hierboven beschreven publicatie vanaf een branch.
+Gebruik de hierboven beschreven GitHub Actions-route; zo worden de versiegebonden bestanden gepubliceerd.
 
 ## Licht atelier, motorbesturing en lessen
 

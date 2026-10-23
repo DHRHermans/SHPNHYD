@@ -102,3 +102,9 @@ De paarse gestreepte draden zijn functionele driefasenverbindingen, gescheiden v
 De DC-motor is een weerstand van 24 Ω met een spanningsafhankelijk modeltoerental en uitloop. Tegen-EMK, koppel, inductie en regeneratief remmen worden niet berekend. De probe meet hier de stroom door die modelweerstand.
 
 Ster-driehoek, frequentieregelaars, echte motorwikkelingen, PE-aarding en automatische beveiligingsselectie zijn nog niet geïmplementeerd. Gebruik de modellen om stuurkringen te leren begrijpen, niet om echte motorbeveiliging te dimensioneren.
+
+## De nieuwste websiteversie herkennen
+
+Open de website `https://dhrhermans.github.io/SHPNHYD/`, niet de GitHub-bestandsweergave of de oorspronkelijke FluidLab-site. Onder de componentbibliotheek staat **Licht atelier · v…** met de versie van de gepubliceerde bestanden. Bij lokaal ontwikkelen staat daar **Ontwikkelversie · Licht atelier**. Gebruik **Motoren** om de zes motorcomponenten te tonen; klik op een component om die in het midden van het werkvlak te plaatsen.
+
+Voor updates moet **Settings → Pages → Source** op **GitHub Actions** staan en moet de nieuwste uitvoering **GitHub Pages** afgerond zijn. De groene **CI**-workflow controleert alleen tests. De publicatie gebruikt per versie eigen CSS- en JavaScript-paden; eenmalig hard vernieuwen kan nodig zijn wanneer een oud HTML-document nog in de browsercache staat.

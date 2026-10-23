@@ -4,13 +4,14 @@
 npm test          # or: node tests/run.js
 ```
 
-109 tests in 6 suites, no framework. A test framework would cost more than it saves here, and
+110 tests in 7 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
 
 | Suite | Covers |
 | --- | --- |
+| `gate-publication.js` | Complete static artifact, immutable asset paths, transitive modules, release identifier, lesson links and reproducibility |
 | `gate-industrial.js` | Motor latching, stop/restart, reversing interlocks, phase faults, coil and contact faults, thermal trip/reset, DC polarity, serialization and domain separation |
 | `gate-electrohydraulic.js` | Hydraulic position sensors, full stroke cycle, serialization, mixed pneumatic interlock |
 | `gate.js` | Flow, mechanics, nets, sequences, faults, hydraulics, GRAFCET |
@@ -56,3 +57,5 @@ assertion, so the next reader can disagree with it on the evidence.
 ## Browser validation for the light industrial release
 
 The release was exercised in headless Chromium: direct lesson links, motor-library filtering, start/self-hold, stop, reverse, and no pressure legend on a motor-only drawing. Seven lesson links loaded their circuits without JavaScript errors. Toolbar bounds were checked at 1600, 1366 and 1024 pixel widths. Updated screenshots show the light editor and industrial example. Playwright was installed outside the checkout only for this validation; the application and its Node test suite still have no external dependencies.
+
+The publication artifact was also served under `/SHPNHYD/` and exercised in Chromium. The light CSS loaded, all six motor components appeared, clicking a motor inserted it, and a lesson opened its versioned example link. Every loaded JS/CSS resource used the same release asset directory. No console errors or failed HTTP responses occurred.
