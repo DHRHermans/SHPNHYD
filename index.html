@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SH PN · HYD — Pneumatica &amp; Elektrohydraulica</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230a0b0c'/%3E%3Cg fill='none' stroke='%23ffa41c' stroke-width='1.4'%3E%3Crect x='3.5' y='8' width='8.5' height='8.5' rx='1'/%3E%3Crect x='12' y='8' width='8.5' height='8.5' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="1.5" y="7.5" width="9" height="9" rx="1"/>
+      <rect x="10.5" y="7.5" width="9" height="9" rx="1"/>
+      <path d="M4 16.5 L4 10 M7.5 10 L7.5 16.5" />
+      <path d="M22.5 9 L22.5 15"/>
+    </svg>
+    <span class="brand-name">SH PN · HYD</span>
+  </div>
+
+  <div class="tool-group" role="group" aria-label="Gereedschappen">
+    <button class="tool" data-tool="select" title="Selecteren (V)"><kbd>V</kbd>Selectie</button>
+    <button class="tool" data-tool="wire" title="Leiding tekenen (W)"><kbd>W</kbd>Leiding</button>
+    <button class="tool" data-tool="probe" title="Meetprobe plaatsen (P), beïnvloedt de schakeling niet"><kbd>P</kbd>Meetprobe</button>
+  </div>
+
+  <div class="tool-group" role="group" aria-label="Geschiedenis">
+    <button id="btn-undo" class="icon-btn" title="Ongedaan maken (Cmd/Ctrl+Z)" disabled>
+      <svg viewBox="0 0 16 16"><path d="M3.5 7.5 H10 a3 3 0 0 1 0 6 H6.5"/><path d="M6 4 L3 7.5 L6 11"/></svg>
+    </button>
+    <button id="btn-redo" class="icon-btn" title="Opnieuw uitvoeren (Cmd/Ctrl+Shift+Z)" disabled>
+      <svg viewBox="0 0 16 16"><path d="M12.5 7.5 H6 a3 3 0 0 0 0 6 H9.5"/><path d="M10 4 L13 7.5 L10 11"/></svg>
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="transport" role="group" aria-label="Simulatie">
+    <button id="btn-run" class="btn btn-run" title="Start / pauze (spatiebalk)">
+      <svg viewBox="0 0 16 16" class="icon"><polygon points="4,2.5 13,8 4,13.5"/></svg>
+      <span id="run-label">Start</span>
+    </button>
+    <button id="btn-stop" class="btn btn-ghost" title="Stoppen en terugzetten (Esc)">
+      <svg viewBox="0 0 16 16" class="icon"><rect x="4" y="4" width="8" height="8" rx="1"/></svg>
+      Stop
+    </button>
+  </div>
+
+  <div class="speed">
+    <label for="speed">Tempo</label>
+    <input id="speed" type="range" min="0.1" max="2" step="0.1" value="1">
+    <output id="speed-out" class="mono">1,0×</output>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="tool-group">
+    <select id="examples" class="select" title="Voorbeeldschakeling laden">
+      <option value="">Voorbeeld laden …</option>
+    </select>
+    <button id="btn-new" class="btn btn-ghost">Nieuw</button>
+    <div class="menu-wrap">
+      <button id="btn-export" class="btn btn-ghost" aria-haspopup="true" aria-expanded="false">Export ▾</button>
+      <div id="export-menu" class="menu" hidden>
+        <button data-export="json">Schakelschema (JSON)</button>
+        <button data-export="svg">Tekening (SVG)</button>
+        <button data-export="png">Tekening (PNG)</button>
+        <button data-export="pdf">Tekening (PDF)</button>
+        <button data-export="parts">Onderdelenlijst (CSV)</button>
+      </div>
+    </div>
+    <button id="btn-load" class="btn btn-ghost">Import</button>
+    <input id="file-input" type="file" accept="application/json" hidden>
+  </div>
+</header>
+
+<main class="workspace">
+
+  <aside class="panel library" aria-label="Componentbibliotheek">
+    <div class="panel-head">
+      <h2>Componentbibliotheek</h2>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 L14 14"/>
+      </svg>
+      <input id="lib-search" type="search" placeholder="Zoeken …" autocomplete="off">
+    </div>
+    <div id="lib-domains" class="lib-domains" role="group" aria-label="Domein filteren">
+      <button class="chip" data-domain="all" aria-pressed="true">Alles</button>
+      <button class="chip" data-domain="pneu" aria-pressed="false">Pneumatica</button>
+      <button class="chip" data-domain="hyd" aria-pressed="false">Hydraulica</button>
+      <button class="chip" data-domain="elec" aria-pressed="false">Elektrisch</button>
+      <button class="chip" data-domain="dig" aria-pressed="false">Digitale logica</button>
+    </div>
+    <div id="lib-list" class="lib-list"></div>
+    <p class="hint">Sleep een component naar het werkvlak of klik erop.</p>
+  </aside>
+
+  <div class="resize-handle resize-v" data-resize="left" role="separator"
+       aria-label="Bibliotheek verbreden" title="Sleep om aan te passen; dubbelklik om te herstellen"></div>
+
+  <section class="canvas-wrap">
+    <svg id="sheet" class="sheet">
+      <defs>
+        <pattern id="grid-fine" width="10" height="10" patternUnits="userSpaceOnUse">
+          <path d="M 10 0 L 0 0 0 10" fill="none" class="grid-fine"/>
+        </pattern>
+        <pattern id="grid-bold" width="100" height="100" patternUnits="userSpaceOnUse">
+          <rect width="100" height="100" fill="url(#grid-fine)"/>
+          <path d="M 100 0 L 0 0 0 100" fill="none" class="grid-bold"/>
+        </pattern>
+      </defs>
+      <rect id="grid-bg" class="grid-bg" x="-5000" y="-5000" width="20000" height="20000" fill="url(#grid-bold)"/>
+      <g id="viewport">
+        <g id="layer-wires"></g>
+        <g id="layer-parts"></g>
+        <g id="layer-ports"></g>
+        <g id="layer-overlay"></g>
+      </g>
+    </svg>
+
+    <div class="canvas-hud">
+      <div class="hud-left">
+        <span id="sim-state" class="pill pill-idle">Bewerken</span>
+        <span class="mono" id="sim-clock">0,00 s</span>
+        <div id="legend" class="legend">
+          <span class="legend-title">Druk</span>
+          <div class="legend-bar"></div>
+          <span class="legend-scale mono">0–6 bar</span>
+        </div>
+      </div>
+      <div class="hud-right">
+        <button class="zoom-btn" id="zoom-out" title="Uitzoomen">−</button>
+        <output class="mono" id="zoom-out-val">100 %</output>
+        <button class="zoom-btn" id="zoom-in" title="Inzoomen">+</button>
+        <button class="zoom-btn wide" id="zoom-fit" title="Passend maken">Passend</button>
+      </div>
+    </div>
+
+    <section id="diagram-panel" class="diagram-panel" aria-label="Analyse">
+      <div class="resize-handle resize-h" data-resize="diagram" role="separator"
+           aria-label="Paneelhoogte aanpassen" title="Sleep om aan te passen; dubbelklik om te herstellen"></div>
+
+      <header class="diagram-head">
+        <div class="panel-tabs" role="tablist">
+          <button class="panel-tab" data-tab="steps" role="tab" aria-selected="true">Weg-stapdiagram</button>
+          <button class="panel-tab" data-tab="scope" role="tab" aria-selected="false">Oscilloscoop</button>
+          <button class="panel-tab" data-tab="parts" role="tab" aria-selected="false">Onderdelenlijst</button>
+          <button class="panel-tab" data-tab="grafcet" role="tab" aria-selected="false">GRAFCET</button>
+        </div>
+
+        <div class="diagram-actions" data-for="steps">
+          <button id="diag-csv" class="mini-btn" title="Traces als CSV exporteren">CSV</button>
+          <button id="diag-clear" class="mini-btn" title="Opname wissen">Wissen</button>
+        </div>
+
+        <div class="diagram-actions" data-for="scope" hidden>
+          <label class="mini-field">Tijd
+            <select id="scope-timebase" class="mini-select">
+              <option value="0.05">50 ms</option>
+              <option value="0.1">100 ms</option>
+              <option value="0.5">500 ms</option>
+              <option value="1">1 s</option>
+              <option value="2" selected>2 s</option>
+              <option value="5">5 s</option>
+              <option value="10">10 s</option>
+            </select>
+          </label>
+          <label class="mini-field">Trigger
+            <select id="scope-trigmode" class="mini-select">
+              <option value="none" selected>uit</option>
+              <option value="rising">stijgend</option>
+              <option value="falling">dalend</option>
+            </select>
+          </label>
+          <select id="scope-trigsrc" class="mini-select" title="Triggerbron"></select>
+          <label class="mini-field">Niveau
+            <input id="scope-triglevel" class="mini-num" type="number" step="0.1" value="3">
+          </label>
+          <button id="scope-cursors" class="mini-btn" title="Cursors tonen/verbergen">Cursor</button>
+          <button id="scope-freeze" class="mini-btn" title="Beeld vastzetten">Vastzetten</button>
+          <button id="scope-csv" class="mini-btn" title="Kanalen als CSV exporteren">CSV</button>
+          <button id="scope-clear" class="mini-btn">Wissen</button>
+        </div>
+
+        <div class="diagram-actions" data-for="parts" hidden>
+          <button id="parts-csv" class="mini-btn" title="Onderdelenlijst als CSV exporteren">CSV</button>
+        </div>
+
+        <div class="diagram-actions" data-for="grafcet" hidden>
+          <button id="gr-new" class="mini-btn" title="GRAFCET-schema voor deze schakeling maken">Schema maken</button>
+          <button id="gr-add-step" class="mini-btn" title="Stap toevoegen: klik daarna op een lege plaats">+ Stap</button>
+          <button id="gr-del" class="mini-btn" title="Selectie verwijderen (Delete)">Verwijderen</button>
+          <span class="mini-hint">Sleep vanaf het punt onder de stap om een overgang te maken</span>
+        </div>
+
+        <button id="diag-toggle" class="mini-btn" title="Paneel tonen/verbergen">▾</button>
+      </header>
+
+      <div class="panel-body">
+        <svg id="diagram" class="diagram" preserveAspectRatio="none"></svg>
+        <div id="scope-view" class="scope-view is-hidden">
+          <svg id="scope" class="scope" preserveAspectRatio="none"></svg>
+          <aside id="probe-list" class="probe-list"></aside>
+        </div>
+        <div id="parts-view" class="parts-view is-hidden"></div>
+        <div id="grafcet-view" class="grafcet-view is-hidden">
+          <svg id="grafcet" class="grafcet"></svg>
+          <aside id="grafcet-side" class="grafcet-side"></aside>
+        </div>
+      </div>
+    </section>
+
+  </section>
+
+  <div class="resize-handle resize-v" data-resize="right" role="separator"
+       aria-label="Eigenschappen verbreden" title="Sleep om aan te passen; dubbelklik om te herstellen"></div>
+
+  <aside class="panel inspector" aria-label="Eigenschappen">
+    <div class="panel-head">
+      <h2>Eigenschappen</h2>
+    </div>
+    <div id="inspector-body" class="inspector-body"></div>
+  </aside>
+
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

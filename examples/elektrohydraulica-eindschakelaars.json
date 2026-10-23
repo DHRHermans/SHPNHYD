@@ -1,0 +1,430 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i1",
+      "type": "h_cyl",
+      "x": 170,
+      "y": 70,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 40,
+        "rod": 20,
+        "stroke": 200,
+        "mass": 50,
+        "load": 0,
+        "friction": 6000,
+        "coulomb": 120
+      }
+    },
+    {
+      "id": "i2",
+      "type": "h_v43_closed_sol",
+      "x": 170,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1",
+        "solB": "Y2"
+      }
+    },
+    {
+      "id": "i3",
+      "type": "h_pump",
+      "x": 40,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 6,
+        "running": "on"
+      }
+    },
+    {
+      "id": "i4",
+      "type": "h_relief",
+      "x": 180,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 80
+      }
+    },
+    {
+      "id": "i5",
+      "type": "h_tank",
+      "x": 40,
+      "y": 580,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i6",
+      "type": "h_gauge",
+      "x": 350,
+      "y": 370,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "max": 250
+      }
+    },
+    {
+      "id": "i15",
+      "type": "rail_24v",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i16",
+      "type": "rail_0v",
+      "x": 500,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i17",
+      "type": "btn_no",
+      "x": 500,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i18",
+      "type": "sol_coil",
+      "x": 500,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y1"
+      }
+    },
+    {
+      "id": "i22",
+      "type": "rail_24v",
+      "x": 650,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i23",
+      "type": "rail_0v",
+      "x": 650,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i24",
+      "type": "btn_no",
+      "x": 650,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i25",
+      "type": "sol_coil",
+      "x": 650,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y2"
+      }
+    },
+    {
+      "id": "i29",
+      "type": "rail_24v",
+      "x": 800,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i30",
+      "type": "rail_0v",
+      "x": 800,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i31",
+      "type": "limit_switch",
+      "x": 800,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i1",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i32",
+      "type": "lamp",
+      "x": 800,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H0"
+      }
+    },
+    {
+      "id": "i36",
+      "type": "rail_24v",
+      "x": 950,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i37",
+      "type": "rail_0v",
+      "x": 950,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i38",
+      "type": "limit_switch",
+      "x": 950,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i1",
+        "at": 1,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i39",
+      "type": "lamp",
+      "x": 950,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i3",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i4",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i6",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i5",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i4",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i5",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i2",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i5",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i2",
+        "port": "A"
+      },
+      "to": {
+        "inst": "i1",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i2",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i1",
+        "port": "B"
+      }
+    },
+    {
+      "from": {
+        "inst": "i15",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i17",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i17",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i18",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i18",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i16",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i22",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i24",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i24",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i25",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i23",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i31",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i32",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i32",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i30",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i36",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i38",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i38",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i39",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i39",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i37",
+        "port": "a"
+      }
+    }
+  ]
+}

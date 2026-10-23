@@ -1,0 +1,38 @@
+{
+  "name": "sh-pn-hyd",
+  "version": "1.0.0-nl.1",
+  "description": "Nederlandstalige onderwijssimulator voor pneumatica, hydraulica en elektrische besturing op één werkvlak.",
+  "type": "module",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "author": "Alexander Hahn",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex-hahn/fluidlab.git"
+  },
+  "keywords": [
+    "simulation",
+    "pneumatics",
+    "hydraulics",
+    "electronics",
+    "grafcet",
+    "plc",
+    "iec-61131",
+    "spice",
+    "mna",
+    "iso-6358",
+    "engineering-education"
+  ],
+  "scripts": {
+    "test": "node tests/run.js",
+    "start": "python3 serve.py 8777",
+    "serve": "python3 -m http.server 8777"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "contributors": [
+    "Stijn Hermans (Nederlandstalige onderwijsversie)"
+  ]
+}
