@@ -24,6 +24,8 @@ That is why adding the soft PLC cost **no change to `engine.js`**.
 | `src/catalog.js` | Pneumatics/electrics — symbol, ports, physics and faults per component |
 | `src/catalog-hydraulic.js` | Hydraulic components, same contract |
 | `src/catalog-electronics.js` | Electronic components, same contract plus the MNA hook |
+| `src/catalog-industrial.js` | Functional three-phase connectivity, motor control components, overload and simplified DC drive |
+| `src/examples-industrial.js` | Direct and reversing starter teaching circuits |
 | `src/catalog-digital.js` | Gates, flip-flops, counters, clock generator |
 | `src/circuit.js` | Document model, serialisation, worked examples |
 | `src/grafcet.js` | EN 60848 evolution rules, condition parser, structure check |
@@ -156,3 +158,11 @@ Export follows the same rule. PNG is produced by rasterising the same SVG that t
 writes, so the two outputs cannot drift apart. The exported SVG stands alone: inline styles,
 a viewBox around the content, a title block with the date, and none of the editor's furniture
 (port dots, selection frames, grid).
+
+## Industrial power topology
+
+The `motor` port kind is a functional domain, separate from the numerical electric, pneumatic and hydraulic networks. `motorNetwork` joins drawn wires and closed three-pole contactor paths, then propagates phase identities from functional supplies. The motor accepts exactly three different phases from the same supply; their permutation determines direction. Multiple phase identities at a motor terminal report a phase conflict, not an AC fault-current calculation. Mechanical interlock checks the live coil command directly, independent of catalog iteration order.
+
+Industrial contactor coils use the existing 24 V solver and ordinary auxiliary contacts. An open-coil fault now inhibits pickup even if an external parallel load leaves a voltage across the open terminals. Motor speed is a first-order teaching response. Thermal protection integrates a didactic excess-I² budget and opens a real NC contact in the control circuit until cooled and manually reset. The separate DC drive is a resistive load with a voltage-dependent speed response.
+
+The light interface remains independent of the exported engineering symbols. `lessen.html` links to allowlisted entries of `EXAMPLES` through the `example` query parameter; unknown names fall back to the existing electrohydraulic start example.

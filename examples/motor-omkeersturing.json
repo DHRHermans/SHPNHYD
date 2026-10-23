@@ -1,0 +1,520 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i29",
+      "type": "industrial_supply",
+      "x": 100,
+      "y": 50,
+      "rot": 0,
+      "params": {
+        "tag": "Q1",
+        "missing": 0
+      }
+    },
+    {
+      "id": "i30",
+      "type": "industrial_contactor",
+      "x": 100,
+      "y": 200,
+      "rot": 0,
+      "params": {
+        "tag": "KM1",
+        "interlock": "KM2"
+      }
+    },
+    {
+      "id": "i31",
+      "type": "industrial_motor",
+      "x": 100,
+      "y": 400,
+      "rot": 0,
+      "params": {
+        "tag": "M1",
+        "speed": 1450,
+        "current": 4,
+        "load": 1
+      }
+    },
+    {
+      "id": "i32",
+      "type": "industrial_contactor",
+      "x": 300,
+      "y": 200,
+      "rot": 0,
+      "params": {
+        "tag": "KM2",
+        "interlock": "KM1"
+      }
+    },
+    {
+      "id": "i45",
+      "type": "rail_24v",
+      "x": 610,
+      "y": 50,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i46",
+      "type": "estop",
+      "x": 610,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "S0"
+      }
+    },
+    {
+      "id": "i47",
+      "type": "btn_nc",
+      "x": 610,
+      "y": 190,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i48",
+      "type": "industrial_overload",
+      "x": 600,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "F1",
+        "motor": "M1",
+        "rated": 4,
+        "delay": 3
+      }
+    },
+    {
+      "id": "i52",
+      "type": "btn_no",
+      "x": 580,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i53",
+      "type": "contact_no",
+      "x": 670,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i54",
+      "type": "industrial_coil",
+      "x": 580,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i55",
+      "type": "rail_0v",
+      "x": 590,
+      "y": 700,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i56",
+      "type": "lamp",
+      "x": 680,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    },
+    {
+      "id": "i60",
+      "type": "contact_nc",
+      "x": 580,
+      "y": 490,
+      "rot": 0,
+      "params": {
+        "tag": "KM2"
+      }
+    },
+    {
+      "id": "i66",
+      "type": "btn_no",
+      "x": 840,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "S3"
+      }
+    },
+    {
+      "id": "i67",
+      "type": "contact_no",
+      "x": 930,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "KM2"
+      }
+    },
+    {
+      "id": "i68",
+      "type": "industrial_coil",
+      "x": 840,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "KM2"
+      }
+    },
+    {
+      "id": "i69",
+      "type": "rail_0v",
+      "x": 850,
+      "y": 700,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i70",
+      "type": "lamp",
+      "x": 940,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "H2"
+      }
+    },
+    {
+      "id": "i74",
+      "type": "contact_nc",
+      "x": 840,
+      "y": 490,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L1"
+      },
+      "to": {
+        "inst": "i30",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i30",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "U"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L1"
+      },
+      "to": {
+        "inst": "i32",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i32",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "W"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L2"
+      },
+      "to": {
+        "inst": "i30",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i30",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "V"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L2"
+      },
+      "to": {
+        "inst": "i32",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i32",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "V"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L3"
+      },
+      "to": {
+        "inst": "i30",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i30",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "W"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "L3"
+      },
+      "to": {
+        "inst": "i32",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i32",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "U"
+      }
+    },
+    {
+      "from": {
+        "inst": "i45",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i46",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i47",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i47",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i48",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i52",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i53",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i52",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i53",
+        "port": "b"
+      }
+    },
+    {
+      "from": {
+        "inst": "i52",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i60",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i60",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i54",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i54",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i55",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i54",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i56",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i56",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i55",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i66",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i67",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i66",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i67",
+        "port": "b"
+      }
+    },
+    {
+      "from": {
+        "inst": "i66",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i74",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i74",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i68",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i68",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i69",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i68",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i70",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i70",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i69",
+        "port": "a"
+      }
+    }
+  ]
+}

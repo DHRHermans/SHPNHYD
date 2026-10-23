@@ -40,6 +40,7 @@ const EXPORT_CSS = `
   .sym-tag { font-size: 9px; font-weight: 500; fill: #3d4750; }
   .wire { fill: none; stroke: #99a3ad; stroke-width: 2; stroke-linecap: round; }
   .wire.electric { stroke: #5a646d; }
+  .wire.motor { stroke: #7957a6; stroke-dasharray: 7 3; }
   .junction { fill: #14171a; stroke: none; }
 `;
 
@@ -468,7 +469,7 @@ function styleFor(clsAttr) {
     return s;
   }
   if (t.has('needle')) return { ...s, stroke: '#e5484d' };
-  if (t.has('wire')) return { ...s, stroke: t.has('electric') ? '#5a646d' : '#99a3ad', strokeWidth: 2 };
+  if (t.has('wire')) return { ...s, stroke: t.has('motor') ? '#7957a6' : t.has('electric') ? '#5a646d' : '#99a3ad', dash: t.has('motor') ? [7, 3] : null, strokeWidth: 2 };
   if (t.has('junction')) return { ...s, fill: '#14171a' };
   if (t.has('sym-label') || t.has('sym-port') || t.has('sym-tag')) {
     const st = { ...s, fill: '#14171a', fontSize: 16 }; // .sym-label sets no font-size in EXPORT_CSS -> UA default

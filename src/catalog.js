@@ -1549,6 +1549,7 @@ const pressureSwitch = {
 import { HYDRAULIC_CATALOG } from './catalog-hydraulic.js';
 import { DIGITAL_CATALOG } from './catalog-digital.js';
 import { ELECTRONICS_CATALOG } from './catalog-electronics.js';
+import { INDUSTRIAL_CATALOG } from './catalog-industrial.js';
 
 export const CATALOG = [
   cylinderDouble, cylinderSingle, cylinderThroughRod,
@@ -1569,6 +1570,7 @@ export const CATALOG = [
   ...HYDRAULIC_CATALOG,
   ...DIGITAL_CATALOG,
   ...ELECTRONICS_CATALOG,
+  ...INDUSTRIAL_CATALOG,
 ];
 
 export const BY_ID = new Map(CATALOG.map((d) => [d.id, d]));

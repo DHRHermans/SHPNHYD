@@ -62,3 +62,43 @@ Je kunt ook `examples/gemengd-pneumatische-vrijgave.json` importeren.
 Lucht, olie en elektrische stroom hebben eigen leidingen op hetzelfde werkvlak.
 B2 koppelt de pneumatische positie aan de elektrische hydrauliekbesturing; de vloeistofcircuits zijn niet onderling verbonden.
 Dit is een didactische vrijgave, geen gevalideerde veiligheidsbesturing voor echte machines.
+
+## Het lichte techniekatelier en de lessen
+
+De interface gebruikt het eigen **Licht atelier**-thema: witte panelen, een warm tekenblad en blauwgroene bediening. De rode kleur van bekrachtigde elektrische stuurdraden blijft een simulatiesignaal.
+Klik onder de bibliotheek op **Ontdek de lessen en oefeningen** voor zeven Nederlandstalige opdrachten. Elke opdracht opent direct de passende schakeling. De knop **Motoren** filtert de componentbibliotheek, zonder het gezamenlijke werkvlak te veranderen.
+
+## Industriële motorschakelingen
+
+De bibliotheek **Motoren → Motorschakelingen** bevat:
+
+- Driefasenvoeding Q1, met instelbare fase-uitval.
+- Contactorspoel KM1 op 24 V DC: aansluitingen `a`/`b`, getekend als A1/A2.
+- Drie hoofdcontacten: L1/L2/L3 naar T1/T2/T3. De aanduiding moet gelijk zijn aan de contactorspoel.
+- Een driefasenmotor M1 met U/V/W, modeltoerental en instelbare belasting.
+- Thermisch relais F1 met NC-contact 95–96 (`a`/`b`) en resetbediening. Koppel het via **Bewaakte motor** aan M1.
+- Een 24 V-gelijkstroommotor M2 voor een eenvoudige transportbandoefening.
+
+### Direct starten
+
+Laad **Motor: direct starten met zelfhouding en thermische beveiliging**. Klik Start en druk S1 kort in. Spoel KM1 trekt aan; het parallelle KM1-maakcontact houdt de spoel bekrachtigd na loslaten. De hoofdcontacten sluiten en M1 draait rechtsom. S2 onderbreekt de zelfhouding. Na loslaten van S2 is een nieuwe startpuls nodig.
+
+S0 is een vergrendelende noodstop: klik om uit te schakelen en opnieuw om te ontgrendelen. Ontgrendelen start de motor niet vanzelf wanneer de startknop losgelaten is. Een ingedrukte startknop blijft een startcommando; een bewaakte herstartblokkering is niet geïmplementeerd.
+
+### Omkeersturing
+
+Laad **Motor: omkeersturing met elektrische en mechanische vergrendeling**. S1 start rechtsom via KM1; S3 start linksom via KM2. Stop eerst met S2 voor een richtingswissel. De KM2-verbreker in de KM1-stuurkring en de KM1-verbreker in de KM2-stuurkring blokkeren de andere richting. De hoofdcontacten hebben daarnaast een instelbare mechanische vergrendeling. Twee verwisselde fasen bepalen de omgekeerde richting.
+
+### Thermische uitschakeling en storingen
+
+Selecteer M1 en stel **Belasting / nominale stroom** in op 2. F1 verzamelt dan thermische belasting en opent zijn NC-contact. De zelfhouding valt weg. F1 blijft uitgeschakeld na afkoeling. Verlaag de belasting, wacht circa vijf simulatieseconden en klik op F1 om te resetten. Start daarna opnieuw met S1 of S3.
+
+Op Q1 kun je één fase laten uitvallen. M1 meldt **Fase-uitval** en krijgt geen aandrijving. Een verbinding tussen verschillende fasen wordt bij de motor als **Faseconflict** getoond. De simulator berekent hierbij geen kortsluitstroom. Via **Storingssimulatie** kun je een contactorspoel onderbreken, hoofdcontacten vastlassen of een voeding uitschakelen.
+
+### Betekenis van de hoofdkring
+
+De paarse gestreepte draden zijn functionele driefasenverbindingen, gescheiden van lucht, olie en de numeriek berekende 24 V-stuurkring. Zonder drie verschillende fasen uit dezelfde bron krijgt de motor geen aandrijving. Het aangegeven toerental volgt een vereenvoudigde eerste-ordebenadering. De stroomschatting is nominale stroom × belasting; er is geen berekende aanloopstroom, slip, koppelcurve of AC-vermogen. Fase-uitval is geen berekening van een nog draaiende motor op twee fasen. Het thermisch relais gebruikt een didactische I²t-benadering, geen gecertificeerde uitschakelklasse.
+
+De DC-motor is een weerstand van 24 Ω met een spanningsafhankelijk modeltoerental en uitloop. Tegen-EMK, koppel, inductie en regeneratief remmen worden niet berekend. De probe meet hier de stroom door die modelweerstand.
+
+Ster-driehoek, frequentieregelaars, echte motorwikkelingen, PE-aarding en automatische beveiligingsselectie zijn nog niet geïmplementeerd. Gebruik de modellen om stuurkringen te leren begrijpen, niet om echte motorbeveiliging te dimensioneren.

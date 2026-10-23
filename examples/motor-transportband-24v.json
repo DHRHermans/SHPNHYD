@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i89",
+      "type": "rail_24v",
+      "x": 610,
+      "y": 50,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i90",
+      "type": "estop",
+      "x": 610,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "S0"
+      }
+    },
+    {
+      "id": "i91",
+      "type": "btn_nc",
+      "x": 610,
+      "y": 190,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i96",
+      "type": "btn_no",
+      "x": 580,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i97",
+      "type": "contact_no",
+      "x": 670,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i98",
+      "type": "industrial_coil",
+      "x": 580,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i99",
+      "type": "rail_0v",
+      "x": 590,
+      "y": 700,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i100",
+      "type": "lamp",
+      "x": 680,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    },
+    {
+      "id": "i110",
+      "type": "rail_24v",
+      "x": 150,
+      "y": 90,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i111",
+      "type": "contact_no",
+      "x": 150,
+      "y": 210,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i112",
+      "type": "industrial_dc_motor",
+      "x": 120,
+      "y": 340,
+      "rot": 0,
+      "params": {
+        "tag": "M2",
+        "speed": 75
+      }
+    },
+    {
+      "id": "i113",
+      "type": "rail_0v",
+      "x": 150,
+      "y": 510,
+      "rot": 0,
+      "params": {}
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i89",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i90",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i91",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i96",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i97",
+        "port": "b"
+      }
+    },
+    {
+      "from": {
+        "inst": "i96",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i98",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i98",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i99",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i98",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i100",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i100",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i99",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i91",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i96",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i91",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i97",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i110",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i111",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i111",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i112",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i112",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i113",
+        "port": "a"
+      }
+    }
+  ]
+}

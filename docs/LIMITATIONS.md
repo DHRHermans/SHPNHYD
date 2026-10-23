@@ -13,7 +13,7 @@ Measured against a full FluidSIM-class specification, the following is absent:
 
 **Continuous electronics is a core, not a library.** 13 components. MNA with companion
 models, Newton for diodes/transistors/MOSFETs, a decoupled electrical timestep. Missing:
-three-phase machines, thyristors and triacs, JFETs, switching regulators, crystals, and
+a numerical three-phase AC machine model (the industrial library adds functional phase connectivity only), thyristors and triacs, JFETs, switching regulators, crystals, and
 anything integrated beyond the op-amp.
 
 **The soft PLC is a core.** Ladder plus an ST subset (assignment, IF/ELSIF/ELSE, boolean
@@ -81,3 +81,7 @@ MOSFET has no body-diode model.
 **Transformer with ideal coupling** — no leakage inductance, no core saturation, no iron
 losses, no secondary winding resistance. The magnetising inductance is present and blocks DC;
 beyond that it is not a transformer.
+
+## Industrial teaching models
+
+The industrial catalog adds functional three-phase connectivity, contactors, a simplified motor response, an I²t overload contact, and a resistive 24 V DC motor. These are control-circuit teaching models, not continuous AC machine models. See `HANDLEIDING-NL.md` for their precise assumptions. No mains fault current, starting surge, torque/slip calculation, earth fault, certified protective-device sizing, star-delta or variable-frequency drive model is supplied. Motor power terminals do not offer numerical voltage/current probes; estimated AC motor current is identified as such in the inspector. The DC motor probe reports its resistive model current, without back EMF.

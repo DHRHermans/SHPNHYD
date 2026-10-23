@@ -1,36 +1,29 @@
-/* FluidLab
- *
- * Chrome follows the Rive reference: obsidian base, elevation carried by flat surface
- * steps rather than shadows, 8px radii, one warm accent reserved for the primary action.
- * Typography borrows Linear's discipline — Inter at 500 with tight tracking, mono for
- * anything numeric.
- *
- * The sheet deliberately breaks the "never light surfaces" rule of both references:
- * ISO 1219 symbols are hairline black strokes, and inverting them onto a dark ground
- * destroys the legibility the whole tool exists for. Domain honesty wins over the token.
+/* SH PN · HYD — Licht atelier
+ * Warm white surfaces, teal controls and an uncluttered engineering drawing sheet.
+ * Simulation colours retain their functional meaning independently of the interface.
  */
 
 :root {
-  --obsidian: #0a0b0c;
-  --charcoal: #121315;
-  --graphite: #191b1e;
-  --tarmac: #232629;
-  --line: #2b2f34;
-  --line-soft: #212428;
+  --obsidian: #edf3f3;
+  --charcoal: #ffffff;
+  --graphite: #f3f7f7;
+  --tarmac: #dfebea;
+  --line: #cbdcda;
+  --line-soft: #e4eeec;
 
-  --text: #f2f3f4;
-  --text-2: #a2a9b0;
-  --text-3: #6b7279;
+  --text: #153b40;
+  --text-2: #395e62;
+  --text-3: #557276;
 
-  --accent: #ffa41c;
-  --accent-press: #e08e10;
-  --focus: #4c9aff;
+  --accent: #087f78;
+  --accent-press: #06645f;
+  --focus: #087f78;
   --danger: #e5484d;
 
   /* Sheet */
-  --paper: #f7f8f9;
-  --paper-line: #dfe3e8;
-  --paper-line-bold: #ccd2da;
+  --paper: #fffefa;
+  --paper-line: #edf0e9;
+  --paper-line-bold: #dce5dd;
   --ink: #14171a;
 
   /* Simulation state colours — functional, never decorative. */
@@ -39,12 +32,12 @@
   --live: #e5484d;
   --lamp: #ffcc33;
 
-  --r: 8px;
-  --r-sm: 5px;
+  --r: 14px;
+  --r-sm: 8px;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --topbar-h: 52px;
+  --topbar-h: 76px;
   /* Set by panels.js from localStorage; these are only the first-run fallbacks. */
   --panel-w-left: 264px;
   --panel-w-right: 264px;
@@ -129,8 +122,8 @@ html, body {
 .btn:active { transform: translateY(0.5px); }
 .btn .icon { width: 12px; height: 12px; fill: currentColor; }
 
-.btn-run { background: var(--accent); border-color: var(--accent); color: #1a1204; font-weight: 600; }
-.btn-run:hover { background: #ffb245; }
+.btn-run { background: var(--accent); border-color: var(--accent); color: #ffffff; font-weight: 600; }
+.btn-run:hover { background: var(--accent-press); }
 .btn-run.running { background: var(--graphite); border-color: var(--line); color: var(--text); }
 .btn-ghost { background: transparent; color: var(--text-2); }
 .btn-ghost:hover { background: var(--graphite); color: var(--text); }
@@ -195,7 +188,7 @@ select {
   background-size: 8px;
 }
 select:hover { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a2a9b0' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-/* The dropdown list itself is OS-drawn and cannot be styled; at least keep it dark. */
+/* Keep native option menus consistent with the light interface. */
 select option { background: var(--charcoal); color: var(--text); }
 
 /* --- checkbox ----------------------------------------------------------- */
@@ -205,7 +198,7 @@ input[type='checkbox'] {
   width: 15px; height: 15px; flex-shrink: 0;
   margin: 0;
   background: var(--ctl-bg);
-  border: 1px solid #3a3f46;
+  border: 1px solid var(--line);
   border-radius: 4px;
   cursor: pointer;
   position: relative;
@@ -442,6 +435,7 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
   vector-effect: non-scaling-stroke;
 }
 .wire.electric { stroke: #5a646d; }
+.wire.motor { stroke: #8b73a1; stroke-dasharray: 7 3; }
 .wire-hit { fill: none; stroke: transparent; stroke-width: 12; cursor: pointer; }
 .wire-hit:hover + .wire, .wire.hover { stroke: var(--focus); }
 
@@ -599,7 +593,7 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--tarmac); border-radius: 5px; border: 2px solid var(--charcoal); }
-::-webkit-scrollbar-thumb:hover { background: #32363b; }
+::-webkit-scrollbar-thumb:hover { background: #b0c9c6; }
 
 @media (max-width: 1100px) {
   .speed { display: none; }
@@ -620,7 +614,7 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
 }
 .icon-btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .icon-btn:hover:not(:disabled) { background: var(--graphite); color: var(--text); }
-.icon-btn:disabled { color: #3a3f45; cursor: default; }
+.icon-btn:disabled { color: #8baba8; cursor: default; }
 
 /* ------------------------------------------------- displacement-step diagram */
 
@@ -792,9 +786,9 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
 .scope-view { position: absolute; inset: 0; display: flex; }
 .scope { flex: 1; min-width: 0; height: 100%; }
 
-.scope-bg { fill: #06070a; stroke: var(--line-soft); }
-.scope-grid { stroke: #1b2028; stroke-width: 1; }
-.scope-grid.mid { stroke: #2a313b; }
+.scope-bg { fill: #f8fbfa; stroke: var(--line-soft); }
+.scope-grid { stroke: #e1eae7; stroke-width: 1; }
+.scope-grid.mid { stroke: #bfd4cd; }
 .scope-trace { fill: none; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .scope-scale { font-family: var(--mono); font-size: 8px; }
 .scope-trig { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
@@ -897,7 +891,7 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
   min-width: 178px; z-index: 40;
   background: var(--graphite); border: 1px solid var(--line);
   border-radius: var(--r-sm); padding: 4px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 12px 30px rgba(21,59,64,0.14);
 }
 .menu button {
   display: block; width: 100%; text-align: left;
@@ -1033,3 +1027,48 @@ body.resizing .sheet, body.resizing .panel { pointer-events: none; }
 .topbar > .tool-group, .topbar > .transport { flex-shrink: 0; }
 #examples { max-width: 230px; }
 @media (max-width: 1450px) { .speed input { width: 70px; } }
+
+/* Own visual identity: a classroom workbench with a paper drawing surface. */
+:root { color-scheme: light; --ring: 0 0 0 3px rgba(8,127,120,0.18); }
+.topbar { padding: 0 18px; gap: 14px; box-shadow: 0 3px 16px rgba(21,59,64,0.04); }
+.brand { gap: 10px; flex-shrink: 0; }
+.brand-monogram {
+  display: grid; place-items: center; width: 42px; height: 42px;
+  border-radius: 13px 13px 13px 3px; background: var(--accent);
+  color: white; font-size: 18px; font-weight: 750; letter-spacing: -0.06em;
+}
+.brand-copy { display: flex; flex-direction: column; gap: 3px; }
+.brand-name { font-size: 16px; font-weight: 750; letter-spacing: -0.03em; }
+.brand-caption { font-size: 10px; color: var(--text-3); letter-spacing: 0.025em; }
+.btn, .tool { height: 34px; }
+.btn-run { box-shadow: 0 3px 8px rgba(8,127,120,0.15); }
+.tool[aria-pressed='true'] { background: #e1f2ed; color: #075d58; border-color: #a9d5c9; }
+.panel-head { height: 50px; background: #f7faf9; }
+.panel-head h2 { font-size: 12px; text-transform: none; font-weight: 700; letter-spacing: 0; color: var(--text); }
+.search-wrap { padding: 14px 12px; }
+#lib-search { height: 36px; background: #fff; }
+.lib-group > summary { padding: 10px 8px; text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 650; }
+.lib-item { background: white; border-color: var(--line-soft); border-radius: 10px; padding: 8px; }
+.lib-item:hover { background: #f1faf7; border-color: #91c8ba; box-shadow: 0 3px 8px rgba(21,59,64,0.06); }
+.lib-item .lib-name { color: var(--text-2); font-size: 11px; }
+.lib-item .chip { background: #fffefa; border: 1px solid #edf0e9; border-radius: 6px; }
+.lib-item svg { height: 52px; }
+.diagram-head { background: #f7faf9; }
+.scope-cursor { stroke: #7c3fb0; }
+.scope-cursor-t { fill: #7c3fb0; }
+.pill-run { background: #dff3e9; border-color: #8dc6ae; color: #176143; }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (max-width: 1550px) {
+  :root { --topbar-h: 116px; }
+  .topbar { flex-wrap: wrap; align-content: center; column-gap: 10px; row-gap: 8px; }
+  .topbar > .spacer { display: none; }
+}
+@media (max-width: 750px) {
+  :root { --topbar-h: 156px; }
+  .topbar { padding: 8px 12px; }
+  .brand-caption { display: none; }
+  .topbar .tool kbd, .topbar > .divider { display: none; }
+  #examples { max-width: 195px; }
+}
+
+a { color: var(--accent); text-underline-offset: 3px; }

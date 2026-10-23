@@ -12,7 +12,7 @@ Onderwijsversie voor Stijn Hermans, gebaseerd op [FluidLab van Alexander Hahn](h
 - Bij de cilinderkeuze staat het soort cilinder vermeld.
 - Uitleg in het eigenschappenpaneel over sensorkoppeling en ventielspoelen.
 - Nieuw startvoorbeeld: **Elektrohydraulica: cilinder met eindschakelaars**.
-- De oorspronkelijke netwerkberekeningen, 80 componenten, GRAFCET, exports en tests zijn behouden.
+- De oorspronkelijke netwerkberekeningen, 80 componenten, GRAFCET, exports en tests zijn behouden; zes eigen motorcomponenten breiden de bibliotheek uit tot 86 componenten.
 
 ## Meteen op GitHub Pages gebruiken
 
@@ -88,3 +88,13 @@ Voor deze repository is een GitHub Pages-workflow toegevoegd. Kies in **Settings
 Na plaatsing van de bestanden op `main` voert deze workflow eerst de simulatietests uit en publiceert bij succes de website.
 De workflow kan ook handmatig worden gestart via **Actions → GitHub Pages → Run workflow**.
 Gebruik deze optie als alternatief voor de hierboven beschreven publicatie vanaf een branch.
+
+## Licht atelier, motorbesturing en lessen
+
+De eigen lichte vormgeving gebruikt witte panelen, een warm tekenblad en blauwgroene accenten. Open [het lesoverzicht](lessen.html) voor zeven Nederlandse opdrachten met directe links naar hun voorbeeldschakeling.
+
+Via **Motoren** vind je een driefasenvoeding, contactorspoel, driepolige hoofdcontacten, driefasenmotor, thermisch relais en 24 V-DC-motor. Nieuwe voorbeelden behandelen direct starten met zelfhouding, elektrisch en mechanisch vergrendelde omkeersturing en een transportband. De driefasenhoofdkring is een functioneel verbindingsmodel; toerental, stroomschatting en thermische uitschakeling zijn didactisch vereenvoudigd. Een echte AC-motorberekening, ster-driehoek en frequentieregelaars zijn nog niet beschikbaar.
+
+![Lichte interface met industriële omkeersturing](docs/screenshot-motor.png)
+
+Zie [de Nederlandse handleiding](docs/HANDLEIDING-NL.md#industriële-motorschakelingen) voor bediening en modelgrenzen, en [het referentieonderzoek](docs/REFERENTIES.md) voor het gebruik van de aangeleverde FluidSIM-archieven. Originele FluidSIM-programma's en oefenbestanden zijn niet overgenomen.

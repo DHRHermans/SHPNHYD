@@ -14,6 +14,7 @@ import {
   Scope, drawScope, cursorReadout, quantitiesFor, readProbe, QUANTITIES, MAX_CHANNELS,
 } from './scope.js';
 import { GRID, BOX } from './symbols.js';
+import { motorNetwork } from './catalog-industrial.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const $ = (sel) => document.querySelector(sel);
@@ -188,6 +189,7 @@ function thumbFor(def) {
  * fragile — so this is the one place that decides, and everything else asks it.
  */
 function domainOfGroup(group) {
+  if (group === 'Motorschakelingen') return 'motor';
   if (group.startsWith('Hydraulica')) return 'hyd';
   if (group === 'Elektrisch' || group === 'Elektronica') return 'elec';
   if (group === 'Digitale logica') return 'dig';
@@ -421,6 +423,7 @@ function updateDynamic() {
   // Note: these must be inline styles, not presentation attributes — the .wire class
   // rule in the stylesheet outranks any attribute, so setAttribute('stroke', …) would
   // silently do nothing and every line would stay grey.
+  const phaseNetwork = state.circuit.instances.some(i => i.type === 'industrial_supply') ? motorNetwork(state.circuit, sim) : null;
   for (const w of state.circuit.wires) {
     const node = el.wires.querySelector(`[data-wire-line="${w.id}"]`);
     if (!node) continue;
@@ -429,6 +432,10 @@ function updateDynamic() {
       const live = (i == null ? 0 : sim.v[i]) > 5;
       node.style.stroke = live ? 'var(--live)' : '';
       node.style.strokeWidth = live ? '2.4' : '';
+    } else if (w.kind === 'motor') {
+      const phases = phaseNetwork?.(w.from.inst, w.from.port);
+      node.style.stroke = phases?.size > 1 ? '#e5484d' : phases?.size ? '#c084fc' : '';
+      node.style.strokeWidth = phases?.size ? '2.8' : '';
     } else if (w.kind === 'hydraulic') {
       const i = sim.hydIndex(w.from.inst, w.from.port);
       const bar = i == null ? 0 : barG(sim.ph[i]);
@@ -747,6 +754,8 @@ function buildInspector() {
     html += `</div>`;
   }
 
+  if (def.group === 'Motorschakelingen') html += `<p class="hint" style="border:0;padding:6px 0">De gestreepte hoofdkring gebruikt een functioneel driefasenmodel; de stuurkring werkt op 24 V DC. Koppel hoofdcontacten en hulpcontacten via dezelfde spoelaanduiding (KM1/KM2). De getoonde motorstroom is een modelwaarde. Klik tijdens de simulatie op F1 om na afkoeling te resetten.</p>`;
+
   if (inst.params.solA) html += `<p class="hint" style="border:0;padding:6px 0">Geef de elektrische ventielspoel dezelfde aanduiding als Spoel links/rechts (bijvoorbeeld Y1/Y2). De spoel bedient het ventiel; de olieleidingen verbinden het ventiel met de cilinder.</p>`;
 
   if (def.faultTypes?.length) {
@@ -824,7 +833,7 @@ function buildEmptyInspector() {
     // Count by the domain the component's ports actually live in, not by its group name.
     const kinds = new Set(def.ports.map((p) => p.kind || 'pneumatic'));
     if (kinds.has('hydraulic')) counts.hydraulic++;
-    else if (def.group === 'Elektrisch') counts.electric++;
+    else if (kinds.has('electric') || kinds.has('motor')) counts.electric++;
     else counts.pneumatic++;
   }
 
@@ -943,13 +952,22 @@ function checkCircuit(c) {
     }
   }
 
+  if (usesDomain('motor') && !c.instances.some(i => i.type === 'industrial_supply')) {
+    out.push({ level: 'err', text: 'Er ontbreekt een driefasenvoeding in de hoofdkring' });
+  }
+  for (const i of c.instances.filter(i => i.type === 'industrial_overload')) {
+    if (!c.instances.some(m => m.type === 'industrial_motor' && m.params.tag.value === i.params.motor.value)) {
+      out.push({ level: 'warn', text: `${i.params.tag.value}: geen bijbehorende motor`, id: i.id });
+    }
+  }
+
   // Duplicate tags: harmless on the sheet, but they break coil/contact pairing.
   const seen = new Map();
   for (const inst of c.instances) {
     const tag = inst.params?.tag?.value;
     if (!tag) continue;
     const def = c.defOf(inst);
-    if (def?.id === 'contact_no' || def?.id === 'contact_nc') continue; // contacts share a coil's tag by design
+    if (def?.id === 'contact_no' || def?.id === 'contact_nc' || def?.id === 'industrial_contactor') continue; // contacts share a coil's tag by design
     if (seen.has(tag)) out.push({ level: 'warn', text: `Aanduiding ${tag} meermaals gebruikt`, id: inst.id });
     else seen.set(tag, inst.id);
   }
@@ -957,7 +975,7 @@ function checkCircuit(c) {
   // Coils and contacts that reference nothing.
   const coils = new Set(c.instances.filter((i) => c.defOf(i)?.coilLike).map((i) => i.params.tag.value));
   for (const inst of c.instances) {
-    if (inst.type !== 'contact_no' && inst.type !== 'contact_nc') continue;
+    if (!['contact_no', 'contact_nc', 'industrial_contactor'].includes(inst.type)) continue;
     const tag = inst.params.tag.value;
     if (!coils.has(tag)) out.push({ level: 'warn', text: `Contact ${tag} zonder bijbehorende spoel`, id: inst.id });
   }
@@ -1035,6 +1053,12 @@ function updateReadouts() {
       <div class="bar"><i style="width:${pct}%"></i></div>
       <div class="readout"><span>Snelheid</span><span>${num(inst.sim.v * 1000, 0)} mm/s</span></div>`;
   }
+  if (inst.sim?.rpm != null) {
+    rows += `<div class="readout"><span>Toerental (model)</span><span>${num(inst.sim.rpm, 0)} omw/min</span></div>`;
+    if (inst.sim.status) rows += `<div class="readout"><span>Motorstatus</span><span>${inst.sim.status}</span></div>`;
+    if (inst.sim.current != null) rows += `<div class="readout"><span>Stroomschatting</span><span>${num(inst.sim.current, 1)} A</span></div>`;
+  }
+  if (inst.sim?.heat != null) rows += `<div class="readout"><span>Thermische belasting</span><span>${Math.round(inst.sim.heat * 100)} %</span></div><div class="readout"><span>Thermisch relais</span><span>${inst.sim.tripped ? 'uitgeschakeld' : 'gereed'}</span></div>`;
   if (inst.sim?.state != null) {
     rows += `<div class="readout"><span>Schakelstand</span><span>${inst.sim.state}</span></div>`;
   }
@@ -1443,6 +1467,7 @@ function updateLegend() {
   const scale = $('#legend .legend-scale');
   const title = $('#legend .legend-title');
   if (!bar) return;
+  $('#legend').hidden = !hyd && !air;
   if (hyd && !air) {
     title.textContent = 'Oliedruk';
     bar.style.background = 'linear-gradient(90deg, #8a939b, #b8494e, #d62b2b)';
@@ -2134,8 +2159,10 @@ el.canvasWrap.classList.add('has-diagram');
 state.panels = new Panels(() => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 buildProbeList();
 buildTriggerSources();
-loadCircuit(EXAMPLES.electroHydraulic.build());
-state.docTitle = EXAMPLES.electroHydraulic.name;
+const requestedExample = new URLSearchParams(window.location.search).get('example');
+const initialExample = Object.hasOwn(EXAMPLES, requestedExample) ? EXAMPLES[requestedExample] : EXAMPLES.electroHydraulic;
+loadCircuit(initialExample.build());
+state.docTitle = initialExample.name;
 applyView();
 setPanelTab('steps');
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });

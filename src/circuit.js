@@ -6,6 +6,7 @@
 import { BY_ID } from './catalog.js';
 import { GRID } from './symbols.js';
 import { Grafcet } from './grafcet.js';
+import { buildMotorExample } from './examples-industrial.js';
 
 let seq = 1;
 const nextId = () => `i${seq++}`;
@@ -199,6 +200,35 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  motorConveyor: {
+    name: 'Motor: 24 V-transportband met start/stop en zelfhouding',
+    description: 'S1 start de transportbandmotor M2 via KM1. De zelfhouding houdt de band in beweging. S2 stopt en S0 is de noodstop. Het DC-motormodel is vereenvoudigd.',
+    build() {
+      const c = buildMotorExample(Circuit);
+      for (const i of [...c.instances]) if (['industrial_supply', 'industrial_contactor', 'industrial_motor', 'industrial_overload'].includes(i.type)) c.remove(i.id);
+      const stop = c.instances.find(i => i.type === 'btn_nc');
+      for (const i of c.instances.filter(i => i.type === 'btn_no' || i.type === 'contact_no')) {
+        c.connect({ inst: stop.id, port: 'b' }, { inst: i.id, port: 'a' });
+      }
+      const power = c.add('rail_24v', 150, 90);
+      const contact = c.add('contact_no', 150, 210); contact.params.tag.value = 'KM1';
+      const motor = c.add('industrial_dc_motor', 120, 340);
+      const ground = c.add('rail_0v', 150, 510);
+      const wire = (a, ap, b, bp) => c.connect({ inst: a.id, port: ap }, { inst: b.id, port: bp });
+      wire(power, 'a', contact, 'a'); wire(contact, 'b', motor, 'a'); wire(motor, 'b', ground, 'a');
+      return c;
+    },
+  },
+  motorDirect: {
+    name: 'Motor: direct starten met zelfhouding en thermische beveiliging',
+    description: 'Druk S1 kort in: KM1 houdt zichzelf vast en M1 draait rechtsom. S2 stopt; S0 is de vergrendelende noodstop. F1 opent bij overbelasting. De hoofdkring is een functioneel driefasenmodel.',
+    build() { return buildMotorExample(Circuit); },
+  },
+  motorReverse: {
+    name: 'Motor: omkeersturing met elektrische en mechanische vergrendeling',
+    description: 'S1 start rechtsom, S3 linksom. Stop eerst met S2 voor een richtingswissel. De NC-hulpcontacten en mechanische vergrendeling blokkeren gelijktijdig inschakelen. F1 bewaakt M1.',
+    build() { return buildMotorExample(Circuit, true); },
+  },
   electroHydraulic: {
     name: 'Elektrohydraulica: cilinder met eindschakelaars',
     description: 'Houd S1 ingedrukt om uit te schuiven (Y1), S2 om in te schuiven (Y2). B0 en B1 bewaken de hydraulische cilinder en schakelen de lampen H0 en H1. Bij loslaten centreert het 4/3-ventiel.',

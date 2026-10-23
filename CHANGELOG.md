@@ -1,5 +1,14 @@
 # Changelog
 
+## SH PN · HYD — Licht atelier en motorbesturing
+
+- Eigen lichte vormgeving met SH-monogram en een lesoverzicht met zeven Nederlandse opdrachten.
+- Zes motorcomponenten; voorbeelden voor zelfhouding, omkeersturing en een 24 V-transportband.
+- Hoofdkring met functionele fasevolgorde en fasefouten; thermisch relais met vergrendelde uitschakeling en reset.
+- Onderbroken spoelen worden niet langer als bekrachtigd gemeld wanneer er toch spanning over hun aansluitingen staat.
+- Twaalf regressietests voor de industriële uitbreiding; 109 tests totaal.
+- Referentieonderzoek van aangeleverde FluidSIM-archieven, zonder overname van originele programma- of oefenbestanden.
+
 Notable changes to FluidLab. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

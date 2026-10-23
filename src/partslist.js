@@ -9,6 +9,11 @@
 
 /** Parameters worth printing per type. Everything else is noise on a BOM. */
 const SPEC_KEYS = {
+  industrial_dc_motor: ['speed'],
+  industrial_motor: ['speed', 'current', 'load'],
+  industrial_overload: ['rated', 'delay', 'motor'],
+  industrial_contactor: ['interlock'],
+  industrial_supply: ['missing'],
   cyl_double: ['bore', 'rod', 'stroke'],
   cyl_single: ['bore', 'stroke', 'springForce'],
   h_cyl: ['bore', 'rod', 'stroke'],
@@ -66,7 +71,7 @@ export function buildParts(circuit) {
   const domainOf = (def) => {
     const kinds = new Set(def.ports.map((p) => p.kind || 'pneumatic'));
     if (kinds.has('hydraulic')) return 2;
-    if (def.group === 'Elektrisch') return 3;
+    if (kinds.has('electric') || kinds.has('motor')) return 3;
     return 1;
   };
 

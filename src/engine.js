@@ -944,7 +944,7 @@ export class Simulation {
       const def = this.circuit.defOf(inst);
       if (!def?.coilLike) continue;
       const drop = Math.abs(ectx.volts(inst, 'a') - ectx.volts(inst, 'b'));
-      inst.sim.on = drop > 12; // half rail: clear of divider noise, below pickup
+      inst.sim.on = drop > 12 && !inst.faults?.coil_open; // half rail: clear of divider noise, below pickup
       this.energized.set(inst.params.tag.value, inst.sim.on);
     }
   }
