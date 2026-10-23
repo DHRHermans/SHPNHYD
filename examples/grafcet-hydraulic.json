@@ -1,0 +1,507 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i10",
+      "type": "h_cyl",
+      "x": 170,
+      "y": 70,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 40,
+        "rod": 20,
+        "stroke": 200,
+        "mass": 50,
+        "load": 0,
+        "friction": 6000,
+        "coulomb": 120
+      }
+    },
+    {
+      "id": "i11",
+      "type": "h_v43_closed_sol",
+      "x": 170,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1",
+        "solB": "Y2"
+      }
+    },
+    {
+      "id": "i12",
+      "type": "h_pump",
+      "x": 40,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 6,
+        "running": "on"
+      }
+    },
+    {
+      "id": "i13",
+      "type": "h_relief",
+      "x": 180,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 80
+      }
+    },
+    {
+      "id": "i14",
+      "type": "h_tank",
+      "x": 40,
+      "y": 580,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i15",
+      "type": "h_gauge",
+      "x": 350,
+      "y": 370,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "max": 250
+      }
+    },
+    {
+      "id": "i24",
+      "type": "rail_24v",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i25",
+      "type": "rail_0v",
+      "x": 500,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i26",
+      "type": "btn_no",
+      "x": 500,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i27",
+      "type": "sol_coil",
+      "x": 500,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y1"
+      }
+    },
+    {
+      "id": "i31",
+      "type": "rail_24v",
+      "x": 650,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i32",
+      "type": "rail_0v",
+      "x": 650,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i33",
+      "type": "btn_no",
+      "x": 650,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i34",
+      "type": "sol_coil",
+      "x": 650,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y2"
+      }
+    },
+    {
+      "id": "i38",
+      "type": "rail_24v",
+      "x": 800,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i39",
+      "type": "rail_0v",
+      "x": 800,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i40",
+      "type": "limit_switch",
+      "x": 800,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i10",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i41",
+      "type": "lamp",
+      "x": 800,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H0"
+      }
+    },
+    {
+      "id": "i45",
+      "type": "rail_24v",
+      "x": 950,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i46",
+      "type": "rail_0v",
+      "x": 950,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i47",
+      "type": "limit_switch",
+      "x": 950,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i10",
+        "at": 1,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i48",
+      "type": "lamp",
+      "x": 950,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i12",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i11",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i12",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i13",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i12",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i15",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i12",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i14",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i13",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i14",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i11",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i14",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i11",
+        "port": "A"
+      },
+      "to": {
+        "inst": "i10",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i11",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i10",
+        "port": "B"
+      }
+    },
+    {
+      "from": {
+        "inst": "i24",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i26",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i26",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i27",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i27",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i31",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i33",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i33",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i34",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i34",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i32",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i38",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i40",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i40",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i41",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i41",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i39",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i45",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i47",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i47",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i48",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i46",
+        "port": "a"
+      }
+    }
+  ],
+  "chart": {
+    "steps": [
+      {
+        "id": "S7",
+        "name": "0",
+        "initial": true,
+        "x": 100,
+        "y": 50,
+        "actions": []
+      },
+      {
+        "id": "S8",
+        "name": "1",
+        "initial": false,
+        "x": 100,
+        "y": 190,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y1"
+          }
+        ]
+      },
+      {
+        "id": "S9",
+        "name": "2",
+        "initial": false,
+        "x": 100,
+        "y": 330,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y2"
+          }
+        ]
+      }
+    ],
+    "transitions": [
+      {
+        "id": "T10",
+        "from": [
+          "S7"
+        ],
+        "to": [
+          "S8"
+        ],
+        "receptivity": "S1 * B0",
+        "x": 117,
+        "y": 140
+      },
+      {
+        "id": "T11",
+        "from": [
+          "S8"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "B1",
+        "x": 117,
+        "y": 280
+      },
+      {
+        "id": "T12",
+        "from": [
+          "S9"
+        ],
+        "to": [
+          "S7"
+        ],
+        "receptivity": "B0",
+        "x": 117,
+        "y": 430
+      }
+    ]
+  },
+  "controller": "grafcet"
+}

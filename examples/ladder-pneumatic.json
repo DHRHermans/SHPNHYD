@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i80",
+      "type": "cyl_double",
+      "x": 200,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 25,
+        "rod": 10,
+        "stroke": 100,
+        "mass": 1,
+        "load": 0,
+        "friction": 900,
+        "coulomb": 8,
+        "cushion": 0,
+        "cushionNeedle": 12
+      }
+    },
+    {
+      "id": "i81",
+      "type": "v52_sol_spring",
+      "x": 220,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1"
+      }
+    },
+    {
+      "id": "i82",
+      "type": "supply",
+      "x": 230,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i86",
+      "type": "btn_no",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i87",
+      "type": "limit_switch",
+      "x": 500,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i80",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i88",
+      "type": "limit_switch",
+      "x": 640,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i80",
+        "at": 1,
+        "width": 0.04
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i82",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i81",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i81",
+        "port": "4"
+      },
+      "to": {
+        "inst": "i80",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i81",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i80",
+        "port": "2"
+      }
+    }
+  ],
+  "controller": "ladder",
+  "ladder": {
+    "rungs": [
+      {
+        "coil": "M_cycle",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "S1",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_cycle",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "B1",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "Y1",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_cycle",
+              "nc": false
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

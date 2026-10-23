@@ -1,5 +1,13 @@
 # Changelog
 
+## GRAFCET- en PLC-Ladderwerkbladen
+
+- Apart groot GRAFCET-tekenvlak en een grafische Ladder-editor met serie/parallelcontacten, uitgangs-, set/resetspoelen en TON/TOF-timers.
+- Eén actieve besturing per document, met gedeelde virtuele sensoren en spoelen voor pneumatiek, hydrauliek en elektrische motoren.
+- Zes nieuwe besturingsvoorbeelden en zes leskaarten; JSON en undo/redo bewaren de programma's.
+- GRAFCET-teruglussen en overgangen buiten de stapgrenzen blijven zichtbaar.
+- Veertien nieuwe regressietests; 124 tests totaal.
+
 ## SH PN · HYD — Licht atelier en motorbesturing
 
 - Eigen lichte vormgeving met SH-monogram en een lesoverzicht met zeven Nederlandse opdrachten.

@@ -1,0 +1,531 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i89",
+      "type": "h_cyl",
+      "x": 170,
+      "y": 70,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 40,
+        "rod": 20,
+        "stroke": 200,
+        "mass": 50,
+        "load": 0,
+        "friction": 6000,
+        "coulomb": 120
+      }
+    },
+    {
+      "id": "i90",
+      "type": "h_v43_closed_sol",
+      "x": 170,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1",
+        "solB": "Y2"
+      }
+    },
+    {
+      "id": "i91",
+      "type": "h_pump",
+      "x": 40,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 6,
+        "running": "on"
+      }
+    },
+    {
+      "id": "i92",
+      "type": "h_relief",
+      "x": 180,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 80
+      }
+    },
+    {
+      "id": "i93",
+      "type": "h_tank",
+      "x": 40,
+      "y": 580,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i94",
+      "type": "h_gauge",
+      "x": 350,
+      "y": 370,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "max": 250
+      }
+    },
+    {
+      "id": "i103",
+      "type": "rail_24v",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i104",
+      "type": "rail_0v",
+      "x": 500,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i105",
+      "type": "btn_no",
+      "x": 500,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i106",
+      "type": "sol_coil",
+      "x": 500,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y1"
+      }
+    },
+    {
+      "id": "i110",
+      "type": "rail_24v",
+      "x": 650,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i111",
+      "type": "rail_0v",
+      "x": 650,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i112",
+      "type": "btn_no",
+      "x": 650,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i113",
+      "type": "sol_coil",
+      "x": 650,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "Y2"
+      }
+    },
+    {
+      "id": "i117",
+      "type": "rail_24v",
+      "x": 800,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i118",
+      "type": "rail_0v",
+      "x": 800,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i119",
+      "type": "limit_switch",
+      "x": 800,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i89",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i120",
+      "type": "lamp",
+      "x": 800,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H0"
+      }
+    },
+    {
+      "id": "i124",
+      "type": "rail_24v",
+      "x": 950,
+      "y": 100,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i125",
+      "type": "rail_0v",
+      "x": 950,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i126",
+      "type": "limit_switch",
+      "x": 950,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i89",
+        "at": 1,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i127",
+      "type": "lamp",
+      "x": 950,
+      "y": 320,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i91",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i90",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i91",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i92",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i91",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i94",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i91",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i93",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i92",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i93",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i93",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "A"
+      },
+      "to": {
+        "inst": "i89",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i89",
+        "port": "B"
+      }
+    },
+    {
+      "from": {
+        "inst": "i103",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i105",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i105",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i106",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i106",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i104",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i110",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i112",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i112",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i113",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i113",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i111",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i117",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i119",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i119",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i120",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i120",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i118",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i124",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i126",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i126",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i127",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i127",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i125",
+        "port": "a"
+      }
+    }
+  ],
+  "controller": "ladder",
+  "ladder": {
+    "rungs": [
+      {
+        "coil": "M_cycle",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "S1",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "Y1",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_cycle",
+              "nc": false
+            },
+            {
+              "tag": "B1",
+              "nc": true
+            },
+            {
+              "tag": "M_return",
+              "nc": true
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_return",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_cycle",
+              "nc": false
+            },
+            {
+              "tag": "B1",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "Y2",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_return",
+              "nc": false
+            },
+            {
+              "tag": "B0",
+              "nc": true
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_cycle",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_return",
+              "nc": false
+            },
+            {
+              "tag": "B0",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_return",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_return",
+              "nc": false
+            },
+            {
+              "tag": "B0",
+              "nc": false
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

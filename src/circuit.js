@@ -7,6 +7,8 @@ import { BY_ID } from './catalog.js';
 import { GRID } from './symbols.js';
 import { Grafcet } from './grafcet.js';
 import { buildMotorExample } from './examples-industrial.js';
+import { pneumaticPlant, cylinderController, motorController } from './examples-controllers.js';
+import { copyLadder } from './ladder.js';
 
 let seq = 1;
 const nextId = () => `i${seq++}`;
@@ -26,6 +28,8 @@ export class Circuit {
     this._wireIndex = null;
     // Optional: a sheet without a chart behaves exactly as it always did.
     this.chart = null;
+    this.controller = null;
+    this.ladder = null;
   }
 
   defOf(inst) { return BY_ID.get(inst.type); }
@@ -157,6 +161,8 @@ export class Circuit {
       })),
       wires: this.wires.map((w) => ({ from: w.from, to: w.to })),
       ...(this.chart ? { chart: this.chart.toJSON() } : {}),
+      ...(this.controller ? { controller: this.controller } : {}),
+      ...(this.ladder ? { ladder: structuredClone(this.ladder) } : {}),
     };
   }
 
@@ -189,6 +195,8 @@ export class Circuit {
       if (from.inst && to.inst) c.connect(from, to);
     }
     if (data.chart) c.chart = Grafcet.fromJSON(data.chart);
+    if (["manual", "grafcet", "ladder"].includes(data.controller)) c.controller = data.controller;
+    if (data.ladder) c.ladder = copyLadder(data.ladder);
     c.touch();
     return c;
   }
@@ -674,3 +682,23 @@ export const EXAMPLES = {
     },
   },
 };
+
+// The same controllers can operate pneumatic, hydraulic and electrical plants.
+for (const mode of ['grafcet', 'ladder']) {
+  const title = mode === 'grafcet' ? 'GRAFCET' : 'PLC Ladder';
+  EXAMPLES[`${mode}Pneumatic`] = {
+    name: `${title}: pneumatische cilinder automatisch uit/in`,
+    description: 'Geef S1 een korte puls. B1 start de teruggaande beweging; B0 bewaakt de ruststand. De geselecteerde besturing bedient Y1.',
+    build: () => cylinderController(pneumaticPlant(Circuit), false, mode),
+  };
+  EXAMPLES[`${mode}Hydraulic`] = {
+    name: `${title}: hydraulische cilinder automatisch uit/in`,
+    description: 'Geef S1 een korte puls: Y1 schuift uit, B1 schakelt om naar Y2, B0 beëindigt de cyclus. Bekijk het programma in het eigen besturingstabblad.',
+    build: () => cylinderController(EXAMPLES.electroHydraulic.build(), true, mode),
+  };
+  EXAMPLES[`${mode}Motor`] = {
+    name: `${title}: elektrische motor met start/stop`,
+    description: 'S1 start motor M1 via KM1. S2, S0 of thermisch relais F1 schakelt de motor uit. S2/S0/F1 zijn als gesloten/gezond ingangssignaal beschikbaar.',
+    build: () => motorController(EXAMPLES.motorDirect.build(), mode),
+  };
+}

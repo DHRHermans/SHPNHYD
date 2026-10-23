@@ -18,8 +18,7 @@ anything integrated beyond the op-amp.
 
 **The soft PLC is a core.** Ladder plus an ST subset (assignment, IF/ELSIF/ELSE, boolean
 expressions with real precedence, TON/TOF, CTU/CTD). Missing: FOR/WHILE/CASE, arrays,
-structures, user function blocks, the rest of the IEC standard library — and any graphical
-editor. PLC programs are currently written in code.
+structures, user function blocks, the rest of the IEC standard library — a graphical instruction editor beyond contacts/coils and TON/TOF. A graphical Ladder editor now supports series/parallel contacts, normal/set/reset coils and TON/TOF timers; its programs are serialized with the circuit.
 
 **GRAFCET is a core.** Sequences, alternative and parallel branches, continuous and stored
 actions, time and edge conditions, structure checking, and a graphical chart editor with live

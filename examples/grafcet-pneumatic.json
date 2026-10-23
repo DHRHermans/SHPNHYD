@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i1",
+      "type": "cyl_double",
+      "x": 200,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 25,
+        "rod": 10,
+        "stroke": 100,
+        "mass": 1,
+        "load": 0,
+        "friction": 900,
+        "coulomb": 8,
+        "cushion": 0,
+        "cushionNeedle": 12
+      }
+    },
+    {
+      "id": "i2",
+      "type": "v52_sol_spring",
+      "x": 220,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1"
+      }
+    },
+    {
+      "id": "i3",
+      "type": "supply",
+      "x": 230,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i7",
+      "type": "btn_no",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i8",
+      "type": "limit_switch",
+      "x": 500,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i1",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i9",
+      "type": "limit_switch",
+      "x": 640,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i1",
+        "at": 1,
+        "width": 0.04
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i3",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i2",
+        "port": "4"
+      },
+      "to": {
+        "inst": "i1",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i2",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i1",
+        "port": "2"
+      }
+    }
+  ],
+  "chart": {
+    "steps": [
+      {
+        "id": "S1",
+        "name": "0",
+        "initial": true,
+        "x": 100,
+        "y": 50,
+        "actions": []
+      },
+      {
+        "id": "S2",
+        "name": "1",
+        "initial": false,
+        "x": 100,
+        "y": 190,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y1"
+          }
+        ]
+      },
+      {
+        "id": "S3",
+        "name": "2",
+        "initial": false,
+        "x": 100,
+        "y": 330,
+        "actions": []
+      }
+    ],
+    "transitions": [
+      {
+        "id": "T4",
+        "from": [
+          "S1"
+        ],
+        "to": [
+          "S2"
+        ],
+        "receptivity": "S1 * B0",
+        "x": 117,
+        "y": 140
+      },
+      {
+        "id": "T5",
+        "from": [
+          "S2"
+        ],
+        "to": [
+          "S3"
+        ],
+        "receptivity": "B1",
+        "x": 117,
+        "y": 280
+      },
+      {
+        "id": "T6",
+        "from": [
+          "S3"
+        ],
+        "to": [
+          "S1"
+        ],
+        "receptivity": "B0",
+        "x": 117,
+        "y": 430
+      }
+    ]
+  },
+  "controller": "grafcet"
+}

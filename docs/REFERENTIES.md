@@ -11,7 +11,7 @@ De gebruiker leverde `Hydraulic-20260930T141214Z-1-001.zip` en `Pneumatic-202609
 
 ## Wat is hiermee gemaakt?
 
-Het eigen lesoverzicht `lessen.html` biedt zeven zelfstandig geschreven opdrachten: directe pneumatische bediening, afvoersmoring, elektrohydraulische eindstandbewaking, gemengde vrijgave, zelfhoudende motorbesturing, vergrendelde omkeersturing en een 24 V-transportband. De beschikbare eigen schakelingen zijn hiervoor gebruikt en uitgebreid.
+Het eigen lesoverzicht `lessen.html` biedt dertien zelfstandig geschreven opdrachten: directe pneumatische bediening, afvoersmoring, elektrohydraulische eindstandbewaking, gemengde vrijgave, zelfhoudende motorbesturing, vergrendelde omkeersturing en een 24 V-transportband. De beschikbare eigen schakelingen zijn hiervoor gebruikt en uitgebreid. Zes aanvullende opdrachten behandelen GRAFCET en PLC Ladder voor pneumatiek, hydrauliek en elektrische motoren.
 
 De transportbandoefening sluit aan bij het onderwerp DC-aandrijving in de referentiehandleiding. De nieuwe driefasenbesturing is een eigen uitbreiding; deze wordt niet gepresenteerd als een geïmporteerd FluidSIM-model. Broncode, symbolen en opdrachten zijn in deze repository geschreven. Simulatiegrenzen staan in de Nederlandse handleiding en in de interface.
 

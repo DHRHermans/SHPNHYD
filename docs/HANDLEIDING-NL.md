@@ -66,7 +66,7 @@ Dit is een didactische vrijgave, geen gevalideerde veiligheidsbesturing voor ech
 ## Het lichte techniekatelier en de lessen
 
 De interface gebruikt het eigen **Licht atelier**-thema: witte panelen, een warm tekenblad en blauwgroene bediening. De rode kleur van bekrachtigde elektrische stuurdraden blijft een simulatiesignaal.
-Klik onder de bibliotheek op **Ontdek de lessen en oefeningen** voor zeven Nederlandstalige opdrachten. Elke opdracht opent direct de passende schakeling. De knop **Motoren** filtert de componentbibliotheek, zonder het gezamenlijke werkvlak te veranderen.
+Klik onder de bibliotheek op **Ontdek de lessen en oefeningen** voor dertien Nederlandstalige opdrachten. Elke opdracht opent direct de passende schakeling. De knop **Motoren** filtert de componentbibliotheek, zonder het gezamenlijke werkvlak te veranderen.
 
 ## Industriële motorschakelingen
 
@@ -108,3 +108,45 @@ Ster-driehoek, frequentieregelaars, echte motorwikkelingen, PE-aarding en automa
 Open de website `https://dhrhermans.github.io/SHPNHYD/`, niet de GitHub-bestandsweergave of de oorspronkelijke FluidLab-site. Onder de componentbibliotheek staat **Licht atelier · v…** met de versie van de gepubliceerde bestanden. Bij lokaal ontwikkelen staat daar **Ontwikkelversie · Licht atelier**. Gebruik **Motoren** om de zes motorcomponenten te tonen; klik op een component om die in het midden van het werkvlak te plaatsen.
 
 Voor updates moet **Settings → Pages → Source** op **GitHub Actions** staan en moet de nieuwste uitvoering **GitHub Pages** afgerond zijn. De groene **CI**-workflow controleert alleen tests. De publicatie gebruikt per versie eigen CSS- en JavaScript-paden; eenmalig hard vernieuwen kan nodig zijn wanneer een oud HTML-document nog in de browsercache staat.
+
+## Werkbladen voor GRAFCET en PLC Ladder
+
+Boven het tekenveld staan drie werkbladen: **Schakeling**, **GRAFCET tekenen** en **PLC Ladder**. Ze horen bij hetzelfde document: je verliest geen componenten of programma's bij het wisselen. De twee besturingseditors gebruiken de volledige hoogte van het centrale werkvlak. Via **Schakeling** kun je tijdens de simulatie de drukknoppen bedienen en daarna terugkeren om de uitvoering te volgen.
+
+Rechts in de werkbladbalk kies je de **actieve besturing**: **Handmatig / elektrisch**, **GRAFCET** of **PLC Ladder**. Alleen de gekozen besturing schrijft softwarecommando's. De andere programma's blijven bewaard. Wisselen van besturing stopt en reset de simulatie. De gewone elektrische en vloeistofberekeningen blijven actief; een softwarecommando vervangt de bekrachtiging voor de beschreven uitgangsaanduiding. Dit is een virtuele I/O-koppeling, geen fysieke PLC-bedrading.
+
+### GRAFCET tekenen
+
+1. Open **GRAFCET tekenen** en klik **Schema maken**. Dit maakt een beginstap en kiest GRAFCET als besturing.
+2. Klik **+ Stap** en daarna op het tekenvlak om een stap te plaatsen. Sleep een stap om die te verplaatsen.
+3. Sleep vanaf het ronde aansluitpunt onder een stap naar een andere stap om een overgang te maken.
+4. Selecteer de overgang en vul een voorwaarde in, bijvoorbeeld `S1 * B0`, `B1`, `/S2` of `t/X1/2s`.
+5. Selecteer een stap, klik **+ Actie** en geef de gewenste spoel op: bijvoorbeeld `Y1`, `Y2` of `KM1`. De keuzelijst stelt aanduidingen uit de schakeling voor.
+6. Kies een continue actie (actief zolang de stap actief is) of een opgeslagen toewijzing. Begin bij voorkeur met continue acties.
+7. Start de simulatie. Actieve stappen en overgangen worden gemarkeerd. Teruglussen worden naast de stappen getekend en blijven met hun overgang in beeld.
+
+### PLC Ladder tekenen
+
+1. Open **PLC Ladder** en klik **+ Netwerk**.
+2. Vul de contactaanduiding in, bijvoorbeeld `S1` of `B0`, en kies maak- of verbreekcontact.
+3. **+ Contact** voegt een contact in serie toe (EN). **+ Parallelle tak** maakt een alternatieve tak (OF). Alle takken van een netwerk sturen dezelfde uitgang.
+4. Vul rechts de uitgang in, bijvoorbeeld `Y1`, `Y2`, `KM1` of een interne merker `M_run`.
+5. Kies een normale uitgang, **Set**, **Reset**, **Inschakelvertraging** (TON) of **Uitschakelvertraging** (TOF). Bij een timer geef je de vertraging in seconden op. Gebruik een merker als timeruitgang wanneer een volgend netwerk die timerwaarde moet lezen.
+6. Verplaats netwerken met de pijlen omhoog/omlaag. De PLC voert ze van boven naar beneden uit; een later netwerk ziet waarden die eerder in dezelfde scan geschreven zijn. Bij meerdere schrijvers naar dezelfde uitgang is de laatste uitgevoerde toewijzing bepalend.
+7. Selecteer **PLC Ladder** als actieve besturing en klik **Start**. Groene contacten en takken tonen de toestand bij evaluatie; de groene uitgang toont het PLC-commando. De live signalen tonen actuele niveaus.
+
+Het bewerken van Ladder stopt en reset de simulatie, zodat geen verouderd programma blijft uitvoeren. Een lege of ongeldige tak verhindert starten totdat de fout is hersteld. Een gewone uitgang schrijft elke scan waar/onwaar. Set schrijft alleen bij een geleidende tak een 1; Reset schrijft dan een 0. Stop/reset van de simulator wist merkers en timers.
+
+**NC-signalen:** S2 (NC-stop), S0 (noodstop) en F1 (thermisch NC-contact) leveren 1 zolang hun contact gesloten/gezond is. Gebruik daarvoor in Ladder doorgaans een maakcontact. Een verbreekcontact in het programma keert het niveau om. In GRAFCET betekent `/S2` dus dat het stopcontact geopend is.
+
+### Dezelfde besturing voor lucht, olie en motoren
+
+De koppeling gebeurt via aanduidingen, niet via het type vloeistof. Een elektrische eindschakelaar B0/B1 kan een pneumatische of hydraulische cilinder bewaken. Een uitgang Y1/Y2 bedient het overeenkomstig benoemde ventiel; KM1 bedient de contactor. Een virtueel aangestuurde contactorspoel blijft uitgeschakeld bij de fout **Spoel onderbroken**. Mechanische vergrendeling en hoofdkringmodellen blijven gelden.
+
+Het voorbeeldmenu bevat voor zowel **GRAFCET** als **PLC Ladder**:
+
+- Een pneumatische cilinder die na een startpuls automatisch uit- en teruggaat.
+- Een hydraulische cilinder met Y1/Y2 en B0/B1 voor een automatische uit-/inschuifcyclus.
+- Een elektrische motor met start, stop, noodstop en thermisch relais.
+
+Exporteer als **Schakelschema (JSON)** om de tekening, GRAFCET, Ladder en besturingskeuze samen op te slaan. Ook undo/redo bewaart het ladderprogramma. De Ladder-editor ondersteunt contacten, parallelle takken, spoelen, set/reset en TON/TOF. Hij omvat nog geen grafische tellers, analoge instructies, subprogramma's of communicatie met een echte PLC.

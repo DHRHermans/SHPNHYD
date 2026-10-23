@@ -100,6 +100,13 @@
        aria-label="Bibliotheek verbreden" title="Sleep om aan te passen; dubbelklik om te herstellen"></div>
 
   <section class="canvas-wrap">
+    <nav class="workspace-tabs" aria-label="Werkbladen">
+      <button data-workspace="circuit" aria-pressed="true">Schakeling</button>
+      <button data-workspace="grafcet" aria-pressed="false">GRAFCET tekenen</button>
+      <button data-workspace="ladder" aria-pressed="false">PLC Ladder</button>
+      <label for="controller-mode">Besturing</label>
+      <select id="controller-mode" aria-label="Actieve besturing"><option value="manual">Handmatig / elektrisch</option><option value="grafcet">GRAFCET</option><option value="ladder">PLC Ladder</option></select>
+    </nav>
     <svg id="sheet" class="sheet">
       <defs>
         <pattern id="grid-fine" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -147,6 +154,7 @@
           <button class="panel-tab" data-tab="scope" role="tab" aria-selected="false">Oscilloscoop</button>
           <button class="panel-tab" data-tab="parts" role="tab" aria-selected="false">Onderdelenlijst</button>
           <button class="panel-tab" data-tab="grafcet" role="tab" aria-selected="false">GRAFCET</button>
+          <button class="panel-tab" data-tab="ladder" role="tab" aria-selected="false">PLC Ladder</button>
         </div>
 
         <div class="diagram-actions" data-for="steps">
@@ -204,6 +212,7 @@
           <aside id="probe-list" class="probe-list"></aside>
         </div>
         <div id="parts-view" class="parts-view is-hidden"></div>
+        <div id="ladder-view" class="ladder-view is-hidden"></div>
         <div id="grafcet-view" class="grafcet-view is-hidden">
           <svg id="grafcet" class="grafcet"></svg>
           <aside id="grafcet-side" class="grafcet-side"></aside>

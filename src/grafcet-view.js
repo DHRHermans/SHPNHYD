@@ -16,7 +16,7 @@ export function drawGrafcet(svg, chart, { width, height, issues = [], selection 
   if (!chart || !chart.steps.size) {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.innerHTML = `<text class="gr-empty" x="${width / 2}" y="${height / 2}"
-      text-anchor="middle" dominant-baseline="middle">Kein GRAFCET-schema in dieser Schaltung</text>`;
+      text-anchor="middle" dominant-baseline="middle">Maak een GRAFCET-schema met de knop Schema maken</text>`;
     return;
   }
 
@@ -27,7 +27,20 @@ export function drawGrafcet(svg, chart, { width, height, issues = [], selection 
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   for (const s of steps) {
     x0 = Math.min(x0, s.x); y0 = Math.min(y0, s.y);
-    x1 = Math.max(x1, s.x + STEP + ACT_W + 30); y1 = Math.max(y1, s.y + STEP);
+    x1 = Math.max(x1, s.x + STEP + ACT_W + 30); y1 = Math.max(y1, s.y + Math.max(STEP, s.actions.length * (ACT_H + 2)));
+  }
+  const returnX = x1 + 35;
+  for (const t of trans) {
+    const from = t.from.map(id => chart.steps.get(id)).filter(Boolean);
+    const to = t.to.map(id => chart.steps.get(id)).filter(Boolean);
+    if (!from.length || !to.length) continue;
+    const ty = t.y ?? (Math.max(...from.map(s => s.y + STEP)) + Math.min(...to.map(s => s.y))) / 2;
+    const tx = t.x ?? from[0].x + STEP / 2;
+    x0 = Math.min(x0, tx - 16); y0 = Math.min(y0, ty - 24);
+    x1 = Math.max(x1, tx + 22 + measure(t.receptivity)); y1 = Math.max(y1, ty + 14);
+    for (const target of to) if (target.y <= Math.max(...from.map(s => s.y))) {
+      x1 = Math.max(x1, returnX); y0 = Math.min(y0, target.y - 20);
+    }
   }
   svg.setAttribute('viewBox', `${x0 - PAD} ${y0 - PAD} ${x1 - x0 + PAD * 2} ${y1 - y0 + PAD * 2}`);
 
@@ -50,7 +63,9 @@ export function drawGrafcet(svg, chart, { width, height, issues = [], selection 
     }
     for (const s of to) {
       const b = box(s);
-      out += `<path class="gr-link" d="M ${tx} ${ty} L ${b.cx} ${ty} L ${b.cx} ${b.y}"/>`;
+      if (s.y <= Math.max(...from.map(step => step.y))) {
+        out += `<path class="gr-link" d="M ${tx} ${ty} L ${returnX} ${ty} L ${returnX} ${b.y - 20} L ${b.cx} ${b.y - 20} L ${b.cx} ${b.y}"/>`;
+      } else out += `<path class="gr-link" d="M ${tx} ${ty} L ${b.cx} ${ty} L ${b.cx} ${b.y}"/>`;
     }
     // Double bar marks a simultaneous (AND) divergence/convergence, per EN 60848.
     const simultaneous = from.length > 1 || to.length > 1;
@@ -58,9 +73,10 @@ export function drawGrafcet(svg, chart, { width, height, issues = [], selection 
     const cls = `gr-bar${fired ? ' fired' : enabled ? ' enabled' : ''}${flagged.has(t.id) ? ' bad' : ''}${sel ? ' sel' : ''}`;
     out += `<line class="${cls}" x1="${tx - 13}" y1="${ty}" x2="${tx + 13}" y2="${ty}"/>`;
     if (simultaneous) out += `<line class="${cls}" x1="${tx - 13}" y1="${ty + 4}" x2="${tx + 13}" y2="${ty + 4}"/>`;
-    out += `<text class="gr-recep" x="${tx + 19}" y="${ty + 3}">${esc(t.receptivity)}</text>`;
+    const backwards = to.some(s => s.y <= Math.max(...from.map(step => step.y)));
+    out += `<text class="gr-recep" x="${tx + 19}" y="${backwards ? ty - 8 : ty + 3}">${esc(t.receptivity)}</text>`;
     // Generous invisible hit strip: a 2px bar is not a click target anyone can hit.
-    out += `<rect class="gr-hit" data-tid="${t.id}" x="${tx - 16}" y="${ty - 7}" width="${32 + measure(t.receptivity)}" height="16"/>`;
+    out += `<rect class="gr-hit" data-tid="${t.id}" x="${tx - 16}" y="${backwards ? ty - 22 : ty - 7}" width="${32 + measure(t.receptivity)}" height="${backwards ? 31 : 16}"/>`;
   }
 
   for (const s of steps) {
@@ -74,7 +90,7 @@ export function drawGrafcet(svg, chart, { width, height, issues = [], selection 
       out += `<rect class="${cls}" x="${b.x + 3}" y="${b.y + 3}" width="${b.w - 6}" height="${b.h - 6}" rx="1"/>`;
     }
     out += `<text class="gr-name" x="${b.cx}" y="${b.cy + 4}" text-anchor="middle">${esc(s.name)}</text>`;
-    if (active) out += `<circle class="gr-token" cx="${b.cx}" cy="${b.cy}" r="5"/>`;
+    if (active) out += `<circle class="gr-token" cx="${b.cx}" cy="${b.y + STEP - 8}" r="3.5"/>`;
     out += `<rect class="gr-hit" data-sid="${s.id}" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}"/>`;
     // Link handle on the bottom edge. Dragging the step *body* onto another step cannot
     // mean "connect": the body follows the pointer and ends up covering the target, so

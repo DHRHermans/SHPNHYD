@@ -1074,3 +1074,37 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
 a { color: var(--accent); text-underline-offset: 3px; }
 
 #release-label { display: inline-block; margin-top: 8px; font: 10px var(--mono); color: var(--text-3); }
+
+/* Dedicated controller workspaces share the same circuit and simulation. */
+.workspace-tabs { position:absolute; top:0; left:0; right:0; height:48px; z-index:16; display:flex; align-items:center; gap:6px; padding:7px 12px; background:#f3f8f6; border-bottom:1px solid var(--line); }
+.workspace-tabs button { border:1px solid transparent; border-radius:7px; background:transparent; padding:7px 12px; color:var(--text-2); font:inherit; font-size:12px; cursor:pointer; }
+.workspace-tabs button[aria-pressed="true"] { background:white; border-color:#b7d9cf; color:#076d67; font-weight:700; }
+.workspace-tabs label { margin-left:auto; font-size:11px; color:var(--text-3); }
+.workspace-tabs select { max-width:190px; height:30px; }
+.sheet { margin-top:48px; height:calc(100% - 48px); }
+.canvas-hud { top:60px; }
+.diagram-panel.editor-full { top:48px; height:auto; bottom:0; z-index:14; }
+.editor-full .resize-handle, .editor-full #diag-toggle { display:none; }
+.editor-full .diagram-head { height:auto; min-height:42px; flex-wrap:wrap; gap:8px; padding:8px 12px; }
+.controller-editor > .sheet, .controller-editor > .canvas-hud { visibility:hidden; }
+.editor-full .grafcet-side { width:270px; }
+.ladder-view { position:absolute; inset:0; overflow:auto; background:var(--paper); padding:24px; }
+.ld-intro { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.ld-intro h2 { margin:0; font-size:24px; }
+.ld-intro p, .ld-signals p { font-size:12px; line-height:1.5; color:var(--text-3); }
+.ladder-view button { border:1px solid var(--line); background:white; border-radius:6px; padding:6px 9px; color:var(--text-2); cursor:pointer; white-space:nowrap; }
+.ladder-view button:hover { background:#e6f2ed; border-color:#82b9a9; }
+.ld-rung { border:1px solid var(--line); border-radius:12px; background:white; margin:18px 0; padding:14px; min-width:500px; }
+.ld-rung header { display:flex; gap:6px; align-items:center; font-size:12px; }.ld-rung header span { flex:1; }
+.ld-circuit { display:flex; align-items:center; gap:20px; border-left:3px solid #5d7a7b; border-right:3px solid #5d7a7b; margin:20px 4px; padding:8px 12px; }
+.ld-branches { flex:1; min-width:0; }
+.ld-branch { display:flex; align-items:center; gap:8px; padding:14px 0; border-top:2px solid #cad8d3; overflow-x:auto; }
+.ld-branch.live { border-top-color:#087f78; }
+.ld-cell { position:relative; display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:116px; color:#456567; gap:5px; padding:6px; border-radius:8px; }
+.ld-cell svg { width:100%; height:42px; }.ld-cell input, .ld-cell select { width:100%; padding:5px; font-size:11px; }
+.ld-cell.live { color:#087f78; background:#e4f4ed; }.ld-cell > button { position:absolute; top:0; right:0; padding:0 4px; font-size:11px; }
+.ld-coil { margin-left:auto; }
+.ld-signals { padding:14px; border-radius:10px; background:#edf5f1; font-size:12px; }
+#ld-signals { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }#ld-signals span { background:white; padding:5px 8px; border:1px solid var(--line); border-radius:5px; }#ld-signals .on { border-color:#087f78; color:#076d67; }
+#ld-errors { color:#b42332; font-size:12px; }
+@media(max-width:1100px) { .workspace-tabs { gap:2px; padding:6px; }.workspace-tabs button{padding:6px;font-size:11px}.workspace-tabs label{display:none}.workspace-tabs select{max-width:150px;font-size:11px}.editor-full .grafcet-side{width:220px}.mini-hint{display:none} }

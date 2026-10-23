@@ -6,7 +6,7 @@ the circuit. They read its sensors and command its actuators through one narrow 
 `sim.signal(tag)` in, `sim.energized` out — and nothing below them knows which one is
 talking.
 
-That is why adding the soft PLC cost **no change to `engine.js`**.
+The original headless soft PLC used this interface without changing the engine. The graphical controller workspaces now schedule the selected controller inside the simulation tick, through the same signal channel.
 
 - [Module map](#module-map)
 - [The component contract](#the-component-contract)
@@ -166,3 +166,11 @@ The `motor` port kind is a functional domain, separate from the numerical electr
 Industrial contactor coils use the existing 24 V solver and ordinary auxiliary contacts. An open-coil fault now inhibits pickup even if an external parallel load leaves a voltage across the open terminals. Motor speed is a first-order teaching response. Thermal protection integrates a didactic excess-I² budget and opens a real NC contact in the control circuit until cooled and manually reset. The separate DC drive is a resistive load with a voltage-dependent speed response.
 
 The light interface remains independent of the exported engineering symbols. `lessen.html` links to allowlisted entries of `EXAMPLES` through the `example` query parameter; unknown names fall back to the existing electrohydraulic start example.
+
+## Graphical controller workspaces
+
+`Circuit.controller` selects manual, GRAFCET or Ladder control. A legacy circuit with a chart and no explicit mode uses GRAFCET. `Circuit.ladder` stores ordered rungs with parallel branches of series contacts, output names and coil kinds (normal, set, reset, TON, TOF). Both fields participate in JSON snapshots and undo/redo.
+
+`LadderRuntime` compiles the serializable network into the existing `PLC` combinators. Inputs are sampled once per scan, and rungs run sequentially; later rungs see earlier writes. Timers use simulation time. Only the selected controller publishes software outputs after the numerical electric solve and before discrete actuator updates. `controllerSignal` exposes closed/healthy levels for NC buttons, emergency stops and overload contacts. `applyControllerOutputs` also updates virtual coil indicators while respecting open-coil faults.
+
+`ladder-view.js` builds the graphical network editor and updates live highlights without recreating focused controls. `main.js` promotes GRAFCET and Ladder into full-height central workspaces. `grafcet-view.js` includes external return paths, transition labels and action blocks in its view bounds. Legacy diagrams and the process drawing remain in the same document.

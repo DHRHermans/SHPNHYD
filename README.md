@@ -98,10 +98,19 @@ Gebruik de hierboven beschreven GitHub Actions-route; zo worden de versiegebonde
 
 ## Licht atelier, motorbesturing en lessen
 
-De eigen lichte vormgeving gebruikt witte panelen, een warm tekenblad en blauwgroene accenten. Open [het lesoverzicht](lessen.html) voor zeven Nederlandse opdrachten met directe links naar hun voorbeeldschakeling.
+De eigen lichte vormgeving gebruikt witte panelen, een warm tekenblad en blauwgroene accenten. Open [het lesoverzicht](lessen.html) voor dertien Nederlandse opdrachten met directe links naar hun voorbeeldschakeling.
 
 Via **Motoren** vind je een driefasenvoeding, contactorspoel, driepolige hoofdcontacten, driefasenmotor, thermisch relais en 24 V-DC-motor. Nieuwe voorbeelden behandelen direct starten met zelfhouding, elektrisch en mechanisch vergrendelde omkeersturing en een transportband. De driefasenhoofdkring is een functioneel verbindingsmodel; toerental, stroomschatting en thermische uitschakeling zijn didactisch vereenvoudigd. Een echte AC-motorberekening, ster-driehoek en frequentieregelaars zijn nog niet beschikbaar.
 
 ![Lichte interface met industriële omkeersturing](docs/screenshot-motor.png)
 
 Zie [de Nederlandse handleiding](docs/HANDLEIDING-NL.md#industriële-motorschakelingen) voor bediening en modelgrenzen, en [het referentieonderzoek](docs/REFERENTIES.md) voor het gebruik van de aangeleverde FluidSIM-archieven. Originele FluidSIM-programma's en oefenbestanden zijn niet overgenomen.
+
+## GRAFCET en PLC Ladder tekenen
+
+Boven het werkvlak staan nu **Schakeling**, **GRAFCET tekenen** en **PLC Ladder**. GRAFCET heeft een groot tekenvlak voor stappen, overgangen en acties. In de grafische Ladder-editor bouw je serie- en parallelcontacten, uitgangsspoelen, set/reset en TON/TOF-vertragingen. Kies bovenaan één actieve besturing.
+
+Beide besturingen werken met dezelfde sensoren en spoelaanduidingen voor **pneumatiek, hydrauliek en elektrische motoren**. Zes nieuwe voorbeelden tonen elk van deze combinaties. JSON-export en undo/redo bewaren het programma en de besturingskeuze. Zie de [bedieningsuitleg](docs/HANDLEIDING-NL.md#werkbladen-voor-grafcet-en-plc-ladder).
+
+![PLC Ladder tekenen](docs/screenshot-ladder.png)
+![Groot GRAFCET-tekenvlak](docs/screenshot-grafcet.png)

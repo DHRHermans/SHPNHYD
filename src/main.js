@@ -15,6 +15,8 @@ import {
 } from './scope.js';
 import { GRID, BOX } from './symbols.js';
 import { motorNetwork } from './catalog-industrial.js';
+import { LadderEditor } from './ladder-view.js';
+import { controllerMode, validateLadder } from './ladder.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const $ = (sel) => document.querySelector(sel);
@@ -658,6 +660,11 @@ function bindCursorDrag() {
 
 function setPanelTab(tab) {
   state.tab = tab;
+  const fullEditor = tab === 'grafcet' || tab === 'ladder';
+  el.diagPanel.classList.toggle('editor-full', fullEditor);
+  el.canvasWrap.classList.toggle('controller-editor', fullEditor);
+  document.querySelectorAll('[data-workspace]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.workspace === (fullEditor ? tab : 'circuit'))));
+  $('#controller-mode').value = controllerMode(state.circuit);
   document.querySelectorAll('.panel-tab').forEach((b) =>
     b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
   document.querySelectorAll('[data-for]').forEach((g) => { g.hidden = g.dataset.for !== tab; });
@@ -668,6 +675,8 @@ function setPanelTab(tab) {
   el.scopeView.classList.toggle('is-hidden', tab !== 'scope');
   el.partsView.classList.toggle('is-hidden', tab !== 'parts');
   el.grafcetView.classList.toggle('is-hidden', tab !== 'grafcet');
+  $('#ladder-view').classList.toggle('is-hidden', tab !== 'ladder');
+  if (tab === 'ladder') ladderEditor.draw();
   if (tab === 'parts') buildPartsList();
   redrawGrafcet();
   if (el.diagPanel.classList.contains('collapsed')) {
@@ -677,6 +686,7 @@ function setPanelTab(tab) {
   }
   redrawDiagram();
   redrawScope();
+  redrawGrafcet();
 }
 
 // ---------------------------------------------------------------- selection
@@ -992,6 +1002,7 @@ function checkCircuit(c) {
   // unconnected sensor in a chart-driven circuit is correct, not a mistake — flagging it
   // is the kind of false warning that teaches people to stop reading this panel.
   const chartTags = new Set();
+  if (c.ladder?.rungs) for (const row of c.ladder.rungs) { chartTags.add(row.coil); for (const branch of row.branches) for (const contact of branch) chartTags.add(contact.tag); }
   if (c.chart) {
     for (const t of c.chart.transitions.values()) {
       for (const m of String(t.receptivity).matchAll(/[A-Za-z_][\w.]*/g)) chartTags.add(m[0]);
@@ -1402,6 +1413,11 @@ el.sheet.addEventListener('drop', (e) => {
 
 function setRunning(run) {
   const sim = state.sim;
+  if (run && controllerMode(state.circuit) === 'ladder') {
+    const errors = validateLadder(state.circuit.ladder);
+    if (errors.length) { toast(errors[0]); return; }
+  }
+  if (run && controllerMode(state.circuit) === 'grafcet' && !state.circuit.chart) { toast('Maak eerst een GRAFCET-schema'); return; }
   sim.running = run;
   el.runBtn.classList.toggle('running', run);
   el.runLabel.textContent = run ? 'Pauze' : 'Start';
@@ -1421,6 +1437,8 @@ function stopSim() {
   el.simState.textContent = 'Bewerken';
   el.simState.className = 'pill pill-idle';
   render();
+  if (state.tab === 'ladder') ladderEditor.live();
+  redrawGrafcet();
 }
 
 const DT = 0.001; // 1ms fixed step: fast enough for the relay chain, cheap enough to run real-time
@@ -1454,6 +1472,7 @@ function frame(now) {
     redrawDiagram();
     redrawScope();
     redrawGrafcet();
+    if (state.tab === 'ladder') ladderEditor.live();
   }
   requestAnimationFrame(frame);
 }
@@ -1531,7 +1550,7 @@ function redrawGrafcet() {
   el.grafcet.classList.toggle('tool-step', state.grTool === 'step');
 
   if (!chart) { el.grafcetSide.innerHTML = ''; buildGrafcetSide(); return; }
-  buildGrafcetSide(issues);
+  if (!el.grafcetSide.contains(document.activeElement)) buildGrafcetSide(issues);
   return;
 }
 
@@ -1568,7 +1587,7 @@ function buildGrafcetSide(issues = []) {
           ${Object.entries(ACTION_KINDS).map(([k, lbl]) =>
             `<option value="${k}"${a.kind === k ? ' selected' : ''}>${k === 'stored' ? 'opg.' : 'cont.'}</option>`).join('')}
         </select>
-        <input type="text" data-atarget="${i}" value="${esc(a.target)}" placeholder="Aanduiding">
+        <input type="text" data-atarget="${i}" list="controller-tags" value="${esc(a.target)}" placeholder="Aanduiding">
         ${a.kind === 'stored' ? `<select data-avalue="${i}">
           <option value="1"${a.value !== false ? ' selected' : ''}>=1</option>
           <option value="0"${a.value === false ? ' selected' : ''}>=0</option>
@@ -1612,6 +1631,13 @@ function buildGrafcetSide(issues = []) {
       }
     }
   }
+  const tags = new Set();
+  for (const i of state.circuit.instances) {
+    if (i.params.tag?.value) tags.add(i.params.tag.value);
+    if (i.params.solA?.value) tags.add(i.params.solA.value);
+    if (i.params.solB?.value) tags.add(i.params.solB.value);
+  }
+  html += `<datalist id="controller-tags">${[...tags].map(t => `<option value="${esc(t)}"></option>`).join('')}</datalist><p class="gr-title" style="margin-top:16px">Koppelen aan de schakeling</p><p class="gr-hint">Gebruik sensoraanduidingen in voorwaarden en spoelaanduidingen in acties. Dit werkt voor lucht, olie en elektrische aandrijvingen. Kies bovenaan GRAFCET als actieve besturing.</p><p class="gr-hint">Beschikbare aanduidingen: ${[...tags].map(esc).join(', ') || 'plaats eerst componenten'}.</p>`;
   el.grafcetSide.innerHTML = html;
   bindGrafcetSide();
 }
@@ -1858,6 +1884,8 @@ $('#gr-new').addEventListener('click', () => {
   g.addStep({ name: '0', initial: true, x: 60, y: 40 });
   g.reset();
   state.circuit.chart = g;
+  state.circuit.controller = 'grafcet';
+  $('#controller-mode').value = 'grafcet';
   state.sim.chart = g;
   state.circuit.touch();
   commit();
@@ -2142,6 +2170,9 @@ function applyCircuit(c) {
   el.clock.textContent = '0,00 s';
   buildInspector();
   updateLegend();
+  $('#controller-mode').value = controllerMode(c);
+  if (state.tab === 'ladder') ladderEditor.draw();
+  if (state.tab === 'grafcet') redrawGrafcet();
 }
 
 /** Loads a document as a fresh start: history cleared, view fitted. */
@@ -2151,6 +2182,20 @@ function loadCircuit(c) {
   refreshHistoryButtons();
   zoomFit();
 }
+
+const ladderEditor = new LadderEditor($('#ladder-view'), {
+  circuit: () => state.circuit,
+  simulation: () => state.sim,
+  changed: () => { state.circuit.touch(); stopSim(); commit(); },
+});
+document.querySelectorAll('[data-workspace]').forEach(b => b.addEventListener('click', () => setPanelTab(b.dataset.workspace === 'circuit' ? 'steps' : b.dataset.workspace)));
+$('#controller-mode').addEventListener('change', e => {
+  state.circuit.controller = e.target.value;
+  if (e.target.value === 'ladder') state.circuit.ladder ||= { rungs: [] };
+  state.circuit.touch(); stopSim(); commit();
+  if (state.tab === 'ladder') ladderEditor.draw();
+  toast(`Actieve besturing: ${e.target.selectedOptions[0].textContent}`);
+});
 
 setTool('select');
 buildLibrary();
@@ -2164,6 +2209,7 @@ const initialExample = Object.hasOwn(EXAMPLES, requestedExample) ? EXAMPLES[requ
 loadCircuit(initialExample.build());
 state.docTitle = initialExample.name;
 applyView();
-setPanelTab('steps');
+const requestedWorkspace = new URLSearchParams(window.location.search).get('workspace');
+setPanelTab(['grafcet', 'ladder'].includes(requestedWorkspace) ? requestedWorkspace : 'steps');
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 requestAnimationFrame(frame);

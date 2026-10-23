@@ -1,0 +1,338 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i131",
+      "type": "industrial_supply",
+      "x": 100,
+      "y": 50,
+      "rot": 0,
+      "params": {
+        "tag": "Q1",
+        "missing": 0
+      }
+    },
+    {
+      "id": "i132",
+      "type": "industrial_contactor",
+      "x": 100,
+      "y": 200,
+      "rot": 0,
+      "params": {
+        "tag": "KM1",
+        "interlock": ""
+      }
+    },
+    {
+      "id": "i133",
+      "type": "industrial_motor",
+      "x": 100,
+      "y": 400,
+      "rot": 0,
+      "params": {
+        "tag": "M1",
+        "speed": 1450,
+        "current": 4,
+        "load": 1
+      }
+    },
+    {
+      "id": "i140",
+      "type": "rail_24v",
+      "x": 610,
+      "y": 50,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i141",
+      "type": "estop",
+      "x": 610,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "S0"
+      }
+    },
+    {
+      "id": "i142",
+      "type": "btn_nc",
+      "x": 610,
+      "y": 190,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i143",
+      "type": "industrial_overload",
+      "x": 600,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "F1",
+        "motor": "M1",
+        "rated": 4,
+        "delay": 3
+      }
+    },
+    {
+      "id": "i147",
+      "type": "btn_no",
+      "x": 580,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i148",
+      "type": "contact_no",
+      "x": 670,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i149",
+      "type": "industrial_coil",
+      "x": 580,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i150",
+      "type": "rail_0v",
+      "x": 590,
+      "y": 700,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i151",
+      "type": "lamp",
+      "x": 680,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i131",
+        "port": "L1"
+      },
+      "to": {
+        "inst": "i132",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i132",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i133",
+        "port": "U"
+      }
+    },
+    {
+      "from": {
+        "inst": "i131",
+        "port": "L2"
+      },
+      "to": {
+        "inst": "i132",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i132",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i133",
+        "port": "V"
+      }
+    },
+    {
+      "from": {
+        "inst": "i131",
+        "port": "L3"
+      },
+      "to": {
+        "inst": "i132",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i132",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i133",
+        "port": "W"
+      }
+    },
+    {
+      "from": {
+        "inst": "i140",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i141",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i141",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i142",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i142",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i143",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i143",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i147",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i143",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i148",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i147",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i148",
+        "port": "b"
+      }
+    },
+    {
+      "from": {
+        "inst": "i147",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i149",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i149",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i150",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i149",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i151",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i151",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i150",
+        "port": "a"
+      }
+    }
+  ],
+  "controller": "ladder",
+  "ladder": {
+    "rungs": [
+      {
+        "coil": "KM1",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "S1",
+              "nc": false
+            },
+            {
+              "tag": "S2",
+              "nc": false
+            },
+            {
+              "tag": "S0",
+              "nc": false
+            },
+            {
+              "tag": "F1",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "KM1",
+              "nc": false
+            },
+            {
+              "tag": "S2",
+              "nc": false
+            },
+            {
+              "tag": "S0",
+              "nc": false
+            },
+            {
+              "tag": "F1",
+              "nc": false
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

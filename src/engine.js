@@ -1,3 +1,5 @@
+import { LadderRuntime, controllerSignal, applyControllerOutputs } from './ladder.js';
+
 // Pneumatic + electrical simulation engine.
 //
 // Units: pressure in Pa absolute, mass flow in kg/s, volume in m^3, time in s.
@@ -632,7 +634,9 @@ export class Simulation {
     // A GRAFCET is a specification above the circuit, not a component in it: it reads the
     // plant's signals and commands its actuators. `chart` is optional; a sheet without one
     // behaves exactly as before.
-    this.chart = null;
+    this.chart = circuit.chart || null;
+    this.ladderRuntime = null;
+    this.controllerError = null;
     // Newton budget for the electronics solve. A generous default — the loop leaves on
     // the update norm, so headroom it does not need costs nothing.
     this.newtonLimit = NEWTON_LIMIT;
@@ -653,6 +657,8 @@ export class Simulation {
   }
 
   rebuild() {
+    this.ladderRuntime = null;
+    this.controllerError = null;
     this.chart?.reset();
     this.nets = buildNets(this.circuit, 'pneumatic');
 
@@ -757,7 +763,18 @@ export class Simulation {
     // 2. GRAFCET, before the components read their commands. Its outputs are published
     //    into `energized` under their tag, which is the same channel relay coils use —
     //    so a solenoid does not know or care whether a ladder or a chart is driving it.
-    if (this.chart) this.evolveChart(ctx);
+    const mode = this.circuit.controller || (this.chart ? 'grafcet' : 'manual');
+    if (mode === 'grafcet' && this.chart) this.evolveChart(ctx);
+    if (mode === 'ladder' && this.circuit.ladder) {
+      try {
+        this.ladderRuntime ||= new LadderRuntime(this, this.circuit.ladder);
+        this.ladderRuntime.tick(dt);
+      } catch (error) {
+        this.controllerError = error.message;
+        // Fail closed on malformed programs; never reuse a previous PLC command.
+        for (const row of Array.isArray(this.circuit.ladder.rungs) ? this.circuit.ladder.rungs : []) if (row?.coil) applyControllerOutputs(this, [[row.coil, false]]);
+      }
+    }
 
     // 3. Discrete state: spool positions, latches, timers, limit switches.
     //    A "stuck" defect is enforced centrally rather than in each component: whatever
@@ -837,10 +854,10 @@ export class Simulation {
 
   evolveChart(ctx) {
     const before = new Set(this.chart.active);
-    this.chart.step(ctx.dt, { signal: (t) => this.signal(t) });
+    this.chart.step(ctx.dt, { signal: (t) => controllerSignal(this, t) });
     const newly = [...this.chart.active].filter((s) => !before.has(s));
     this.chart.applyStored(newly);
-    for (const [target, on] of this.chart.outputs()) this.energized.set(target, on);
+    applyControllerOutputs(this, this.chart.outputs());
   }
 
   solveHydraulic(ctx) {
