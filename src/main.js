@@ -7,6 +7,7 @@ import { History } from './history.js';
 import { Recorder, drawDiagram } from './diagram.js';
 import { Panels } from './panels.js';
 import { ToolWindows } from './tool-windows.js';
+import { sceneBinding } from './machine-scene.js';
 import { MachineView } from './machine-view.js';
 import { valveVariants, replaceValve } from './valves.js';
 import { valveEditorMarkup, bindValveEditor } from './valve-editor.js';
@@ -1666,7 +1667,7 @@ function buildGrafcetSide(issues = []) {
     if (i.params.solB?.value) tags.add(i.params.solB.value);
     for(const [k,p] of Object.entries(i.params))if(/^(input|output)/.test(k)&&p.value)tags.add(p.value);
   }
-  if(state.circuit.scene?.type==='drill-press'){tags.add('B_WERKSTUK');tags.add('B_SPINDEL_STIL');}
+  if(state.circuit.scene?.type==='drill-press'){for(const key of ['workpieceInput','stoppedInput']){const tag=sceneBinding(state.circuit.scene,key);if(tag)tags.add(tag);}}
   html += `<datalist id="controller-tags">${[...tags].map(t => `<option value="${esc(t)}"></option>`).join('')}</datalist><p class="gr-title" style="margin-top:16px">Koppelen aan de schakeling</p><p class="gr-hint">Gebruik sensoraanduidingen in voorwaarden en spoelaanduidingen in acties. Dit werkt voor lucht, olie en elektrische aandrijvingen. Kies bovenaan GRAFCET als actieve besturing.</p><p class="gr-hint">Beschikbare aanduidingen: ${[...tags].map(esc).join(', ') || 'plaats eerst componenten'}.</p>`;
   el.grafcetSide.innerHTML = html;
   bindGrafcetSide();
@@ -2083,7 +2084,7 @@ exportMenu.addEventListener('click', async (e) => {
       const style=document.createElementNS(SVG_NS,'style');style.textContent='.gr-step,.gr-action{fill:white;stroke:#153b40;stroke-width:1.5}.gr-link{fill:none;stroke:#153b40;stroke-width:1.4}.gr-bar{stroke:#153b40;stroke-width:2}.gr-name,.gr-recep,.gr-act-t{fill:#153b40;font-family:monospace;font-size:10px}.gr-hit,.gr-nub,.gr-token{display:none}';svg.prepend(style);
       pages.push({label:'GRAFCET',svg:new XMLSerializer().serializeToString(svg)});
       }
-    } else if(state.tab==='machine') { const svg=$('.machine-illustration > svg');if(svg)pages.push({label:'Machinebeeld',svg:new XMLSerializer().serializeToString(svg)});
+    } else if(state.tab==='machine') { const svg=$('.machine-illustration > svg');if(svg)pages.push({label:'Machinebeeld',svg:new XMLSerializer().serializeToString(svg)});for(const card of document.querySelectorAll('.actuator-card'))pages.push({label:card.querySelector('h4').textContent,svg:new XMLSerializer().serializeToString(card.querySelector('svg'))});
     } else { const svg=sheetToSVG(el.sheet,{title});if(svg)pages.push({label:'Schakelschema',svg}); }
     if (!openPrintPreview(title,pages)) toast('Er is geen schema om af te drukken');
   } else if (what === 'svg') {
@@ -2257,6 +2258,7 @@ const ladderEditor = new LadderEditor($('#ladder-view'), {
 });
 const machineView = new MachineView($('#machine-view'), {
   circuit:()=>state.circuit, simulation:()=>state.sim,
+  changed:()=>{state.circuit.touch();stopSim();commit();},
   load:()=>{loadCircuit(EXAMPLES.drillingMachine.build());state.docTitle=EXAMPLES.drillingMachine.name;setPanelTab('machine');},
   run:()=>setRunning(true),
   mode:value=>{$('#controller-mode').value=value;$('#controller-mode').dispatchEvent(new Event('change'));machineView.draw();},

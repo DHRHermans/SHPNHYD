@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1 — Zelf machineopstellingen bouwen
+
+- Automatische bewegende beelden voor vier cilindertypes en beide elektromotoren, met echte slag, druk en draairichting.
+- Zichtbare zuigerstangen en verbindingen naar klembek en boorvoeding in het procesbeeld.
+- Lege zelfbouwopstelling zonder schema of besturingsprogramma; uitgewerkt voorbeeld blijft apart beschikbaar.
+- Kolomboor, bankschroef en werkstuk plaatsen, verslepen, verwijderen en positioneren.
+- Eigen koppelingen voor cilinders, motor, ventielen, start/stop en virtuele procesingangen.
+- Oefenhulp standaard uit bij zelfbouw: eigen GRAFCET/Ladder bepaalt de volgorde.
+- Onderdelen, posities en koppelingen worden met het schema opgeslagen en ondersteunen undo/redo.
+
 ## 1.1.0 — SH TechniekLab: schema’s, besturingen en machinesimulatie
 
 - Nieuwe overkoepelende naam SH TechniekLab; SH-logo en bestaande repository-URL blijven behouden.

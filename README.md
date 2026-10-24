@@ -8,11 +8,12 @@ De vroegere naam was **SH PN · HYD**. De repository blijft `DHRHermans/SHPNHYD`
 
 ## Wat kun je ermee?
 
-- Pneumatiek, hydrauliek, elektrische besturing, elektronica en motoren combineren op één werkvlak: **90 componenten en 25 voorbeelden**.
+- Pneumatiek, hydrauliek, elektrische besturing, elektronica en motoren combineren op één werkvlak: **90 componenten en 26 voorbeelden**.
 - Ventielbediening, veer/geheugen en beschikbare middenstanden kiezen. Als extra kun je per stand interne verbindingen tussen bestaande poorten tekenen.
 - GRAFCET tekenen en PLC Ladder opbouwen met contacten, parallelle takken, spoelen, set/reset en TON/TOF-timers.
 - Een **PLC- of GRAFCET-module met 8 ingangen en 8 uitgangen** in het schema plaatsen en elektrisch bedraden.
-- In **Machinebeeld** een bankschroef en kolomboormachine handmatig bedienen of automatisch laten werken via GRAFCET of Ladder. Het beeld volgt de modelcilinders en motor.
+- Automatisch bewegende beelden van alle pneumatische/hydraulische cilinders en driefasen-/DC-motoren uit je schema, inclusief slag, druk, toerental en draairichting.
+- In **Machinebeeld** zelf een kolombooropstelling bouwen: onderdelen plaatsen en verslepen, eigen cilinders/motor/signalen koppelen en zelf GRAFCET of Ladder tekenen. Het beeld volgt jouw schema; een uitgewerkt lesvoorbeeld is apart beschikbaar.
 - Oscilloscoop, weg-stapdiagram en onderdelenlijst als verplaatsbare analysevensters openen.
 - Schema’s bewaren als JSON, exporteren als SVG/PNG/PDF en afdrukken **met SH-logo**. Ook GRAFCET, Ladder en het machinebeeld hebben een afdrukvoorbeeld.
 
@@ -26,7 +27,7 @@ De vroegere naam was **SH PN · HYD**. De repository blijft `DHRHermans/SHPNHYD`
 4. Start de simulatie. Componenten en eindschakelaars gebruiken aanduidingen zoals `Y1`, `B0` en `KM1`.
 5. Kies **Analyse** voor losse meetvensters en **Export** voor opslaan of afdrukken.
 
-Begin bijvoorbeeld met **Machinebeeld: bankschroef en kolomboormachine**. Oefen handmatig en kies daarna in het procesbeeld **Automatisch · GRAFCET** of **Automatisch · PLC Ladder**. De cyclus klemt, start de spindel, boort, trekt terug, stopt de spindel en geeft het werkstuk vrij.
+Kies **Machinebeeld: zelf een opstelling bouwen** voor een leeg schema en procesbeeld zonder ingevulde besturing. Plaats onderdelen en koppel jouw eigen schema. Wil je een uitgewerkt voorbeeld bekijken, kies dan **Machinebeeld: bankschroef en kolomboormachine**. Oefen handmatig en kies daarna in het procesbeeld **Automatisch · GRAFCET** of **Automatisch · PLC Ladder**. De cyclus klemt, start de spindel, boort, trekt terug, stopt de spindel en geeft het werkstuk vrij.
 
 Voor fysiek bedrade besturing kies je **PLC: fysiek bedrade module met cilinder** of het overeenkomstige GRAFCET-voorbeeld. `L+` en `M` zijn nodig voor de voeding; `I0–I7` lezen 24 V-ingangssignalen en `Q0–Q7` voeden spoelen of lampen. Ontbrekende draden worden niet virtueel overbrugd.
 
@@ -43,7 +44,7 @@ npm start
 
 `npm start` serveert de toepassing op poort 8777. Open lokaal `http://localhost:8777`. JavaScript-modules hebben een webserver nodig; open `index.html` niet door te dubbelklikken.
 
-De tests omvatten **158 controles in 13 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
+De tests omvatten **163 controles in 14 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
 
 ## GitHub Pages publiceren
 

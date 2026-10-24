@@ -46,3 +46,30 @@ for(const mode of ['grafcet','ladder']){
     part(sim,'S_STOP').sim.pressed=false;run(sim,2);assert(drillState(sim).open&&drillState(sim).stopped);
   }});
 }
+
+const {newMachineScene,normalizeMachineScene}=await import('../src/machine-scene.js');
+tests.push(
+  {name:'Zelfbouwmachine start leeg en bewaart onderdelen, eigen tags en positie zonder programma',fn(){
+    const c=EXAMPLES.machineBuilder.build();assert.equal(c.instances.length,0);assert.equal(c.chart,null);assert.equal(c.ladder,null);assert.deepEqual(c.scene.parts,[]);assert.equal(c.scene.interlocks,false);
+    c.scene.parts=[{type:'drill',x:-40,y:12},{type:'vise',x:70,y:0}];c.scene.clamp='MIJN_KLEM';c.scene.motorOutput='MIJN_CONTACTOR';c.scene.title='<Mijn machine>';
+    const copy=Circuit.fromJSON(c.toJSON());assert.deepEqual(copy.scene,c.scene);assert.equal(copy.instances.length,0);assert.equal(copy.chart,null);assert.equal(copy.ladder,null);
+    assert.throws(()=>normalizeMachineScene({...newMachineScene(),parts:[{type:'drill',x:Infinity,y:0}]}));
+    assert.throws(()=>normalizeMachineScene({...newMachineScene(),parts:[{type:'vise'},{type:'vise'}]}));
+  }},
+  {name:'Zelfbouwmachine gebruikt eigen signaaltags en laat automatische besturing zelf vergrendelen',fn(){
+    const c=EXAMPLES.drillingMachine.build();c.scene.interlocks=false;c.controller='ladder';c.ladder={rungs:[]};
+    c.scene.motorOutput='K_EIGEN';c.instances.find(i=>i.type==='industrial_coil').params.tag.value='K_EIGEN';
+    c.instances.find(i=>i.type==='industrial_contactor').params.tag.value='K_EIGEN';
+    c.scene.workpieceInput='B_MATERIAAL';c.scene.stoppedInput='B_STIL';
+    c.ladder.rungs=[{coil:'K_EIGEN',kind:'coil',branches:[[{tag:'B_MATERIAAL',nc:false}]]}];
+    const sim=new Simulation(c);run(sim,1);
+    assert(drillState(sim).open);assert(drillState(sim).rpm>500,'Eigen programma mag de motor bedienen zonder ingebouwde klemvolgorde');
+    assert.equal(sim.energized.get('B_MATERIAAL'),true);assert.equal(sim.energized.get('B_WERKSTUK'),undefined);
+    sim.machineWorkpiece=false;run(sim,1);assert(drillState(sim).stopped);
+  }},
+  {name:'Zelfbouwmachine zonder onderdelen grijpt niet in op het bestaande schema',fn(){
+    const c=EXAMPLES.drillingMachine.build();c.scene.parts=[];const sim=new Simulation(c);run(sim,.1);assert.equal(drillState(sim).ready,false);
+    c.scene.parts=['drill','vise','workpiece'].map(type=>({type,x:0,y:0}));assert.equal(drillState(sim).ready,true);
+    c.scene.feed=c.scene.clamp;assert.equal(drillState(sim).ready,false);
+  }},
+);

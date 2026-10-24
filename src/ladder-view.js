@@ -1,3 +1,4 @@
+import { sceneBinding } from './machine-scene.js';
 import { esc } from './symbols.js';
 import { validateLadder, controllerSignal } from './ladder.js';
 
@@ -27,7 +28,7 @@ export class LadderEditor {
     const c = this.circuit();
     const program = c.ladder || { rungs: [] };
     const tags = [...new Set(c.instances.flatMap(i => [i.params.tag?.value, i.params.solA?.value, i.params.solB?.value,...Object.entries(i.params).filter(([k])=>/^(input|output)/.test(k)).map(([,p])=>p.value)]).filter(Boolean))].sort();
-    if(c.scene?.type==='drill-press')tags.push('B_WERKSTUK','B_SPINDEL_STIL');
+    if(c.scene?.type==='drill-press')tags.push(...['workpieceInput','stoppedInput'].map(key=>sceneBinding(c.scene,key)).filter(Boolean));
     const button = (action, label, data = '') => `<button type="button" data-ld-action="${action}" ${data}>${label}</button>`;
     const slot = (r,b,n) => `<button type="button" class="ld-insert" data-insert="${r}:${b}:${n}" aria-label="Contact invoegen op positie ${n + 1}" title="Kies een contact en klik, of sleep een contact hierheen">+</button>`;
     this.host.innerHTML = `<div class="ld-intro"><div><h2>PLC Ladder</h2><p>Teken contacten in serie (EN) en parallel (OF). Koppel via aanduidingen aan pneumatiek, hydrauliek of elektrische besturing.</p></div>${button('rung', '+ Netwerk')}</div>

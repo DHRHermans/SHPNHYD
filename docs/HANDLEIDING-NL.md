@@ -196,9 +196,35 @@ Aanduiding, bestaande spoelnamen en gemeenschappelijke instellingen blijven beho
 
 Onder **Extra: interne verbindingen tekenen** kies je een stand en klik je twee bestaande poorten aan. Dit voegt een verbinding toe; dezelfde twee poorten opnieuw aanklikken verwijdert die verbinding. Niet verbonden poorten zijn afgesloten. De tekening én de lucht-/oliestroming gebruiken de aangepaste verbindingen. Bewaren als JSON en undo/redo behouden deze instellingen. Vrij nieuwe poorten, aantallen standen of complete componenttypen maken is nog niet inbegrepen.
 
+## Alle cilinders en motoren zichtbaar simuleren
+
+Open **Machinebeeld** nadat je onderdelen in **Schakeling** hebt geplaatst. Onder **Aandrijvingen uit mijn schema** verschijnen automatisch:
+
+- Pneumatische enkelwerkende en dubbelwerkende cilinders, ook met doorlopende zuigerstang.
+- Hydraulische cilinders.
+- Driefasenmotoren en 24 V-gelijkstroommotoren.
+
+Je hoeft hiervoor geen booropdracht te laden of een machineopstelling aan te maken. Start de simulatie met de bovenste Start-knop en bedien je schema, GRAFCET of Ladder. Elk beeld leest dezelfde berekende toestand: zuiger en stang bewegen mee met de cilinderslag, druk wordt per poort weergegeven en de motoras draait volgens het modeltoerental en de draairichting. Zonder voeding of juiste aansluitingen ontstaat geen beweging.
+
+Bij een samengestelde booropstelling worden de gekoppelde cilinders ook in het procesbeeld getekend. De klemcilinder is met zijn zuigerstang aan de bewegende klembek verbonden; de boorcilinder toont de stang en verbinding naar de boorvoeding. De tags staan erbij. De afbeeldingen volgen dezelfde slag als de losse cilinderbeelden. Dit toont de koppeling, maar berekent geen nieuwe mechanische overbrenging of snijkrachten.
+
+Via **Afdrukken (met SH-logo)** worden ook de losse aandrijvingen opgenomen.
+
+## Machinebeeld: zelf een opstelling bouwen
+
+1. Kies bij de voorbeelden **Machinebeeld: zelf een opstelling bouwen** en open het tabblad **Machinebeeld**. Je krijgt een leeg schema, een leeg procesbeeld en geen ingevulde GRAFCET of Ladder. Heb je al een eigen schema zonder machinebeeld? Klik daar op **Zelf een machineopstelling maken**; je schema blijft behouden.
+2. Plaats **Kolomboor**, **Bankschroef** en **Werkstuk** met de knoppen in de opbouwmodus. Sleep elk onderdeel in het beeld. Selecteer een onderdeel om X/Y in te stellen of het te verwijderen. Elk van deze drie onderdelen kan eenmaal in deze opstelling staan.
+3. Teken in **Schakeling** zelf de cilinders, ventielen, motor, voeding en schakelaars met hun verbindingen. Voor pneumatiek en hydrauliek gebruik je dezelfde koppelingen: klemcilinder, boorcilinder en een driefasen- of DC-motor. De ingeschoven boorcilinder is de bovenste boorstand.
+4. Ga terug naar **Machinebeeld → Opstelling bewerken**. Kies of typ de tags van jouw klemcilinder, boorcilinder en spindelmotor. Stel daarnaast de spoeltags van beide ventielen en de tag van de motorcontactor in. Voor handbediening gebruikt het beeld deze uitgangstags. Voor een fysieke PLC-uitgang bedraad je Q naar de betreffende spoel; de poortnaam Q0 is niet de tag van de spoel.
+5. Koppel desgewenst je start- en stopknop en benoem de virtuele signalen voor werkstuk aanwezig en spindel stil. De startknop wordt kort ingedrukt door **Start automatische cyclus**; de stopknop moet een NC-contact zijn. Een lege koppeling bedient niets. Eindstandsensoren voor de cilinders plaats en koppel je zelf in het schema.
+6. Teken je eigen GRAFCET of Ladder en kies de bijbehorende oefenstand. **Oefenhulp** staat bij zelfbouw standaard uit: jouw eigen besturing bepaalt alle voorwaarden en vergrendelingen. Met oefenhulp aan worden de voorwaarden uit het lesvoorbeeld ook bewaakt door het procesbeeld.
+7. Kies **Klaar met opbouwen** om te bedienen. Via **Export → Schakelschema (JSON)** bewaar je schema, machineonderdelen, posities, koppelingen en programma samen. Open dat bestand later opnieuw. De opbouw ondersteunt ongedaan maken/opnieuw.
+
+De onderdelen zijn voorgetekende bouwstenen die je zelf samenstelt. Posities veranderen het beeld, maar vormen geen mechanische botsings- of uitlijningsberekening. Er wordt geen automatische boorcyclus gegenereerd. **Nieuwe lege opstelling** wist alleen het procesbeeld en zijn koppelingen; je schema en programma blijven behouden.
+
 ## Machinebeeld: van handmatig naar automatisch boren
 
-Kies **Machinebeeld → Laad bankschroef en kolomboormachine**, of laad het gelijknamige voorbeeld. Het procesbeeld is gekoppeld aan `A_KLEM`, `A_BOOR` en `M_BOOR` uit het schema. Eindschakelaars bewaken de cilinderstanden. Het boorbeeld wordt niet los van de simulatie afgespeeld.
+Voor het uitgewerkte lesvoorbeeld kies je **Machinebeeld → Open uitgewerkt lesvoorbeeld**, of laad je het voorbeeld **Machinebeeld: bankschroef en kolomboormachine**. Het procesbeeld is gekoppeld aan `A_KLEM`, `A_BOOR` en `M_BOOR` uit het schema. Eindschakelaars bewaken de cilinderstanden. Het boorbeeld wordt niet los van de simulatie afgespeeld.
 
 ### Handmatig oefenen
 

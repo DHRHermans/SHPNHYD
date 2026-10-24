@@ -10,6 +10,7 @@ import { buildMotorExample } from './examples-industrial.js';
 import { pneumaticPlant, cylinderController, motorController, wiredController } from './examples-controllers.js';
 import { copyLadder } from './ladder.js';
 import { drillingMachine } from './examples-machines.js';
+import { newMachineScene, normalizeMachineScene } from './machine-scene.js';
 import { validateValveLayout } from './valves.js';
 
 let seq = 1;
@@ -204,7 +205,7 @@ export class Circuit {
       const to = { inst: idMap.get(raw.to.inst), port: raw.to.port };
       if (from.inst && to.inst) c.connect(from, to);
     }
-    if (data.scene?.type === 'drill-press') c.scene = {type:'drill-press',clamp:String(data.scene.clamp||''),feed:String(data.scene.feed||''),motor:String(data.scene.motor||'')};
+    if (data.scene?.type === 'drill-press') c.scene = normalizeMachineScene(data.scene);
     if (data.chart) c.chart = Grafcet.fromJSON(data.chart);
     if (["manual", "grafcet", "ladder"].includes(data.controller)) c.controller = data.controller;
     if (data.ladder) c.ladder = copyLadder(data.ladder);
@@ -219,6 +220,7 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  machineBuilder: {name:'Machinebeeld: zelf een opstelling bouwen',description:'Leeg schema, lege machineopstelling en geen vooraf ingevulde besturing. Plaats onderdelen en koppel je eigen cilinders, motor en signalen.',build:()=>{const c=new Circuit();c.scene=newMachineScene();c.controller='manual';return c;}},
   drillingMachine: {name:'Machinebeeld: bankschroef en kolomboormachine',description:'Oefen handmatig of start de automatische boorcyclus. Bekijk Machinebeeld; dezelfde cilinders, sensoren en motor staan in het schema.',build:()=>drillingMachine(Circuit)},
   motorConveyor: {
     name: 'Motor: 24 V-transportband met start/stop en zelfhouding',
