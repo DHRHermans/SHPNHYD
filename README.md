@@ -114,3 +114,9 @@ Beide besturingen werken met dezelfde sensoren en spoelaanduidingen voor **pneum
 
 ![PLC Ladder tekenen](docs/screenshot-ladder.png)
 ![Groot GRAFCET-tekenvlak](docs/screenshot-grafcet.png)
+
+## Groter tekenvlak en losse analysevensters
+
+De onderste analysebalk is vervangen door **Analyse → Weg-stapdiagram / Oscilloscoop / Onderdelenlijst**. Deze hulpmiddelen openen als verplaatsbare vensters met een aanpasbaar formaat, een vergrootknop en een sluitknop. Meerdere vensters kunnen tegelijk open terwijl de simulatie doorgaat. GRAFCET en PLC Ladder behouden hun eigen grote werkblad.
+
+![Ruim tekenvlak met losse oscilloscoop](docs/screenshot-analysevenster.png)

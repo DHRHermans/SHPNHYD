@@ -6,6 +6,7 @@ import { Simulation, barG } from './engine.js';
 import { History } from './history.js';
 import { Recorder, drawDiagram } from './diagram.js';
 import { Panels } from './panels.js';
+import { ToolWindows } from './tool-windows.js';
 import { buildParts, partsToCSV, totalParts, DOMAIN_LABEL } from './partslist.js';
 import { exportSVG, exportPNG, exportPDF } from './export.js';
 import { drawGrafcet, toChart, STEP_SIZE } from './grafcet-view.js';
@@ -66,7 +67,7 @@ const state = {
   rec: new Recorder(),
   panels: null,
   scope: new Scope(),
-  tab: 'steps',
+  tab: 'circuit',
   docTitle: 'Schakelschema',
   grSel: null,      // {kind:'step'|'transition', id}
   grTool: 'select',
@@ -344,7 +345,7 @@ function render() {
   state.scope.prune(c);
   renderProbes();
   buildProbeList();
-  if (state.tab === 'parts') buildPartsList();
+  if (toolWindows.isOpen('parts')) buildPartsList();
   updateSelectionDom();
   updateDynamic();
 }
@@ -504,7 +505,7 @@ function addProbeAt(portEl) {
   buildProbeList();
   renderProbes();
   setPanelTab('scope');
-  toast(`Meetprobe an ${probe.label} — ${QUANTITIES[opts[0]].label}`);
+  toast(`Meetprobe op ${probe.label} — ${QUANTITIES[opts[0]].label}`);
 }
 
 /** Probe markers ride on the sheet at their port, showing the live value. */
@@ -626,7 +627,7 @@ function buildTriggerSources() {
 }
 
 function redrawScope() {
-  if (state.tab !== 'scope' || el.diagPanel.classList.contains('collapsed')) return;
+  if (!toolWindows.isOpen('scope')) return;
   const r = el.scope.getBoundingClientRect();
   if (r.width < 10) return;
   drawScope(el.scope, state.scope, { width: r.width, height: r.height });
@@ -659,31 +660,24 @@ function bindCursorDrag() {
 }
 
 function setPanelTab(tab) {
+  if (['steps', 'scope', 'parts'].includes(tab)) {
+    if (tab === 'parts') buildPartsList();
+    toolWindows.open(tab);
+    return;
+  }
   state.tab = tab;
   const fullEditor = tab === 'grafcet' || tab === 'ladder';
   el.diagPanel.classList.toggle('editor-full', fullEditor);
+  el.diagPanel.hidden = !fullEditor;
   el.canvasWrap.classList.toggle('controller-editor', fullEditor);
   document.querySelectorAll('[data-workspace]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.workspace === (fullEditor ? tab : 'circuit'))));
   $('#controller-mode').value = controllerMode(state.circuit);
   document.querySelectorAll('.panel-tab').forEach((b) =>
     b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
   document.querySelectorAll('[data-for]').forEach((g) => { g.hidden = g.dataset.for !== tab; });
-  // `hidden` is an HTMLElement property — assigning it on an <svg> only creates a dead
-  // expando, so the step diagram kept drawing underneath the scope. A class works for
-  // both element types.
-  el.diagram.classList.toggle('is-hidden', tab !== 'steps');
-  el.scopeView.classList.toggle('is-hidden', tab !== 'scope');
-  el.partsView.classList.toggle('is-hidden', tab !== 'parts');
   el.grafcetView.classList.toggle('is-hidden', tab !== 'grafcet');
   $('#ladder-view').classList.toggle('is-hidden', tab !== 'ladder');
   if (tab === 'ladder') ladderEditor.draw();
-  if (tab === 'parts') buildPartsList();
-  redrawGrafcet();
-  if (el.diagPanel.classList.contains('collapsed')) {
-    el.diagPanel.classList.remove('collapsed');
-    el.canvasWrap.classList.remove('diagram-collapsed');
-    $('#diag-toggle').textContent = '▾';
-  }
   redrawDiagram();
   redrawScope();
   redrawGrafcet();
@@ -1032,7 +1026,7 @@ function centerOn(id) {
   if (!inst) return;
   const b = state.circuit.bounds(inst);
   const r = el.sheet.getBoundingClientRect();
-  const usableH = r.height - (el.diagPanel?.offsetHeight ?? 0);
+  const usableH = r.height;
   state.view.x = r.width / 2 - (b.x + b.w / 2) * state.view.k;
   state.view.y = usableH / 2 - (b.y + b.h / 2) * state.view.k;
   applyView();
@@ -1373,9 +1367,8 @@ function zoomAt(cx, cy, factor) {
 function zoomFit() {
   const insts = state.circuit.instances;
   const r = el.sheet.getBoundingClientRect();
-  // The diagram panel covers the bottom of the sheet, so the usable height is less than
-  // the SVG's own height — fitting to the full rect would hide the lowest components.
-  const usableH = r.height - (el.diagPanel?.offsetHeight ?? 0);
+  // Floating analysis windows do not reserve any of the drawing surface.
+  const usableH = r.height;
   if (!insts.length) {
     state.view = { x: 60, y: 30, k: 1 };
     applyView();
@@ -1721,7 +1714,7 @@ function drawChartOnly() {
 }
 
 function redrawDiagram() {
-  if (state.tab !== 'steps' || el.diagPanel.classList.contains('collapsed')) return;
+  if (!toolWindows.isOpen('steps')) return;
   const r = el.diagram.getBoundingClientRect();
   if (r.width < 10) return;
   drawDiagram(el.diagram, state.rec, { width: r.width, height: r.height });
@@ -1992,14 +1985,6 @@ $('#scope-csv').addEventListener('click', () => {
   toast('Kanalen als CSV geëxporteerd');
 });
 
-$('#diag-toggle').addEventListener('click', () => {
-  const collapsed = el.diagPanel.classList.toggle('collapsed');
-  el.canvasWrap.classList.toggle('diagram-collapsed', collapsed);
-  $('#diag-toggle').textContent = collapsed ? '▴' : '▾';
-  redrawDiagram();
-  redrawScope();
-  redrawGrafcet();
-});
 $('#diag-clear').addEventListener('click', () => { state.rec.clear(); redrawDiagram(); });
 $('#diag-csv').addEventListener('click', () => {
   const csv = state.rec.toCSV();
@@ -2183,12 +2168,34 @@ function loadCircuit(c) {
   zoomFit();
 }
 
+const toolWindows = new ToolWindows(() => { redrawDiagram(); redrawScope(); });
+for (const [key, title, content] of [['steps', 'Weg-stapdiagram', el.diagram], ['scope', 'Oscilloscoop', el.scopeView], ['parts', 'Onderdelenlijst', el.partsView]]) {
+  toolWindows.register(key, title, content, document.querySelector(`[data-for="${key}"]`));
+}
+const analysisMenu = $('#analysis-menu');
+document.body.appendChild(analysisMenu);
+const closeAnalysisMenu = () => { analysisMenu.hidden = true; $('#btn-analysis').setAttribute('aria-expanded', 'false'); };
+$('#btn-analysis').addEventListener('click', () => {
+  const anchor = $('#btn-analysis').getBoundingClientRect();
+  analysisMenu.style.top = `${anchor.bottom + 6}px`;
+  analysisMenu.style.left = `${Math.max(12, Math.min(anchor.left, innerWidth - 212))}px`;
+  analysisMenu.hidden = !analysisMenu.hidden;
+  $('#btn-analysis').setAttribute('aria-expanded', String(!analysisMenu.hidden));
+  if (!analysisMenu.hidden) analysisMenu.querySelector('button').focus();
+});
+document.querySelectorAll('[data-toolwindow]').forEach(button => button.addEventListener('click', () => {
+  closeAnalysisMenu(); setPanelTab(button.dataset.toolwindow);
+}));
+document.addEventListener('click', event => { if (!event.target.closest('.analysis-menu-wrap')) closeAnalysisMenu(); });
+window.addEventListener('resize', closeAnalysisMenu);
+analysisMenu.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeAnalysisMenu(); $('#btn-analysis').focus(); } });
+
 const ladderEditor = new LadderEditor($('#ladder-view'), {
   circuit: () => state.circuit,
   simulation: () => state.sim,
   changed: () => { state.circuit.touch(); stopSim(); commit(); },
 });
-document.querySelectorAll('[data-workspace]').forEach(b => b.addEventListener('click', () => setPanelTab(b.dataset.workspace === 'circuit' ? 'steps' : b.dataset.workspace)));
+document.querySelectorAll('[data-workspace]').forEach(b => b.addEventListener('click', () => setPanelTab(b.dataset.workspace)));
 $('#controller-mode').addEventListener('change', e => {
   state.circuit.controller = e.target.value;
   if (e.target.value === 'ladder') state.circuit.ladder ||= { rungs: [] };
@@ -2199,7 +2206,6 @@ $('#controller-mode').addEventListener('change', e => {
 
 setTool('select');
 buildLibrary();
-el.canvasWrap.classList.add('has-diagram');
 // Panels resize live, so the sheet and the chart both have to follow the drag.
 state.panels = new Panels(() => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 buildProbeList();
@@ -2210,6 +2216,6 @@ loadCircuit(initialExample.build());
 state.docTitle = initialExample.name;
 applyView();
 const requestedWorkspace = new URLSearchParams(window.location.search).get('workspace');
-setPanelTab(['grafcet', 'ladder'].includes(requestedWorkspace) ? requestedWorkspace : 'steps');
+setPanelTab(['grafcet', 'ladder'].includes(requestedWorkspace) ? requestedWorkspace : 'circuit');
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 requestAnimationFrame(frame);

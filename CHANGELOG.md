@@ -1,5 +1,12 @@
 # Changelog
 
+## Meer tekenruimte en losse analysevensters
+
+- Vaste onderste analysebalk verwijderd; het schema krijgt de volledige beschikbare hoogte.
+- Weg-stapdiagram, oscilloscoop en onderdelenlijst zijn via Analyse als losse, verplaatsbare vensters beschikbaar.
+- Vensters kunnen tegelijk open, zijn te vergroten en van formaat te veranderen en onthouden hun positie en formaat.
+- Metingen, meetprobes, export en GRAFCET-/Ladderwerkbladen blijven beschikbaar tijdens gebruik van de vensters.
+
 ## GRAFCET- en PLC-Ladderwerkbladen
 
 - Apart groot GRAFCET-tekenvlak en een grafische Ladder-editor met serie/parallelcontacten, uitgangs-, set/resetspoelen en TON/TOF-timers.

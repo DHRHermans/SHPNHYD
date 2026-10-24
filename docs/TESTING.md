@@ -64,3 +64,7 @@ The publication artifact was also served under `/SHPNHYD/` and exercised in Chro
 ## Controller workspace browser checks
 
 Chromium checks exercised dedicated full-height tabs, adding/deleting Ladder networks and parallel branches, selecting a TON timer, live motor control from Ladder, placing GRAFCET steps and drawing a transition. All thirteen lesson links opened their circuits and selected the requested controller workspace. The same editor checks were repeated against the versioned Pages publication artifact.
+
+## Floating analysis windows
+
+Chromium validation checked that the drawing uses the full available height with no bottom analysis dock, including browsers retaining the old 620 px diagram preference. All three non-modal windows opened together without changing the drawing bounds. Dragging, resizing, maximize/restore, saved geometry, automatic oscilloscope opening on a probe, live oscilloscope and displacement traces, and closing with Escape without stopping the simulation were exercised. GRAFCET and Ladder workspaces remained usable with a measurement window open. Viewport resizing kept window controls on screen. The versioned Pages artifact was checked as well.

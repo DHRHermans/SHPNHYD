@@ -1,12 +1,12 @@
 // Resizable workspace panels.
 //
-// Sizes live in CSS custom properties on :root, so the grid and the diagram panel read
+// Sizes live in CSS custom properties on :root, so the grid reads
 // them directly and nothing needs a layout pass in JS. The handles are separate hit
 // strips rather than CSS `resize`, because the panels have to grow in opposite
 // directions (the right one grows leftwards) and `resize` cannot express that.
 //
 // Sizes persist per browser: a user who has arranged their workspace should find it that
-// way next session, and re-dragging three panels every time is exactly the kind of small
+// way next session, and re-dragging the side panels every time is exactly the kind of small
 // friction that makes a tool feel unfinished.
 
 const STORE_KEY = 'fluidlab.layout.v1';
@@ -14,13 +14,11 @@ const STORE_KEY = 'fluidlab.layout.v1';
 export const LIMITS = {
   left: { min: 160, max: 520, def: 264 },
   right: { min: 200, max: 560, def: 264 },
-  diagram: { min: 90, max: 620, def: 168 },
 };
 
 const VAR = {
   left: '--panel-w-left',
   right: '--panel-w-right',
-  diagram: '--diagram-h',
 };
 
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
@@ -81,13 +79,13 @@ export class Panels {
         handle.classList.add('dragging');
         document.body.classList.add('resizing');
 
-        const start = which === 'diagram' ? e.clientY : e.clientX;
+        const start = e.clientX;
         const from = this.sizes[which];
-        // The right panel and the diagram grow against the drag direction.
+        // The right panel grows against the drag direction.
         const sign = which === 'left' ? 1 : -1;
 
         const move = (ev) => {
-          const now = which === 'diagram' ? ev.clientY : ev.clientX;
+          const now = ev.clientX;
           this.set(which, from + (now - start) * sign);
         };
         const up = () => {

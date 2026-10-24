@@ -36,7 +36,7 @@ Een draad loopt naar de sensor, niet naar de hydraulische poort op de cilinder. 
 
 **Start** of de spatiebalk start en pauzeert de simulatie. **Stop** of Escape zet de simulatie terug. Houd drukknoppen tijdens de simulatie ingedrukt om ze te bedienen. Klik op vergrendelende knoppen om ze om te schakelen.
 
-Het **Weg-stapdiagram** toont de cilinderbewegingen en spoelsignalen. Met **Meetprobe** kun je op aansluitpunten meten. Het tabblad **Oscilloscoop** toont de gekozen meetwaarden. Luchtdruk en oliedruk hebben verschillende schalen.
+Het **Weg-stapdiagram** toont de cilinderbewegingen en spoelsignalen. Met **Meetprobe** kun je op aansluitpunten meten. Via **Analyse → Oscilloscoop** open je de gekozen meetwaarden in een los venster. Luchtdruk en oliedruk hebben verschillende schalen.
 
 ## Bewaren
 
@@ -150,3 +150,19 @@ Het voorbeeldmenu bevat voor zowel **GRAFCET** als **PLC Ladder**:
 - Een elektrische motor met start, stop, noodstop en thermisch relais.
 
 Exporteer als **Schakelschema (JSON)** om de tekening, GRAFCET, Ladder en besturingskeuze samen op te slaan. Ook undo/redo bewaart het ladderprogramma. De Ladder-editor ondersteunt contacten, parallelle takken, spoelen, set/reset en TON/TOF. Hij omvat nog geen grafische tellers, analoge instructies, subprogramma's of communicatie met een echte PLC.
+
+## Meer tekenruimte met losse analysevensters
+
+Het schema gebruikt nu alle ruimte onder de werkbladbalk. Er staat geen vast analysepaneel meer onderaan.
+
+Open boven het werkvlak **Analyse** en kies **Weg-stapdiagram**, **Oscilloscoop** of **Onderdelenlijst**. Elk hulpmiddel opent als een los venster binnen de toepassing. Je kunt meerdere vensters tegelijk gebruiken en ondertussen de schakeling blijven bedienen.
+
+- Sleep de titelbalk om een venster te verplaatsen.
+- Sleep de hoek rechtsonder om het formaat aan te passen.
+- Klik op **□** of dubbelklik op de titelbalk om te vergroten; klik opnieuw om het vorige formaat te herstellen.
+- Klik op **×** om te sluiten. Escape sluit het venster wanneer de toetsenbordfocus erin staat, zonder de simulatie te stoppen.
+- Positie en formaat worden lokaal per browser onthouden. Bij opnieuw openen van de toepassing beginnen de vensters gesloten, zodat het tekenvlak vrij blijft.
+
+Een meetprobe plaatsen opent de oscilloscoop automatisch. Metingen blijven tijdens de simulatie opgenomen worden wanneer hun venster gesloten is; opnieuw openen toont de beschikbare opname. CSV-export, cursors, triggerinstellingen en vastzetten blijven beschikbaar in de oscilloscoop. Ook het weg-stapdiagram en de onderdelenlijst houden hun exportknoppen.
+
+**GRAFCET tekenen** en **PLC Ladder** blijven aparte grote werkbladen. De analysevensters zijn ook boven die werkbladen beschikbaar en veranderen de actieve besturing niet.

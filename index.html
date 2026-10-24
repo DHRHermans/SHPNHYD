@@ -102,10 +102,18 @@
   <section class="canvas-wrap">
     <nav class="workspace-tabs" aria-label="Werkbladen">
       <button data-workspace="circuit" aria-pressed="true">Schakeling</button>
-      <button data-workspace="grafcet" aria-pressed="false">GRAFCET tekenen</button>
+      <button data-workspace="grafcet" aria-pressed="false">GRAFCET<span class="workspace-long"> tekenen</span></button>
       <button data-workspace="ladder" aria-pressed="false">PLC Ladder</button>
       <label for="controller-mode">Besturing</label>
       <select id="controller-mode" aria-label="Actieve besturing"><option value="manual">Handmatig / elektrisch</option><option value="grafcet">GRAFCET</option><option value="ladder">PLC Ladder</option></select>
+      <div class="menu-wrap analysis-menu-wrap">
+        <button id="btn-analysis" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="analysis-menu">Analyse ▾</button>
+        <div id="analysis-menu" class="menu" hidden>
+          <button type="button" data-toolwindow="steps" aria-pressed="false" aria-controls="window-steps">Weg-stapdiagram</button>
+          <button type="button" data-toolwindow="scope" aria-pressed="false" aria-controls="window-scope">Oscilloscoop</button>
+          <button type="button" data-toolwindow="parts" aria-pressed="false" aria-controls="window-parts">Onderdelenlijst</button>
+        </div>
+      </div>
     </nav>
     <svg id="sheet" class="sheet">
       <defs>
@@ -144,15 +152,9 @@
       </div>
     </div>
 
-    <section id="diagram-panel" class="diagram-panel" aria-label="Analyse">
-      <div class="resize-handle resize-h" data-resize="diagram" role="separator"
-           aria-label="Paneelhoogte aanpassen" title="Sleep om aan te passen; dubbelklik om te herstellen"></div>
-
+    <section id="diagram-panel" class="diagram-panel" aria-label="Besturingseditor" hidden>
       <header class="diagram-head">
         <div class="panel-tabs" role="tablist">
-          <button class="panel-tab" data-tab="steps" role="tab" aria-selected="true">Weg-stapdiagram</button>
-          <button class="panel-tab" data-tab="scope" role="tab" aria-selected="false">Oscilloscoop</button>
-          <button class="panel-tab" data-tab="parts" role="tab" aria-selected="false">Onderdelenlijst</button>
           <button class="panel-tab" data-tab="grafcet" role="tab" aria-selected="false">GRAFCET</button>
           <button class="panel-tab" data-tab="ladder" role="tab" aria-selected="false">PLC Ladder</button>
         </div>
@@ -202,7 +204,6 @@
           <span class="mini-hint">Sleep vanaf het punt onder de stap om een overgang te maken</span>
         </div>
 
-        <button id="diag-toggle" class="mini-btn" title="Paneel tonen/verbergen">▾</button>
       </header>
 
       <div class="panel-body">

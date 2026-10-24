@@ -174,3 +174,7 @@ The light interface remains independent of the exported engineering symbols. `le
 `LadderRuntime` compiles the serializable network into the existing `PLC` combinators. Inputs are sampled once per scan, and rungs run sequentially; later rungs see earlier writes. Timers use simulation time. Only the selected controller publishes software outputs after the numerical electric solve and before discrete actuator updates. `controllerSignal` exposes closed/healthy levels for NC buttons, emergency stops and overload contacts. `applyControllerOutputs` also updates virtual coil indicators while respecting open-coil faults.
 
 `ladder-view.js` builds the graphical network editor and updates live highlights without recreating focused controls. `main.js` promotes GRAFCET and Ladder into full-height central workspaces. `grafcet-view.js` includes external return paths, transition labels and action blocks in its view bounds. Legacy diagrams and the process drawing remain in the same document.
+
+## Floating analysis windows
+
+`tool-windows.js` reparents the existing chart/list elements and their controls into non-modal dialog sections, preserving event handlers and recorder/probe state. Redraws use window visibility rather than the selected controller workspace; recording remains in the simulation tick. Window bounds are clamped to the viewport and their normal position/size are stored separately from the side-panel preferences. No drawing height is reserved for analysis. The original panel container is used only for the full-height GRAFCET and Ladder editors.

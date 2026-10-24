@@ -1108,3 +1108,25 @@ a { color: var(--accent); text-underline-offset: 3px; }
 #ld-signals { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }#ld-signals span { background:white; padding:5px 8px; border:1px solid var(--line); border-radius:5px; }#ld-signals .on { border-color:#087f78; color:#076d67; }
 #ld-errors { color:#b42332; font-size:12px; }
 @media(max-width:1100px) { .workspace-tabs { gap:2px; padding:6px; }.workspace-tabs button{padding:6px;font-size:11px}.workspace-tabs label{display:none}.workspace-tabs select{max-width:150px;font-size:11px}.editor-full .grafcet-side{width:220px}.mini-hint{display:none} }
+
+/* Analysis tools float over the workspace instead of occupying its lower edge. */
+.analysis-menu-wrap { flex-shrink:0; }
+#analysis-menu { position:fixed; right:auto; min-width:200px; z-index:10000; }
+#analysis-menu button[aria-pressed="true"] { color:var(--accent); font-weight:700; }
+#analysis-menu button[aria-pressed="true"]::after { content:' · open'; font-weight:400; }
+.tool-window { position:fixed; display:flex; flex-direction:column; min-width:0; min-height:0; border:1px solid #b6d2c8; border-radius:14px; background:var(--charcoal); box-shadow:0 20px 70px rgba(21,59,64,.22),0 3px 12px rgba(21,59,64,.1); overflow:hidden; }
+.tool-window:focus { outline:none; }.tool-window:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+.tool-window-titlebar { flex-shrink:0; min-height:44px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 10px 6px 16px; background:#edf6f1; border-bottom:1px solid var(--line-soft); cursor:move; touch-action:none; user-select:none; }
+.tool-window-titlebar h2 { margin:0; font-size:14px; font-weight:700; }
+.tool-window-controls { display:flex; gap:4px; }
+.tool-window-controls button { width:30px; height:30px; background:white; color:var(--text-2); border:1px solid var(--line); border-radius:7px; font-size:19px; cursor:pointer; }
+.tool-window-controls button:hover { background:#dbede4; }.tool-window-controls [data-close]:hover { color:var(--danger); background:#fff0f0; }
+.tool-window-toolbar { flex-shrink:0; padding:9px 12px; border-bottom:1px solid var(--line-soft); }
+.tool-window-toolbar .diagram-actions { flex-wrap:wrap; justify-content:flex-start; gap:7px; }
+.tool-window-toolbar .mini-btn, .tool-window-toolbar .mini-select, .tool-window-toolbar .mini-num { min-height:27px; }
+.tool-window-body { flex:1; min-height:0; position:relative; overflow:hidden; }
+.tool-window-body > .diagram { display:block; width:100%; height:100%; }
+.tool-window-resize { position:absolute; right:0; bottom:0; width:22px; height:22px; cursor:nwse-resize; touch-action:none; z-index:2; }
+.tool-window-resize::after { content:''; position:absolute; right:5px; bottom:5px; width:8px; height:8px; border-right:2px solid #8eb7a8; border-bottom:2px solid #8eb7a8; }
+@media(max-width:1100px) { .workspace-long { display:none; } }
+@media(max-width:700px) { .tool-window .probe-list { width:140px; }.tool-window-titlebar { min-height:40px; padding-left:12px; } }
