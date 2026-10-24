@@ -1,3 +1,5 @@
+import { esc } from './symbols.js';
+
 // Displacement-step diagram (Weg-stapdiagram-Diagramm) and signal traces.
 //
 // This is the reading FluidSIM users actually work from: cylinder strokes stacked over a
@@ -139,7 +141,7 @@ export function drawDiagram(svg, rec, { width, height }) {
     const top = i * (LANE_H + LANE_GAP);
     const bottom = top + LANE_H;
     out += `<rect class="diag-lane" x="${LABEL_W}" y="${top}" width="${plotW}" height="${LANE_H}" rx="3"/>`;
-    out += `<text class="diag-label" x="${LABEL_W - 6}" y="${top + LANE_H / 2}" text-anchor="end" dominant-baseline="middle">${ch.label}</text>`;
+    out += `<text class="diag-label" x="${LABEL_W - 6}" y="${top + LANE_H / 2}" text-anchor="end" dominant-baseline="middle">${esc(ch.label)}</text>`;
 
     if (ch.samples.length < 2) return;
     const Y = (v) => bottom - v * (LANE_H - 6) - 3;

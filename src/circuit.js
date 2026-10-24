@@ -7,8 +7,10 @@ import { BY_ID } from './catalog.js';
 import { GRID } from './symbols.js';
 import { Grafcet } from './grafcet.js';
 import { buildMotorExample } from './examples-industrial.js';
-import { pneumaticPlant, cylinderController, motorController } from './examples-controllers.js';
+import { pneumaticPlant, cylinderController, motorController, wiredController } from './examples-controllers.js';
 import { copyLadder } from './ladder.js';
+import { drillingMachine } from './examples-machines.js';
+import { validateValveLayout } from './valves.js';
 
 let seq = 1;
 const nextId = () => `i${seq++}`;
@@ -30,6 +32,7 @@ export class Circuit {
     this.chart = null;
     this.controller = null;
     this.ladder = null;
+    this.scene = null;
   }
 
   defOf(inst) { return BY_ID.get(inst.type); }
@@ -157,10 +160,12 @@ export class Circuit {
       instances: this.instances.map((i) => ({
         id: i.id, type: i.type, x: i.x, y: i.y, rot: i.rot,
         params: Object.fromEntries(Object.entries(i.params).map(([k, v]) => [k, v.value])),
+        ...(i.valveLayout ? {valveLayout:structuredClone(i.valveLayout)} : {}),
         ...(Object.keys(i.faults || {}).length ? { faults: { ...i.faults } } : {}),
       })),
       wires: this.wires.map((w) => ({ from: w.from, to: w.to })),
       ...(this.chart ? { chart: this.chart.toJSON() } : {}),
+      ...(this.scene ? { scene: structuredClone(this.scene) } : {}),
       ...(this.controller ? { controller: this.controller } : {}),
       ...(this.ladder ? { ladder: structuredClone(this.ladder) } : {}),
     };
@@ -173,12 +178,17 @@ export class Circuit {
       const def = BY_ID.get(raw.type);
       if (!def) continue;
       const inst = {
-        id: nextId(), type: raw.type, x: raw.x, y: raw.y, rot: raw.rot || 0,
+        id: nextId(), type: raw.type, x: Number(raw.x??0), y: Number(raw.y??0), rot: Number(raw.rot??0),
         params: cloneParams(def), faults: { ...(raw.faults || {}) }, sim: {},
       };
+      if(![inst.x,inst.y,inst.rot].every(Number.isFinite))throw new Error('Ongeldige componentpositie.');
       for (const [k, v] of Object.entries(raw.params || {})) {
-        if (inst.params[k]) inst.params[k].value = v;
+        const param=inst.params[k];if(!param)continue;
+        if(param.type==='range'){const n=Number(v);if(!Number.isFinite(n))throw new Error('Ongeldige numerieke componentinstelling.');param.value=n;}
+        else if(param.type==='text')param.value=String(v??'');
+        else param.value=v;
       }
+      if (raw.valveLayout) inst.valveLayout = validateValveLayout(def,raw.valveLayout);
       if (def.initSim) def.initSim(inst);
       idMap.set(raw.id, inst.id);
       c.instances.push(inst);
@@ -194,6 +204,7 @@ export class Circuit {
       const to = { inst: idMap.get(raw.to.inst), port: raw.to.port };
       if (from.inst && to.inst) c.connect(from, to);
     }
+    if (data.scene?.type === 'drill-press') c.scene = {type:'drill-press',clamp:String(data.scene.clamp||''),feed:String(data.scene.feed||''),motor:String(data.scene.motor||'')};
     if (data.chart) c.chart = Grafcet.fromJSON(data.chart);
     if (["manual", "grafcet", "ladder"].includes(data.controller)) c.controller = data.controller;
     if (data.ladder) c.ladder = copyLadder(data.ladder);
@@ -208,6 +219,7 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  drillingMachine: {name:'Machinebeeld: bankschroef en kolomboormachine',description:'Oefen handmatig of start de automatische boorcyclus. Bekijk Machinebeeld; dezelfde cilinders, sensoren en motor staan in het schema.',build:()=>drillingMachine(Circuit)},
   motorConveyor: {
     name: 'Motor: 24 V-transportband met start/stop en zelfhouding',
     description: 'S1 start de transportbandmotor M2 via KM1. De zelfhouding houdt de band in beweging. S2 stopt en S0 is de noodstop. Het DC-motormodel is vereenvoudigd.',
@@ -702,3 +714,9 @@ for (const mode of ['grafcet', 'ladder']) {
     build: () => motorController(EXAMPLES.motorDirect.build(), mode),
   };
 }
+
+for(const mode of ['grafcet','ladder'])EXAMPLES[`${mode}Wired`]={
+  name:`${mode==='ladder'?'PLC':'GRAFCET'}: fysiek bedrade module met cilinder`,
+  description:'I0 leest S1, I1/I2 lezen B0/B1. Q0 voedt ventielspoel Y1. De module heeft L+ en M nodig; een ontbrekende draad wordt niet virtueel overbrugd.',
+  build:()=>wiredController(cylinderController(pneumaticPlant(Circuit),false,mode),mode),
+};

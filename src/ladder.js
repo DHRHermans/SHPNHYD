@@ -1,9 +1,11 @@
 // Serializable graphical ladder networks over the existing soft-PLC runtime.
+import { routeControllerOutput } from './controller-io.js';
 import { PLC, rung, setRung, resetRung, no, nc, and, or, TON, TOF } from './plc.js';
 
 export const controllerMode = circuit => circuit.controller || (circuit.chart ? 'grafcet' : 'manual');
 
 export function controllerSignal(sim, tag) {
+  if(sim.controllerInputs?.has(tag))return !!sim.controllerInputs.get(tag);
   // Inputs represent closed/healthy contacts, not merely a button's pressed flag.
   const candidates = sim.circuit.instances.filter(i => i.params.tag?.value === tag);
   const input = candidates.find(i => ['btn_no', 'btn_nc', 'estop', 'industrial_overload'].includes(i.type) || i.params.target);
@@ -18,6 +20,8 @@ export function controllerSignal(sim, tag) {
 
 export function applyControllerOutputs(sim, outputs) {
   for (const [tag, requested] of outputs) {
+    if(sim.controllerInputs?.has(tag)&&!sim.physicalOutputTags?.has(tag)){sim.ioError=`Ingang ${tag} kan alleen worden gelezen.`;continue;}
+    if(routeControllerOutput(sim,tag,requested))continue;
     const coils = sim.circuit.instances.filter(i => i.params.tag?.value === tag && sim.circuit.defOf(i)?.coilLike && i.type !== 'lamp');
     const on = !!requested && !coils.some(i => i.faults?.coil_open);
     sim.energized.set(tag, on);
@@ -62,6 +66,7 @@ export class LadderRuntime {
   constructor(sim, program) {
     const errors = validateLadder(program);
     if (errors.length) throw new Error(errors.join(' '));
+    for(const row of program.rungs)if(sim.controllerInputs?.has(row.coil))throw new Error(`Ingang ${row.coil} kan niet als uitgang worden beschreven.`);
     this.sim = sim;
     this.program = structuredClone(program);
     this.outputs = new Map(program.rungs.map(r => [r.coil, false]));

@@ -1,7 +1,7 @@
 # Contributing
 
-The project has a small number of rules, and they are the reason it stays comprehensible at
-14,000 lines. Please read them before opening a pull request — most review comments here are
+SH TechniekLab extends the original FluidLab application. The project keeps a small number of
+rules so the models and educational controls remain understandable. Please read them before opening a pull request — most review comments here are
 one of these five.
 
 ## The five rules
@@ -54,3 +54,9 @@ If a commit fixes something the tests did not catch, say why they did not catch 
 The most valuable issue for this project is "the simulator says X, real hardware does Y".
 Please include the circuit (export it as JSON), the numbers you expected, and the numbers you
 got. A modelling error with a reproduction is worth more than a feature request.
+
+## SH TechniekLab 1.1
+
+Run `npm test` (158 checks) and test affected editor flows in a browser. The Pages build uses `node scripts/build-site.js` with an empty output directory outside the checkout. Do not add a framework merely for UI changes; browser validation can use external development tools without adding runtime dependencies.
+
+Machine/controller orchestration belongs in its separate adapter modules; pressure and electrical solvers remain independent of lesson-specific animation. Valve customization must validate known ports and keep rendering consistent with stamping. Physical I/O aliases must not bypass wiring, power or output faults. Preserve legacy JSON documents and update the Dutch manual, limits and tests when changing behavior.

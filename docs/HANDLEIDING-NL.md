@@ -1,4 +1,4 @@
-# Handleiding SH PN · HYD
+# Handleiding SH TechniekLab
 
 ## Een schakeling tekenen
 
@@ -66,7 +66,7 @@ Dit is een didactische vrijgave, geen gevalideerde veiligheidsbesturing voor ech
 ## Het lichte techniekatelier en de lessen
 
 De interface gebruikt het eigen **Licht atelier**-thema: witte panelen, een warm tekenblad en blauwgroene bediening. De rode kleur van bekrachtigde elektrische stuurdraden blijft een simulatiesignaal.
-Klik onder de bibliotheek op **Ontdek de lessen en oefeningen** voor dertien Nederlandstalige opdrachten. Elke opdracht opent direct de passende schakeling. De knop **Motoren** filtert de componentbibliotheek, zonder het gezamenlijke werkvlak te veranderen.
+Klik onder de bibliotheek op **Ontdek de lessen en oefeningen** voor zestien Nederlandstalige opdrachten. Elke opdracht opent direct de passende schakeling. De knop **Motoren** filtert de componentbibliotheek, zonder het gezamenlijke werkvlak te veranderen.
 
 ## Industriële motorschakelingen
 
@@ -135,7 +135,7 @@ Rechts in de werkbladbalk kies je de **actieve besturing**: **Handmatig / elektr
 6. Verplaats netwerken met de pijlen omhoog/omlaag. De PLC voert ze van boven naar beneden uit; een later netwerk ziet waarden die eerder in dezelfde scan geschreven zijn. Bij meerdere schrijvers naar dezelfde uitgang is de laatste uitgevoerde toewijzing bepalend.
 7. Selecteer **PLC Ladder** als actieve besturing en klik **Start**. Groene contacten en takken tonen de toestand bij evaluatie; de groene uitgang toont het PLC-commando. De live signalen tonen actuele niveaus.
 
-Het bewerken van Ladder stopt en reset de simulatie, zodat geen verouderd programma blijft uitvoeren. Een lege of ongeldige tak verhindert starten totdat de fout is hersteld. Een gewone uitgang schrijft elke scan waar/onwaar. Set schrijft alleen bij een geleidende tak een 1; Reset schrijft dan een 0. Stop/reset van de simulator wist merkers en timers.
+Het bewerken van Ladder of GRAFCET-logica stopt en reset de simulatie, zodat geen verouderd programma blijft uitvoeren. Een lege of ongeldige tak verhindert starten totdat de fout is hersteld. Een gewone uitgang schrijft elke scan waar/onwaar. Set schrijft alleen bij een geleidende tak een 1; Reset schrijft dan een 0. Stop/reset van de simulator wist merkers en timers.
 
 **NC-signalen:** S2 (NC-stop), S0 (noodstop) en F1 (thermisch NC-contact) leveren 1 zolang hun contact gesloten/gezond is. Gebruik daarvoor in Ladder doorgaans een maakcontact. Een verbreekcontact in het programma keert het niveau om. In GRAFCET betekent `/S2` dus dat het stopcontact geopend is.
 
@@ -166,3 +166,71 @@ Open boven het werkvlak **Analyse** en kies **Weg-stapdiagram**, **Oscilloscoop*
 Een meetprobe plaatsen opent de oscilloscoop automatisch. Metingen blijven tijdens de simulatie opgenomen worden wanneer hun venster gesloten is; opnieuw openen toont de beschikbare opname. CSV-export, cursors, triggerinstellingen en vastzetten blijven beschikbaar in de oscilloscoop. Ook het weg-stapdiagram en de onderdelenlijst houden hun exportknoppen.
 
 **GRAFCET tekenen** en **PLC Ladder** blijven aparte grote werkbladen. De analysevensters zijn ook boven die werkbladen beschikbaar en veranderen de actieve besturing niet.
+
+## Ladder tekenen met de symboolbalk
+
+De Ladder-editor heeft een eigen gereedschapsbalk met **Selecteren**, **Maakcontact**, **Verbreekcontact**, **Uitgang**, **Set**, **Reset**, **TON** en **TOF**.
+
+- Kies een contacttype en klik op een rond **+**-invoegpunt tussen de symbolen. Je kunt het contact ook van de balk naar dat punt slepen.
+- Klik met het geselecteerde contactgereedschap op een bestaand contact om het type te wijzigen, met behoud van zijn aanduiding.
+- Sleep een uitgangs- of timergereedschap naar de uitgang rechts om het spoeltype te veranderen.
+- Met **Selecteren** klik je op een symbool. De aanduiding en type-instellingen verschijnen bij de selectie; een timer toont ook de tijdinstelling.
+- Delete verwijdert een geselecteerd contact of wist de uitgang. In een tekstveld blijft Delete gewone tekstbewerking. De knop **Verwijderen** boven een netwerk verwijdert het hele netwerk.
+- **+ Parallelle tak** maakt een alternatief pad. De getekende bedrading verbindt de contacten met de voedingsrails en de gezamenlijke uitgang. Brede netwerken kun je horizontaal verschuiven.
+
+Dit is een eigen uitwerking van de tekenbediening binnen SH TechniekLab; er is geen PLCioSim-code ingebouwd. De simulator en de koppeling naar lucht, olie en motoren blijven dezelfde.
+
+## Schema's afdrukken met het SH-logo
+
+Open het gewenste werkblad (**Schakeling**, **GRAFCET tekenen**, **PLC Ladder** of **Machinebeeld**) en kies **Export → Afdrukken (met SH-logo)**. Je kunt ook **Ctrl+P** of **Cmd+P** gebruiken.
+
+Het afdrukvoorbeeld bevat alleen het schema, met het **SH-logo**, de schematitel, datum en paginanummer. Knoppen, bibliotheek en eigenschappenpanelen worden niet afgedrukt. Klik **Afdrukken / PDF bewaren** om de printer te kiezen of het bestand via de browser als PDF te bewaren. Het standaardformaat is A4 liggend; printerinstellingen kunnen dit aanpassen.
+
+Een schakelschema, GRAFCET en machinebeeld krijgen elk één passend geschaald blad. Bij Ladder krijgt ieder netwerk een eigen blad, zodat parallelle takken en lange netwerken volledig worden meegenomen, ongeacht de scrollpositie in de editor. Zeer grote netwerken worden verkleind; controleer de leesbaarheid in het afdrukvoorbeeld. Het SH-logo staat ook op iedere pagina van de bestaande **Export → Tekening (PDF)**, inclusief het onderdelenblad.
+
+## Ventielen aanpassen
+
+Selecteer een richtingsventiel en kies rechts **Ventieluitvoering**. Beschikbare families zijn pneumatische 3/2- en 5/2-ventielen en hydraulische 4/3-ventielen. Je kunt binnen de aangeboden varianten de bediening, terugstelling/geheugen en middenstand kiezen. Een hydraulisch 4/3-ventiel biedt gesloten, zweef- en tandemmiddenstand met handhefboom of elektrische spoelen.
+
+Aanduiding, bestaande spoelnamen en gemeenschappelijke instellingen blijven behouden. Als aangesloten pilotpoorten bij een variant zouden vervallen, weigert de editor de wijziging totdat je die leidingen zelf loskoppelt. Er worden geen leidingen stilzwijgend verwijderd. Een variantwissel herstelt de standaard interne verbindingen en reset de simulatie.
+
+Onder **Extra: interne verbindingen tekenen** kies je een stand en klik je twee bestaande poorten aan. Dit voegt een verbinding toe; dezelfde twee poorten opnieuw aanklikken verwijdert die verbinding. Niet verbonden poorten zijn afgesloten. De tekening én de lucht-/oliestroming gebruiken de aangepaste verbindingen. Bewaren als JSON en undo/redo behouden deze instellingen. Vrij nieuwe poorten, aantallen standen of complete componenttypen maken is nog niet inbegrepen.
+
+## Machinebeeld: van handmatig naar automatisch boren
+
+Kies **Machinebeeld → Laad bankschroef en kolomboormachine**, of laad het gelijknamige voorbeeld. Het procesbeeld is gekoppeld aan `A_KLEM`, `A_BOOR` en `M_BOOR` uit het schema. Eindschakelaars bewaken de cilinderstanden. Het boorbeeld wordt niet los van de simulatie afgespeeld.
+
+### Handmatig oefenen
+
+1. Klik **Klem sluiten** en wacht tot **Klem dicht** 1 aangeeft.
+2. Klik **Spindel starten** en wacht op het toerental.
+3. Klik **Boor omlaag**. Onderaan wordt de visuele boortijd opgebouwd.
+4. Klik **Boor omhoog** en wacht op de bovenste eindstand.
+5. Stop de spindel en wacht op stilstand.
+6. Laat de klem los en verwijder of vervang het werkstuk.
+
+De procesknoppen starten de simulatie wanneer dat nodig is. Didactische vergrendelingen blokkeren neergaande voeding zonder geklemd werkstuk en draaiende spindel. De klem blijft dicht zolang de boor niet boven is of de spindel nog draait. Meldingen tonen waarom een commando wordt geblokkeerd.
+
+### Automatisch uitvoeren
+
+Kies in het procesbeeld **Automatisch · GRAFCET** of **Automatisch · PLC Ladder**. Wisselen van besturingsstand reset de simulatie naar de beginsituatie. Klik **Start automatische cyclus**. De volgorde is: klemmen → spindel starten → boor neer → twee seconden boren → boor omhoog → spindel uit → wachten op stilstand → klem los.
+
+Met **Stop cyclus** wordt de neergaande beweging onderbroken, de boor teruggetrokken en daarna pas vrijgegeven. **Stop vrijgeven** heft dit stopcommando op, maar start geen nieuwe cyclus. De algemene Stop-knop in de bovenbalk reset de gehele simulatie; gebruik voor de procesoefening de lokale stopknop.
+
+In het schema staan de gebruikte cilinders, ventielen, motor en schakelaars. GRAFCET en Ladder zijn bewerkbaar en worden samen met het machinebeeld opgeslagen. `B_WERKSTUK` en `B_SPINDEL_STIL` zijn virtuele procesingangen. De boring is een tijdsindicatie, geen berekening van materiaalafname of snijkrachten. Dit is een vereenvoudigd onderwijsmodel, geen gecertificeerde machinebesturing.
+
+## PLC- en GRAFCET-componenten fysiek bedraden
+
+Onder **Elektrisch → Besturingsmodules** vind je een PLC-module en een GRAFCET-module met elk **8 ingangen, 8 uitgangen en 24 V-voedingspoorten**.
+
+1. Verbind **L+** met +24 V en **M** met 0 V.
+2. Sluit een drukknop of sensor aan tussen +24 V en een ingang `I0–I7`.
+3. Verbind een uitgang `Q0–Q7` met een spoel of lamp en de andere kant van die belasting met M.
+4. Selecteer de module en stel per poort de **programmanaam** in. Bijvoorbeeld `I0 → S1`, `I1 → B0`, `I2 → B1` en `Q0 → Y1`. Je kunt ook rechtstreeks I0/Q0 als programmanamen gebruiken.
+5. Kies de overeenkomende actieve besturing en teken de voorwaarden/acties in GRAFCET of Ladder.
+
+Gebruik **PLC: fysiek bedrade module met cilinder** of het GRAFCET-voorbeeld om de volledige aansluiting te bekijken. Een ingangsnaam die aan een modulepoort gekoppeld is, wordt uit de gemeten spanning gelezen. Een gekoppelde uitgang wordt naar de fysieke poort gestuurd: die bekrachtigt de spoel pas via de echte draad. Een losgekoppelde ingang of uitgang, ontbrekende L+/M of voedingsstoring wordt niet virtueel overbrugd.
+
+Gebruik unieke programmanamen per poort en geen naam tegelijk voor in- en uitgang. Conflicten worden gemeld en de betrokken I/O wordt afgeschakeld. De module toont voeding en kanaalniveaus. De uitgangen zijn vereenvoudigde sourcing-uitgangen op 24 V DC, geen 400 V-motorvoeding. Gebruik bij motoren een contactorspoel tussen module-uitgang en M. Andere lucht- en olieactuatoren worden via hun elektrische ventielspoel bediend.
+
+De virtuele koppeling blijft beschikbaar voor programma-aanduidingen die niet aan een fysieke modulepoort gekoppeld zijn, bijvoorbeeld interne merkers. De fysieke uitgang kan een scantick later doorwerken dan het logische commando.

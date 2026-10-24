@@ -1,0 +1,338 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i36",
+      "type": "cyl_double",
+      "x": 200,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "1A1",
+        "bore": 25,
+        "rod": 10,
+        "stroke": 100,
+        "mass": 1,
+        "load": 0,
+        "friction": 900,
+        "coulomb": 8,
+        "cushion": 0,
+        "cushionNeedle": 12
+      }
+    },
+    {
+      "id": "i37",
+      "type": "v52_sol_spring",
+      "x": 220,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "1V1",
+        "solA": "Y1"
+      }
+    },
+    {
+      "id": "i38",
+      "type": "supply",
+      "x": 230,
+      "y": 440,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i42",
+      "type": "btn_no",
+      "x": 500,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i43",
+      "type": "limit_switch",
+      "x": 500,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B0",
+        "target": "i36",
+        "at": 0,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i44",
+      "type": "limit_switch",
+      "x": 640,
+      "y": 260,
+      "rot": 0,
+      "params": {
+        "tag": "B1",
+        "target": "i36",
+        "at": 1,
+        "width": 0.04
+      }
+    },
+    {
+      "id": "i45",
+      "type": "grafcet_io",
+      "x": 900,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "GC1",
+        "input0": "S1",
+        "output0": "Y1",
+        "input1": "B0",
+        "output1": "Q1",
+        "input2": "B1",
+        "output2": "Q2",
+        "input3": "I3",
+        "output3": "Q3",
+        "input4": "I4",
+        "output4": "Q4",
+        "input5": "I5",
+        "output5": "Q5",
+        "input6": "I6",
+        "output6": "Q6",
+        "input7": "I7",
+        "output7": "Q7"
+      }
+    },
+    {
+      "id": "i46",
+      "type": "rail_24v",
+      "x": 780,
+      "y": 20,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i47",
+      "type": "rail_0v",
+      "x": 780,
+      "y": 560,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i48",
+      "type": "sol_coil",
+      "x": 1160,
+      "y": 250,
+      "rot": 0,
+      "params": {
+        "tag": "Y1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i38",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i37",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i37",
+        "port": "4"
+      },
+      "to": {
+        "inst": "i36",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i37",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i36",
+        "port": "2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "L+"
+      }
+    },
+    {
+      "from": {
+        "inst": "i47",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "M"
+      }
+    },
+    {
+      "from": {
+        "inst": "i45",
+        "port": "Q0"
+      },
+      "to": {
+        "inst": "i48",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i47",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i42",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i42",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "I0"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i43",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i43",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "I1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i44",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i44",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "I2"
+      }
+    }
+  ],
+  "chart": {
+    "steps": [
+      {
+        "id": "S24",
+        "name": "0",
+        "initial": true,
+        "x": 100,
+        "y": 50,
+        "actions": []
+      },
+      {
+        "id": "S25",
+        "name": "1",
+        "initial": false,
+        "x": 100,
+        "y": 190,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y1"
+          }
+        ]
+      },
+      {
+        "id": "S26",
+        "name": "2",
+        "initial": false,
+        "x": 100,
+        "y": 330,
+        "actions": []
+      }
+    ],
+    "transitions": [
+      {
+        "id": "T27",
+        "from": [
+          "S24"
+        ],
+        "to": [
+          "S25"
+        ],
+        "receptivity": "S1 * B0",
+        "x": 117,
+        "y": 140
+      },
+      {
+        "id": "T28",
+        "from": [
+          "S25"
+        ],
+        "to": [
+          "S26"
+        ],
+        "receptivity": "B1",
+        "x": 117,
+        "y": 280
+      },
+      {
+        "id": "T29",
+        "from": [
+          "S26"
+        ],
+        "to": [
+          "S24"
+        ],
+        "receptivity": "B0",
+        "x": 117,
+        "y": 430
+      }
+    ]
+  },
+  "controller": "grafcet"
+}

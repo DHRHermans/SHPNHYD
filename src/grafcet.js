@@ -167,12 +167,14 @@ export class Grafcet {
     if (!data) return g;
     const map = new Map();
     for (const raw of data.steps || []) {
-      const s = g.addStep(raw);
+      const x=Number(raw.x??0),y=Number(raw.y??0);if(!Number.isFinite(x)||!Number.isFinite(y))throw new Error('Ongeldige GRAFCET-positie.');
+      const s = g.addStep({...raw,x,y});
       map.set(raw.id, s.id);
     }
     for (const raw of data.transitions || []) {
+      const x=Number(raw.x??0),y=Number(raw.y??0);if(!Number.isFinite(x)||!Number.isFinite(y))throw new Error('Ongeldige GRAFCET-overgangspositie.');
       g.addTransition({
-        ...raw,
+        ...raw,x,y,
         from: (raw.from || []).map((x) => map.get(x)).filter(Boolean),
         to: (raw.to || []).map((x) => map.get(x)).filter(Boolean),
       });

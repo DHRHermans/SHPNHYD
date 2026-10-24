@@ -1,0 +1,1297 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i1",
+      "type": "supply",
+      "x": 100,
+      "y": 500,
+      "rot": 0,
+      "params": {
+        "tag": "P_LUCHT",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i2",
+      "type": "cyl_double",
+      "x": 200,
+      "y": 60,
+      "rot": 0,
+      "params": {
+        "tag": "A_KLEM",
+        "bore": 25,
+        "rod": 10,
+        "stroke": 100,
+        "mass": 1,
+        "load": 0,
+        "friction": 900,
+        "coulomb": 8,
+        "cushion": 0,
+        "cushionNeedle": 12
+      }
+    },
+    {
+      "id": "i3",
+      "type": "v52_sol_spring",
+      "x": 220,
+      "y": 330,
+      "rot": 0,
+      "params": {
+        "tag": "V_KLEM",
+        "solA": "Y_KLEM"
+      }
+    },
+    {
+      "id": "i5",
+      "type": "throttle_check",
+      "x": 200,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "R_KLEM0",
+        "opening": 0.3,
+        "freeDir": "1->2"
+      }
+    },
+    {
+      "id": "i8",
+      "type": "limit_switch",
+      "x": 200,
+      "y": 620,
+      "rot": 0,
+      "params": {
+        "tag": "B_KLEM_OPEN",
+        "target": "i2",
+        "at": 0,
+        "width": 0.01
+      }
+    },
+    {
+      "id": "i9",
+      "type": "throttle_check",
+      "x": 290,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "R_KLEM1",
+        "opening": 0.3,
+        "freeDir": "1->2"
+      }
+    },
+    {
+      "id": "i12",
+      "type": "limit_switch",
+      "x": 330,
+      "y": 620,
+      "rot": 0,
+      "params": {
+        "tag": "B_KLEM_DICHT",
+        "target": "i2",
+        "at": 1,
+        "width": 0.01
+      }
+    },
+    {
+      "id": "i13",
+      "type": "cyl_double",
+      "x": 500,
+      "y": 60,
+      "rot": 0,
+      "params": {
+        "tag": "A_BOOR",
+        "bore": 25,
+        "rod": 10,
+        "stroke": 100,
+        "mass": 1,
+        "load": 0,
+        "friction": 900,
+        "coulomb": 8,
+        "cushion": 0,
+        "cushionNeedle": 12
+      }
+    },
+    {
+      "id": "i14",
+      "type": "v52_sol_spring",
+      "x": 520,
+      "y": 330,
+      "rot": 0,
+      "params": {
+        "tag": "V_BOOR",
+        "solA": "Y_BOOR"
+      }
+    },
+    {
+      "id": "i16",
+      "type": "throttle_check",
+      "x": 500,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "R_BOOR0",
+        "opening": 0.14,
+        "freeDir": "1->2"
+      }
+    },
+    {
+      "id": "i19",
+      "type": "limit_switch",
+      "x": 500,
+      "y": 620,
+      "rot": 0,
+      "params": {
+        "tag": "B_BOOR_BOVEN",
+        "target": "i13",
+        "at": 0,
+        "width": 0.01
+      }
+    },
+    {
+      "id": "i20",
+      "type": "throttle_check",
+      "x": 590,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "R_BOOR1",
+        "opening": 0.14,
+        "freeDir": "1->2"
+      }
+    },
+    {
+      "id": "i23",
+      "type": "limit_switch",
+      "x": 630,
+      "y": 620,
+      "rot": 0,
+      "params": {
+        "tag": "B_BOOR_BENEDEN",
+        "target": "i13",
+        "at": 1,
+        "width": 0.01
+      }
+    },
+    {
+      "id": "i24",
+      "type": "industrial_supply",
+      "x": 900,
+      "y": 60,
+      "rot": 0,
+      "params": {
+        "tag": "Q_BOOR",
+        "missing": 0
+      }
+    },
+    {
+      "id": "i25",
+      "type": "industrial_contactor",
+      "x": 900,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "KM_BOOR",
+        "interlock": ""
+      }
+    },
+    {
+      "id": "i26",
+      "type": "industrial_motor",
+      "x": 900,
+      "y": 410,
+      "rot": 0,
+      "params": {
+        "tag": "M_BOOR",
+        "speed": 1450,
+        "current": 4,
+        "load": 1
+      }
+    },
+    {
+      "id": "i33",
+      "type": "industrial_coil",
+      "x": 1160,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "KM_BOOR"
+      }
+    },
+    {
+      "id": "i34",
+      "type": "btn_no",
+      "x": 1160,
+      "y": 410,
+      "rot": 0,
+      "params": {
+        "tag": "S_START"
+      }
+    },
+    {
+      "id": "i35",
+      "type": "btn_nc",
+      "x": 1280,
+      "y": 410,
+      "rot": 0,
+      "params": {
+        "tag": "S_STOP"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i1",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i3",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "4"
+      },
+      "to": {
+        "inst": "i5",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i5",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i9",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i9",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i1",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i14",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i14",
+        "port": "4"
+      },
+      "to": {
+        "inst": "i16",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i16",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i13",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i14",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i20",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i20",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i13",
+        "port": "2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i24",
+        "port": "L1"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i25",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i26",
+        "port": "U"
+      }
+    },
+    {
+      "from": {
+        "inst": "i24",
+        "port": "L2"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i25",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i26",
+        "port": "V"
+      }
+    },
+    {
+      "from": {
+        "inst": "i24",
+        "port": "L3"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i25",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i26",
+        "port": "W"
+      }
+    }
+  ],
+  "chart": {
+    "steps": [
+      {
+        "id": "S1",
+        "name": "0",
+        "initial": true,
+        "x": 120,
+        "y": 40,
+        "actions": []
+      },
+      {
+        "id": "S2",
+        "name": "1",
+        "initial": false,
+        "x": 120,
+        "y": 165,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          }
+        ]
+      },
+      {
+        "id": "S3",
+        "name": "2",
+        "initial": false,
+        "x": 120,
+        "y": 290,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          },
+          {
+            "kind": "continuous",
+            "target": "KM_BOOR"
+          }
+        ]
+      },
+      {
+        "id": "S4",
+        "name": "3",
+        "initial": false,
+        "x": 120,
+        "y": 415,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          },
+          {
+            "kind": "continuous",
+            "target": "KM_BOOR"
+          },
+          {
+            "kind": "continuous",
+            "target": "Y_BOOR"
+          }
+        ]
+      },
+      {
+        "id": "S5",
+        "name": "4",
+        "initial": false,
+        "x": 120,
+        "y": 540,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          },
+          {
+            "kind": "continuous",
+            "target": "KM_BOOR"
+          },
+          {
+            "kind": "continuous",
+            "target": "Y_BOOR"
+          }
+        ]
+      },
+      {
+        "id": "S6",
+        "name": "5",
+        "initial": false,
+        "x": 120,
+        "y": 665,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          },
+          {
+            "kind": "continuous",
+            "target": "KM_BOOR"
+          }
+        ]
+      },
+      {
+        "id": "S7",
+        "name": "6",
+        "initial": false,
+        "x": 120,
+        "y": 790,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          }
+        ]
+      },
+      {
+        "id": "S8",
+        "name": "7",
+        "initial": false,
+        "x": 120,
+        "y": 915,
+        "actions": []
+      },
+      {
+        "id": "S9",
+        "name": "8",
+        "initial": false,
+        "x": 470,
+        "y": 1040,
+        "actions": [
+          {
+            "kind": "continuous",
+            "target": "Y_KLEM"
+          }
+        ]
+      }
+    ],
+    "transitions": [
+      {
+        "id": "T10",
+        "from": [
+          "S1"
+        ],
+        "to": [
+          "S2"
+        ],
+        "receptivity": "S_START * S_STOP * B_WERKSTUK * B_KLEM_OPEN * B_BOOR_BOVEN",
+        "x": 137,
+        "y": 130
+      },
+      {
+        "id": "T11",
+        "from": [
+          "S2"
+        ],
+        "to": [
+          "S3"
+        ],
+        "receptivity": "B_KLEM_DICHT * S_STOP",
+        "x": 137,
+        "y": 255
+      },
+      {
+        "id": "T12",
+        "from": [
+          "S3"
+        ],
+        "to": [
+          "S4"
+        ],
+        "receptivity": "t/X2/0.5s * S_STOP",
+        "x": 137,
+        "y": 380
+      },
+      {
+        "id": "T13",
+        "from": [
+          "S4"
+        ],
+        "to": [
+          "S5"
+        ],
+        "receptivity": "B_BOOR_BENEDEN * S_STOP",
+        "x": 137,
+        "y": 505
+      },
+      {
+        "id": "T14",
+        "from": [
+          "S5"
+        ],
+        "to": [
+          "S6"
+        ],
+        "receptivity": "t/X4/2s * S_STOP",
+        "x": 137,
+        "y": 630
+      },
+      {
+        "id": "T15",
+        "from": [
+          "S6"
+        ],
+        "to": [
+          "S7"
+        ],
+        "receptivity": "B_BOOR_BOVEN * S_STOP",
+        "x": 137,
+        "y": 755
+      },
+      {
+        "id": "T16",
+        "from": [
+          "S7"
+        ],
+        "to": [
+          "S8"
+        ],
+        "receptivity": "B_SPINDEL_STIL * B_BOOR_BOVEN",
+        "x": 137,
+        "y": 880
+      },
+      {
+        "id": "T17",
+        "from": [
+          "S8"
+        ],
+        "to": [
+          "S1"
+        ],
+        "receptivity": "B_KLEM_OPEN",
+        "x": 137,
+        "y": 1005
+      },
+      {
+        "id": "T18",
+        "from": [
+          "S2"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "/S_STOP",
+        "x": 350,
+        "y": 225
+      },
+      {
+        "id": "T19",
+        "from": [
+          "S3"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "/S_STOP",
+        "x": 350,
+        "y": 350
+      },
+      {
+        "id": "T20",
+        "from": [
+          "S4"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "/S_STOP",
+        "x": 350,
+        "y": 475
+      },
+      {
+        "id": "T21",
+        "from": [
+          "S5"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "/S_STOP",
+        "x": 350,
+        "y": 600
+      },
+      {
+        "id": "T22",
+        "from": [
+          "S6"
+        ],
+        "to": [
+          "S9"
+        ],
+        "receptivity": "/S_STOP",
+        "x": 350,
+        "y": 725
+      },
+      {
+        "id": "T23",
+        "from": [
+          "S9"
+        ],
+        "to": [
+          "S7"
+        ],
+        "receptivity": "B_BOOR_BOVEN",
+        "x": 487,
+        "y": 1160
+      }
+    ]
+  },
+  "scene": {
+    "type": "drill-press",
+    "clamp": "A_KLEM",
+    "feed": "A_BOOR",
+    "motor": "M_BOOR"
+  },
+  "controller": "manual",
+  "ladder": {
+    "rungs": [
+      {
+        "coil": "M_KLEM",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "S_START",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            },
+            {
+              "tag": "B_WERKSTUK",
+              "nc": false
+            },
+            {
+              "tag": "B_KLEM_OPEN",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            },
+            {
+              "tag": "M_CYCLUS",
+              "nc": true
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_CYCLUS",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_KLEM",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "T_SPIN",
+        "kind": "ton",
+        "branches": [
+          [
+            {
+              "tag": "M_SPIN",
+              "nc": false
+            }
+          ]
+        ],
+        "delay": 0.5
+      },
+      {
+        "coil": "T_BOOR",
+        "kind": "ton",
+        "branches": [
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            }
+          ]
+        ],
+        "delay": 2
+      },
+      {
+        "coil": "M_SPIN",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_KLEM",
+              "nc": false
+            },
+            {
+              "tag": "B_KLEM_DICHT",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_KLEM",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_KLEM",
+              "nc": false
+            },
+            {
+              "tag": "B_KLEM_DICHT",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_NEER",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_SPIN",
+              "nc": false
+            },
+            {
+              "tag": "T_SPIN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_SPIN",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_SPIN",
+              "nc": false
+            },
+            {
+              "tag": "T_SPIN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_BOREN",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_NEER",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BENEDEN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_NEER",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_NEER",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BENEDEN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_OP",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            },
+            {
+              "tag": "T_BOOR",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_BOREN",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            },
+            {
+              "tag": "T_BOOR",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STIL",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_OP",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_OP",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_OP",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_LOS",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_STIL",
+              "nc": false
+            },
+            {
+              "tag": "B_SPINDEL_STIL",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STIL",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STIL",
+              "nc": false
+            },
+            {
+              "tag": "B_SPINDEL_STIL",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STOP",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_CYCLUS",
+              "nc": false
+            },
+            {
+              "tag": "S_STOP",
+              "nc": true
+            },
+            {
+              "tag": "M_STIL",
+              "nc": true
+            },
+            {
+              "tag": "M_LOS",
+              "nc": true
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_KLEM",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_SPIN",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_NEER",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_BOREN",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_OP",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STIL",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_LOS",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STIL",
+        "kind": "set",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_STOP",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            },
+            {
+              "tag": "B_BOOR_BOVEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_CYCLUS",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_LOS",
+              "nc": false
+            },
+            {
+              "tag": "B_KLEM_OPEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "M_LOS",
+        "kind": "reset",
+        "branches": [
+          [
+            {
+              "tag": "M_LOS",
+              "nc": false
+            },
+            {
+              "tag": "B_KLEM_OPEN",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "Y_KLEM",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_KLEM",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_SPIN",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_NEER",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_OP",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_STIL",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_STOP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "KM_BOOR",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_SPIN",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_NEER",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_OP",
+              "nc": false
+            }
+          ]
+        ]
+      },
+      {
+        "coil": "Y_BOOR",
+        "kind": "coil",
+        "branches": [
+          [
+            {
+              "tag": "M_NEER",
+              "nc": false
+            }
+          ],
+          [
+            {
+              "tag": "M_BOREN",
+              "nc": false
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

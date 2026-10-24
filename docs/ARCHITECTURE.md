@@ -178,3 +178,11 @@ The light interface remains independent of the exported engineering symbols. `le
 ## Floating analysis windows
 
 `tool-windows.js` reparents the existing chart/list elements and their controls into non-modal dialog sections, preserving event handlers and recorder/probe state. Redraws use window visibility rather than the selected controller workspace; recording remains in the simulation tick. Window bounds are clamped to the viewport and their normal position/size are stored separately from the side-panel preferences. No drawing height is reserved for analysis. The original panel container is used only for the full-height GRAFCET and Ladder editors.
+
+## Process scene, configurable valves and wired controllers
+
+`Circuit.scene` stores tag-based links from the drill-press scene to two existing cylinders and a motor. `machine.js` publishes virtual process feedback before the selected controller scan, applies explicit teaching interlocks after it, and updates visual dwell progress after mechanics. Manual commands, GRAFCET and Ladder therefore operate the same plant. `machine-view.js` changes SVG transforms using actual model positions and speed; it does not play a canned motion timeline.
+
+Per-instance `valveLayout.boxes` overrides the paths used by both the valve renderer and pneumatic/hydraulic stamping. Import validates known ports, position count and duplicate paths. Standard variant replacement preserves common parameters and refuses to discard wires attached to removed pilot ports.
+
+`controller-io.js` supplies the two physical controller definitions and builds alias maps after the electric solve. `controllerSignal` prioritizes mapped input voltages. `applyControllerOutputs` routes mapped output requests to module drivers instead of writing actuator tags directly. The following electric solve determines whether an actually wired coil is energized. Missing power and disconnected wires cannot be bypassed by a shared tag. Ambiguous aliases fail closed. Normal virtual program variables retain their previous behavior.

@@ -31,7 +31,7 @@ time, while a network round trip is several milliseconds of *wall clock*. The co
 therefore "latest value wins", not synchronous. Real EasyPort (serial hardware) and OPC/DDE
 are not started.
 
-**Hydraulics is a core, not a full library.** 11 components instead of the ~150 a complete
+**Hydraulics is a core, not a full library.** 14 components instead of the ~150 a complete
 specification lists. Missing: variable pumps, load sensing, pressure compensators,
 accumulators, filters, coolers, flow dividers, cartridge valves, hydraulic motors, swivel
 drives.
@@ -84,3 +84,11 @@ beyond that it is not a transformer.
 ## Industrial teaching models
 
 The industrial catalog adds functional three-phase connectivity, contactors, a simplified motor response, an I²t overload contact, and a resistive 24 V DC motor. These are control-circuit teaching models, not continuous AC machine models. See `HANDLEIDING-NL.md` for their precise assumptions. No mains fault current, starting surge, torque/slip calculation, earth fault, certified protective-device sizing, star-delta or variable-frequency drive model is supplied. Motor power terminals do not offer numerical voltage/current probes; estimated AC motor current is identified as such in the inspector. The DC motor probe reports its resistive model current, without back EMF.
+
+## Machine scene and wired controller modules
+
+The drill-press scene follows existing cylinder stroke and motor speed state. Its hole animation represents elapsed dwell only; no cutting force, tool wear, material removal, inertia of a real spindle or safety-rated stop is calculated. Model interlocks prevent unclamping until the model feed is home and spindle speed is below 50 rpm. These limits are teaching choices, not machine-safety verification.
+
+Controller modules have eight 24 V digital inputs and eight simplified sourcing outputs, with configurable program aliases. They require L+/M wiring and do not bypass disconnected signals. Inputs/outputs outside their alias map can still be virtual. No real PLC hardware protocol, galvanic isolation, short-circuit protection, analogue I/O or industrial diagnostics is modelled.
+
+Advanced valve editing changes paths only between the existing valve ports and existing positions. It does not create new port geometry, port counts, custom component families or one-way flow behaviour. Selecting a standard variant clears the custom path layout; incompatible connected pilot ports must be disconnected explicitly first.

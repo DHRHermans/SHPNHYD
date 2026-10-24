@@ -1,16 +1,18 @@
+> Archived upstream README. For the current SH TechniekLab features and test counts, see [the current README](../README.md). Relative links have been adjusted for this archive location.
+
 # FluidLab
 
 **A pneumatics, electropneumatics, hydraulics and electronics simulator in the browser — built
 on a real network solver instead of scripted animation.**
 
 [![CI](https://github.com/alex-hahn/fluidlab/actions/workflows/ci.yml/badge.svg)](https://github.com/alex-hahn/fluidlab/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/correctness%20gate-92%20passing-brightgreen)](docs/TESTING.md)
-[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
-[![License](https://img.shields.io/badge/license-noncommercial-orange)](LICENSE)
+[![Tests](https://img.shields.io/badge/correctness%20gate-92%20passing-brightgreen)](TESTING.md)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](../package.json)
+[![License](https://img.shields.io/badge/license-noncommercial-orange)](../LICENSE)
 
-*Read this in [Deutsch](README.de.md).*
+*Read this in [Deutsch](../README.de.md).*
 
-![The editor with a loaded circuit](docs/screenshot-editor.png)
+![The editor with a loaded circuit](screenshot-editor.png)
 
 In the tradition of Festo FluidSIM, but the physics is solved rather than played back. Every
 pressure on screen comes out of a backward-Euler gas-state integration over a union-find
@@ -41,7 +43,7 @@ npm test           # → correctness gate, 92 tests in 4 suites
 
 The interesting part is not the component count — it is that the behaviour is *emergent*.
 None of the following is coded as a special case. Each row is a measurement the
-[correctness gate](docs/TESTING.md) takes from the assembled system:
+[correctness gate](TESTING.md) takes from the assembled system:
 
 | Observation | Measurement |
 | --- | --- |
@@ -62,7 +64,7 @@ difference between two throttles that differ only in which port they sit on — 
 falls out of the ISO 6358 flow law meeting a force balance with stiction, or it does not fall
 out at all.
 
-![A running simulation, line colour showing solved pressure](docs/screenshot-running.png)
+![A running simulation, line colour showing solved pressure](screenshot-running.png)
 
 ---
 
@@ -94,7 +96,7 @@ pure-oil value a node was so stiff that a pump built 13 bar per millisecond, thr
 relief valve's entire overlap per tick, and no pressure relief valve could regulate against
 it.
 
-→ [**PHYSICS.md**](docs/PHYSICS.md) — flow law, network formulation, mechanics, hydraulics, MNA
+→ [**PHYSICS.md**](PHYSICS.md) — flow law, network formulation, mechanics, hydraulics, MNA
 
 ---
 
@@ -119,7 +121,7 @@ Two corollaries the codebase leans on hard:
   no inspector change. Faults are declared per component and the inspector renders whatever is
   offered, so a new defect type needs no UI work.
 
-→ [**ARCHITECTURE.md**](docs/ARCHITECTURE.md) — module map, component contract, solver branches, controller layering
+→ [**ARCHITECTURE.md**](ARCHITECTURE.md) — module map, component contract, solver branches, controller layering
 
 ---
 
@@ -135,7 +137,7 @@ Two corollaries the codebase leans on hard:
 | **Output** | Schematic as JSON · drawing as SVG/PNG/PDF · bill of materials as CSV |
 | **Tests** | 92 in 4 suites, behavioural, framework-free |
 
-→ [**COMPONENTS.md**](docs/COMPONENTS.md) — the full library and the worked examples
+→ [**COMPONENTS.md**](COMPONENTS.md) — the full library and the worked examples
 
 ---
 
@@ -175,7 +177,7 @@ The simulator states its own modelling boundaries, because one that does not inv
 cannot support. Hose volume is underestimated, there is no thermal dynamics, the op-amp has no
 frequency response, and the WebSocket I/O driver is explicitly a stub. Hydraulics is 11 components against a full library's ~150.
 
-→ [**LIMITATIONS.md**](docs/LIMITATIONS.md) — the complete, honest list
+→ [**LIMITATIONS.md**](LIMITATIONS.md) — the complete, honest list
 
 ---
 
@@ -183,14 +185,14 @@ frequency response, and the WebSocket I/O driver is explicitly a stub. Hydraulic
 
 Five rules keep this codebase comprehensible: no dependencies, physics that emerges rather
 than being scripted, a new component as one catalog entry, tests that assert behaviour, and
-limitations stated honestly. They are explained in [CONTRIBUTING.md](CONTRIBUTING.md), and CI
+limitations stated honestly. They are explained in [CONTRIBUTING.md](../CONTRIBUTING.md), and CI
 enforces the first one.
 
 `main` is protected — it requires a green gate and refuses force pushes.
 
 ## License
 
-**[PolyForm Noncommercial 1.0.0](LICENSE) — noncommercial use only.**
+**[PolyForm Noncommercial 1.0.0](../LICENSE) — noncommercial use only.**
 
 You may read, run, study, modify and share this software freely for any noncommercial
 purpose: personal study, research, experiment, hobby projects, and use by schools,

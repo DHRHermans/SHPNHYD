@@ -252,7 +252,7 @@ function make43(id, centreKey, actuation) {
     },
 
     stampHydraulic(inst, st, ctx, work) {
-      const box = geom.boxes[inst.sim.state ?? 1];
+      const box = (inst.valveLayout?.boxes || geom.boxes)[inst.sim.state ?? 1];
       const K = ctx.fault(inst, 'clogged') ? K_VALVE * 0.1 : K_VALVE;
       for (const [x, y] of box.paths || []) {
         st.orifice(ctx.hnet(inst, x), ctx.hnet(inst, y), K, work);
@@ -275,6 +275,8 @@ const valve43ClosedLever = make43('h_v43_closed', 'closed', 'lever');
 const valve43FloatLever = make43('h_v43_float', 'float', 'lever');
 const valve43BypassLever = make43('h_v43_bypass', 'bypass', 'lever');
 const valve43ClosedSol = make43('h_v43_closed_sol', 'closed', 'solenoid');
+const valve43FloatSol = make43('h_v43_float_sol', 'float', 'solenoid');
+const valve43BypassSol = make43('h_v43_bypass_sol', 'bypass', 'solenoid');
 
 // ---------------------------------------------------------------------------
 // Flow and shutoff
@@ -505,7 +507,7 @@ const hCylinder = {
 export const HYDRAULIC_CATALOG = [
   hCylinder,
   tank, pump, hGauge,
-  valve43ClosedLever, valve43FloatLever, valve43BypassLever, valve43ClosedSol,
+  valve43ClosedLever, valve43FloatLever, valve43BypassLever, valve43ClosedSol, valve43FloatSol, valve43BypassSol,
   reliefValve, counterbalance,
   hCheck, hThrottleCheck,
 ];

@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.0 — SH TechniekLab: schema’s, besturingen en machinesimulatie
+
+- Nieuwe overkoepelende naam SH TechniekLab; SH-logo en bestaande repository-URL blijven behouden.
+- Visuele bankschroef en kolomboormachine met handbediening en automatische GRAFCET-/Laddercyclus, eindstandbewaking en gecontroleerde stop.
+- Plaatsbare PLC-/GRAFCET-modules met 8 fysiek bedrade ingangen en 8 uitgangen op 24 V.
+- Instelbare ventieluitvoeringen, twee extra elektrische hydrauliekvarianten en interne verbindingen per stand; aansluitingen worden niet stilzwijgend verwijderd.
+- SHIL blijft afzonderlijk en is via een link bereikbaar.
+- Vernieuwde Ladder-tekenbediening en afdrukken met SH-logo, inclusief PDF-export.
+- Repositorycontrole: 90 componenten, 25 voorbeelden, 158 tests en bijgewerkte documentatie.
+
+## Laddergereedschappen en afdrukken met SH-logo
+
+- Symboolbalk, invoegpunten en slepen/neerzetten voor contacten en spoelen in de Ladder-editor.
+- Selectiegebonden eigenschappen en doorlopende bedrading tussen rails, contacten en uitgangen.
+- Afdrukvoorbeeld voor schakeling, GRAFCET en Ladder via Export of Ctrl/Cmd+P, met SH-logo, titel, datum en bladnummer.
+- Logo op de tekening en het onderdelenblad van de PDF-export; drie nieuwe afdruktests (127 tests totaal).
+
 ## Meer tekenruimte en losse analysevensters
 
 - Vaste onderste analysebalk verwijderd; het schema krijgt de volledige beschikbare hoogte.
@@ -15,7 +32,7 @@
 - GRAFCET-teruglussen en overgangen buiten de stapgrenzen blijven zichtbaar.
 - Veertien nieuwe regressietests; 124 tests totaal.
 
-## SH PN · HYD — Licht atelier en motorbesturing
+## SH TechniekLab — Licht atelier en motorbesturing
 
 - Eigen lichte vormgeving met SH-monogram en een lesoverzicht met zeven Nederlandse opdrachten.
 - Zes motorcomponenten; voorbeelden voor zelfhouding, omkeersturing en een 24 V-transportband.

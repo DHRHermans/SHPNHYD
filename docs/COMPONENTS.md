@@ -1,4 +1,4 @@
-# Component library — 80 components
+# Component library — 90 components
 
 Each entry is one record in a catalog file: symbol, ports, physics and plausible faults. See
 [the component contract](ARCHITECTURE.md#the-component-contract) for how to add one.
@@ -36,7 +36,7 @@ contacts couple through their designation (K1, Y1 …) rather than through drawn
 ## Hydraulics
 
 Hydraulic cylinder, tank, fixed-displacement pump, pressure gauge, 4/3 directional valves
-(closed, float and open centre; hand lever and solenoid), pressure relief valve, counterbalance
+(closed, float and tandem centre; hand lever and solenoid), pressure relief valve, counterbalance
 valve, check valve, one-way flow control valve.
 
 ## Digital logic
@@ -50,6 +50,18 @@ Resistor, capacitor, inductor, potentiometer, 1N4007 diode, LED, Zener diode, NP
 transistor (Ebers–Moll), n-channel MOSFET (square law), operational amplifier, AC source
 (sine / square / triangle up to 200 kHz), transformer.
 
+## Industrial motor control
+
+Functional three-phase supply, contactor coil, three-pole contactor, three-phase motor, I²t overload contact and a simplified 24 V DC drive. These are teaching models with explicit limits, not a numerical AC machine solver.
+
+## Physical controller modules
+
+PLC and GRAFCET modules each provide L+/M power, eight digital inputs and eight sourcing outputs with configurable program aliases. Their electrical wiring determines the input levels and whether loads are energized.
+
+## Configurable directional valves
+
+Supported valve families expose standard actuation/return/centre variants. Optional per-position internal connections use existing ports and affect both the symbol and numerical flow stamping. New port geometry and arbitrary component types are not supplied.
+
 ## Worked examples
 
 Loadable from the toolbar:
@@ -61,3 +73,5 @@ valve** · **Holding a load with a counterbalance valve** · **GRAFCET: A+ B+ A�
 
 The GRAFCET example runs the same sequence as the pneumatic one with **10 components instead
 of 11 and without a single limit valve**: the logic lives in the chart, not in the plumbing.
+
+The current example menu contains **25 examples**, including electrohydraulic end switches, mixed pneumatic release, direct/reversing motor control, a DC conveyor, GRAFCET and Ladder in all three domains, physically wired controller modules and the drill-press scene. The scene uses two existing pneumatic cylinders and a functional motor; it is not an additional simulated component type. See the Dutch manual for the 1.1 additions.

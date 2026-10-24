@@ -4,7 +4,7 @@
 npm test          # or: node tests/run.js
 ```
 
-124 tests in 8 suites, no framework. A test framework would cost more than it saves here, and
+158 tests in 13 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
@@ -12,6 +12,11 @@ work to collide on.
 | Suite | Covers |
 | --- | --- |
 | `gate-controller-editor.js` | Saved controller programs, automatic cycles in all three domains, exclusive mode selection, timed outputs, broken coils, undo/redo, draft imports and visible GRAFCET return paths |
+| `gate-import.js` | Finite import coordinates/parameters and escaped recorder labels |
+| `gate-machine.js` | Manual and automatic drill cycles, clamping interlocks, controlled stop, jammed clamp and scene serialization |
+| `gate-valves.js` | Safe variant replacement, custom pneumatic/hydraulic port paths and layout validation |
+| `gate-controller-io.js` | Powered wired controller operation, disconnected inputs/outputs, supply loss and conflicting aliases |
+| `gate-print.js` | Branded pages, title escaping, wide/parallel Ladder print geometry and PDF logos on drawing and parts pages |
 | `gate-publication.js` | Complete static artifact, immutable asset paths, transitive modules, release identifier, lesson links and reproducibility |
 | `gate-industrial.js` | Motor latching, stop/restart, reversing interlocks, phase faults, coil and contact faults, thermal trip/reset, DC polarity, serialization and domain separation |
 | `gate-electrohydraulic.js` | Hydraulic position sensors, full stroke cycle, serialization, mixed pneumatic interlock |
@@ -68,3 +73,13 @@ Chromium checks exercised dedicated full-height tabs, adding/deleting Ladder net
 ## Floating analysis windows
 
 Chromium validation checked that the drawing uses the full available height with no bottom analysis dock, including browsers retaining the old 620 px diagram preference. All three non-modal windows opened together without changing the drawing bounds. Dragging, resizing, maximize/restore, saved geometry, automatic oscilloscope opening on a probe, live oscilloscope and displacement traces, and closing with Escape without stopping the simulation were exercised. GRAFCET and Ladder workspaces remained usable with a measurement window open. Viewport resizing kept window controls on screen. The versioned Pages artifact was checked as well.
+
+## Ladder palette and branded printing
+
+Chromium checks exercised palette click placement, drag/drop insertion, selection, Delete, timer editing and connected wire geometry. Print previews for circuit, GRAFCET and Ladder contained the SH logo and no editor controls; Ctrl+P opened the branded preview. A real A4 landscape PDF was generated from the print document to verify layout and extractable labels/logo text. Multi-network Ladder pagination was checked separately. These checks were repeated against the versioned Pages artifact.
+
+## Final 1.1 review
+
+The combined suite contains 158 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All sixteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
+
+CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.

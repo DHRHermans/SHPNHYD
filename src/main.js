@@ -7,8 +7,12 @@ import { History } from './history.js';
 import { Recorder, drawDiagram } from './diagram.js';
 import { Panels } from './panels.js';
 import { ToolWindows } from './tool-windows.js';
+import { MachineView } from './machine-view.js';
+import { valveVariants, replaceValve } from './valves.js';
+import { valveEditorMarkup, bindValveEditor } from './valve-editor.js';
 import { buildParts, partsToCSV, totalParts, DOMAIN_LABEL } from './partslist.js';
-import { exportSVG, exportPNG, exportPDF } from './export.js';
+import { exportSVG, exportPNG, exportPDF, sheetToSVG } from './export.js';
+import { openPrintPreview, ladderPrintSVG } from './print.js';
 import { drawGrafcet, toChart, STEP_SIZE } from './grafcet-view.js';
 import { validate as validateChart, receptivityError, Grafcet, ACTION_KINDS } from './grafcet.js';
 import {
@@ -194,7 +198,7 @@ function thumbFor(def) {
 function domainOfGroup(group) {
   if (group === 'Motorschakelingen') return 'motor';
   if (group.startsWith('Hydraulica')) return 'hyd';
-  if (group === 'Elektrisch' || group === 'Elektronica') return 'elec';
+  if (group === 'Elektrisch' || group === 'Elektronica' || group === 'Besturingsmodules') return 'elec';
   if (group === 'Digitale logica') return 'dig';
   return 'pneu';
 }
@@ -565,7 +569,7 @@ function buildProbeList() {
         ${Array.from({ length: MAX_CHANNELS }, (_, i) =>
           `<option value="${i}"${ch === i ? ' selected' : ''}>${i + 1}</option>`).join('')}
       </select>
-      <span class="probe-name" title="${probe.label}">${probe.label}</span>
+      <span class="probe-name" title="${esc(probe.label)}">${esc(probe.label)}</span>
       <span class="probe-val" data-probe-cell="${probe.id}">—</span>
       <button class="probe-x" data-drop="${probe.id}" title="Meetprobe verwijderen">×</button>
     </div>`;
@@ -583,7 +587,7 @@ function buildProbeList() {
   if (cur) {
     html += `<div class="cursor-readout"><span class="dt">Δt = ${num(cur.dt * 1000, 0)} ms</span>`;
     for (const r of cur.rows) {
-      html += `<div class="row"><span style="color:${r.color}">${r.label}</span>
+      html += `<div class="row"><span style="color:${r.color}">${esc(r.label)}</span>
         <span>Δ ${num(r.d, 2)} ${r.unit}</span></div>`;
     }
     html += `</div>`;
@@ -622,7 +626,7 @@ function buildTriggerSources() {
   sel.innerHTML = Array.from({ length: MAX_CHANNELS }, (_, i) => {
     const p = s.probeOf(i);
     return `<option value="${i}"${s.trigger.source === i ? ' selected' : ''}>
-      K${i + 1}${p ? ` ${p.label}` : ''}</option>`;
+      K${i + 1}${p ? ` ${esc(p.label)}` : ''}</option>`;
   }).join('');
 }
 
@@ -666,9 +670,10 @@ function setPanelTab(tab) {
     return;
   }
   state.tab = tab;
-  const fullEditor = tab === 'grafcet' || tab === 'ladder';
+  const fullEditor = tab === 'grafcet' || tab === 'ladder' || tab === 'machine';
   el.diagPanel.classList.toggle('editor-full', fullEditor);
   el.diagPanel.hidden = !fullEditor;
+  el.diagPanel.classList.toggle('machine-editor',tab==='machine');
   el.canvasWrap.classList.toggle('controller-editor', fullEditor);
   document.querySelectorAll('[data-workspace]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.workspace === (fullEditor ? tab : 'circuit'))));
   $('#controller-mode').value = controllerMode(state.circuit);
@@ -677,6 +682,8 @@ function setPanelTab(tab) {
   document.querySelectorAll('[data-for]').forEach((g) => { g.hidden = g.dataset.for !== tab; });
   el.grafcetView.classList.toggle('is-hidden', tab !== 'grafcet');
   $('#ladder-view').classList.toggle('is-hidden', tab !== 'ladder');
+  $('#machine-view').classList.toggle('is-hidden', tab !== 'machine');
+  if(tab === 'machine') machineView.draw();
   if (tab === 'ladder') ladderEditor.draw();
   redrawDiagram();
   redrawScope();
@@ -732,7 +739,10 @@ function buildInspector() {
   const def = state.circuit.defOf(inst);
 
   let html = `<h3 class="insp-title">${def.name}</h3>
-    <p class="insp-sub">${inst.params?.tag?.value ?? def.short} · ${def.id}</p>`;
+    <p class="insp-sub">${esc(inst.params?.tag?.value ?? def.short)} · ${def.id}</p>`;
+
+  const variants=valveVariants(inst.type);
+  if(variants.length) html += `<div class="valve-configuration"><label for="valve-variant">Ventieluitvoering</label><select id="valve-variant" aria-label="Ventieluitvoering">${variants.map(v=>`<option value="${v.id}"${v.id===inst.type?' selected':''}>${esc(v.name)}</option>`).join('')}</select><p class="hint" style="border:0;padding:6px 0">Kies bediening, terugstelling en beschikbare middenstand. Alleen geteste varianten worden aangeboden; poortnamen en gemeenschappelijke instellingen blijven behouden.</p></div>`;
 
   for (const [key, p] of Object.entries(inst.params)) {
     html += `<div class="field" data-key="${key}">`;
@@ -742,7 +752,7 @@ function buildInspector() {
         <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}">`;
     } else if (p.type === 'text') {
       html += `<div class="field-label"><span>${p.label}</span></div>
-        <input type="text" value="${p.value ?? ''}">`;
+        <input type="text" value="${esc(p.value ?? '')}">`;
     } else if (p.type === 'select') {
       html += `<div class="field-label"><span>${p.label}</span></div><select aria-label="${esc(p.label)}">`
         + p.options.map((o) => `<option value="${o.value}"${o.value === p.value ? ' selected' : ''}>${o.label}</option>`).join('')
@@ -760,6 +770,8 @@ function buildInspector() {
 
   if (def.group === 'Motorschakelingen') html += `<p class="hint" style="border:0;padding:6px 0">De gestreepte hoofdkring gebruikt een functioneel driefasenmodel; de stuurkring werkt op 24 V DC. Koppel hoofdcontacten en hulpcontacten via dezelfde spoelaanduiding (KM1/KM2). De getoonde motorstroom is een modelwaarde. Klik tijdens de simulatie op F1 om na afkoeling te resetten.</p>`;
 
+  if(['plc_io','grafcet_io'].includes(inst.type))html += '<p class="hint" style="border:0">Sluit L+ aan op +24 V en M op 0 V. I0–I7 lezen spanning ten opzichte van M. Q0–Q7 leveren een geschakelde 24 V-uitgang naar een spoel of lamp; verbind de andere kant met M. Koppel hieronder iedere poort aan de programmanaam. Kies de bijbehorende actieve besturing.</p>';
+  html += valveEditorMarkup(def);
   if (inst.params.solA) html += `<p class="hint" style="border:0;padding:6px 0">Geef de elektrische ventielspoel dezelfde aanduiding als Spoel links/rechts (bijvoorbeeld Y1/Y2). De spoel bedient het ventiel; de olieleidingen verbinden het ventiel met de cilinder.</p>`;
 
   if (def.faultTypes?.length) {
@@ -785,6 +797,12 @@ function buildInspector() {
     </div>`;
 
   el.inspector.innerHTML = html;
+
+  bindValveEditor(el.inspector,inst,def,()=>{state.circuit.touch();stopSim();commit();});
+  $('#valve-variant')?.addEventListener('change', event=>{
+    try { replaceValve(state.circuit,inst.id,event.target.value);stopSim();buildInspector();commit();toast('Ventieluitvoering aangepast'); }
+    catch(error){event.target.value=inst.type;toast(error.message);}
+  });
 
   el.inspector.querySelectorAll('[data-fault]').forEach((box) => {
     box.addEventListener('change', () => {
@@ -872,7 +890,7 @@ function buildEmptyInspector() {
       <span class="block-title">${armed.length} storingen ingeschakeld</span>
       <ul class="issue-list">`;
     for (const inst of armed.slice(0, 6)) {
-      html += `<li><button class="issue" data-goto="${inst.id}">${inst.params?.tag?.value ?? inst.type}</button></li>`;
+      html += `<li><button class="issue" data-goto="${inst.id}">${esc(inst.params?.tag?.value ?? inst.type)}</button></li>`;
     }
     html += `</ul></div>`;
   }
@@ -883,7 +901,7 @@ function buildEmptyInspector() {
       <ul class="issue-list">`;
     for (const it of issues.slice(0, 8)) {
       html += `<li><button class="issue" data-goto="${it.id ?? ''}">
-        <span class="dot ${it.level}"></span>${it.text}</button></li>`;
+        <span class="dot ${it.level}"></span>${esc(it.text)}</button></li>`;
     }
     html += `</ul></div>`;
   } else if (c.instances.length) {
@@ -962,6 +980,16 @@ function checkCircuit(c) {
   for (const i of c.instances.filter(i => i.type === 'industrial_overload')) {
     if (!c.instances.some(m => m.type === 'industrial_motor' && m.params.tag.value === i.params.motor.value)) {
       out.push({ level: 'warn', text: `${i.params.tag.value}: geen bijbehorende motor`, id: i.id });
+    }
+  }
+
+  const moduleType=controllerMode(c)==='ladder'?'plc_io':controllerMode(c)==='grafcet'?'grafcet_io':null;
+  const aliases=new Set();
+  for(const i of c.instances.filter(i=>i.type===moduleType)){
+    if(!c.hasWire(i.id,'L+')||!c.hasWire(i.id,'M'))out.push({level:'warn',text:`${i.params.tag.value}: sluit L+ en M van de besturingsmodule aan`,id:i.id});
+    for(const [key,param]of Object.entries(i.params).filter(([key])=>/^(input|output)/.test(key))){
+      if(param.value&&aliases.has(param.value))out.push({level:'err',text:`I/O-naam ${param.value} is meermaals gekoppeld`,id:i.id});
+      if(param.value)aliases.add(param.value);
     }
   }
 
@@ -1057,6 +1085,11 @@ function updateReadouts() {
     rows += `<div class="readout"><span>Cilinderpositie</span><span>${pct} %</span></div>
       <div class="bar"><i style="width:${pct}%"></i></div>
       <div class="readout"><span>Snelheid</span><span>${num(inst.sim.v * 1000, 0)} mm/s</span></div>`;
+  }
+  if(['plc_io','grafcet_io'].includes(inst.type)){
+    rows += `<div class="readout"><span>Modulevoeding</span><span>${inst.sim.powered?'24 V aanwezig':'spanningsloos'}</span></div>`;
+    rows += `<div class="readout"><span>Programmabesturing</span><span>${controllerMode(state.circuit)===(inst.type==='plc_io'?'ladder':'grafcet')?'actief':'niet actief'}</span></div>`;
+    if(sim.ioError)rows += `<p class="gr-err">${esc(sim.ioError)}</p>`;
   }
   if (inst.sim?.rpm != null) {
     rows += `<div class="readout"><span>Toerental (model)</span><span>${num(inst.sim.rpm, 0)} omw/min</span></div>`;
@@ -1431,6 +1464,7 @@ function stopSim() {
   el.simState.className = 'pill pill-idle';
   render();
   if (state.tab === 'ladder') ladderEditor.live();
+  if (state.tab === 'machine') machineView.live();
   redrawGrafcet();
 }
 
@@ -1466,6 +1500,7 @@ function frame(now) {
     redrawScope();
     redrawGrafcet();
     if (state.tab === 'ladder') ladderEditor.live();
+  if (state.tab === 'machine') machineView.live();
   }
   requestAnimationFrame(frame);
 }
@@ -1513,10 +1548,10 @@ function buildPartsList() {
     html += `<tr>
       <td class="num">${i + 1}</td>
       <td class="qty">${r.count}×</td>
-      <td class="tags">${r.tags.join(' ') || '—'}${
+      <td class="tags">${esc(r.tags.join(' ') || '—')}${
         r.faults ? ` <span class="parts-fault">${r.faults} Storing</span>` : ''}</td>
       <td class="name">${r.def.name}</td>
-      <td class="spec">${r.spec || '—'}</td>
+      <td class="spec">${esc(r.spec || '—')}</td>
       <td class="grp">${r.def.group}</td>
     </tr>`;
   });
@@ -1599,8 +1634,8 @@ function buildGrafcetSide(issues = []) {
         <input type="text" id="gr-recep" class="${err ? 'bad' : ''}" value="${esc(t.receptivity)}">
         ${err ? `<p class="gr-err">${esc(err)}</p>` : ''}
       </div>
-      <div class="gr-row"><span>van</span><b>${t.from.map(nameOf).join(' ') || '—'}</b></div>
-      <div class="gr-row"><span>naar</span><b>${t.to.map(nameOf).join(' ') || '—'}</b></div>
+      <div class="gr-row"><span>van</span><b>${esc(t.from.map(nameOf).join(' ') || '—')}</b></div>
+      <div class="gr-row"><span>naar</span><b>${esc(t.to.map(nameOf).join(' ') || '—')}</b></div>
       <p class="gr-hint">Vertakken: sleep van het <b>aansluitpunt</b> van een andere stap naar deze overgang. Houd <b>Shift</b> ingedrukt voor een voorgaande stap; zonder Shift maak je een volgende stap.</p>
       <p class="gr-hint">Voorwaarden: <code>S1 * a0</code> (EN), <code>+</code> (OF),
       <code>/S1</code> (niet), <code>X2</code> (Stap actief), <code>↑S1</code> (Flank),
@@ -1610,17 +1645,17 @@ function buildGrafcetSide(issues = []) {
     const outs = [...chart.outputs()].sort((a, b) => a[0].localeCompare(b[0]));
     html += `<p class="gr-title">Actieve stappen</p>`;
     const act = [...chart.active].map((id) => chart.steps.get(id)?.name).filter(Boolean);
-    html += `<div class="gr-row"><span>Stap</span><b>${act.join(' ') || '—'}</b></div>`;
+    html += `<div class="gr-row"><span>Stap</span><b>${esc(act.join(' ') || '—')}</b></div>`;
     if (outs.length) {
       html += `<p class="gr-title" style="margin-top:10px">Commando’s</p>`;
       for (const [k, v] of outs) {
-        html += `<div class="gr-row${v ? ' on' : ''}"><span>${k}</span><b>${v ? '1' : '0'}</b></div>`;
+        html += `<div class="gr-row${v ? ' on' : ''}"><span>${esc(k)}</span><b>${v ? '1' : '0'}</b></div>`;
       }
     }
     if (issues.length) {
       html += `<p class="gr-title" style="margin-top:10px;color:var(--danger)">Controle</p>`;
       for (const i of issues.slice(0, 6)) {
-        html += `<div class="gr-row"><span style="font-family:var(--font)">${i.text}</span></div>`;
+        html += `<div class="gr-row"><span style="font-family:var(--font)">${esc(i.text)}</span></div>`;
       }
     }
   }
@@ -1629,7 +1664,9 @@ function buildGrafcetSide(issues = []) {
     if (i.params.tag?.value) tags.add(i.params.tag.value);
     if (i.params.solA?.value) tags.add(i.params.solA.value);
     if (i.params.solB?.value) tags.add(i.params.solB.value);
+    for(const [k,p] of Object.entries(i.params))if(/^(input|output)/.test(k)&&p.value)tags.add(p.value);
   }
+  if(state.circuit.scene?.type==='drill-press'){tags.add('B_WERKSTUK');tags.add('B_SPINDEL_STIL');}
   html += `<datalist id="controller-tags">${[...tags].map(t => `<option value="${esc(t)}"></option>`).join('')}</datalist><p class="gr-title" style="margin-top:16px">Koppelen aan de schakeling</p><p class="gr-hint">Gebruik sensoraanduidingen in voorwaarden en spoelaanduidingen in acties. Dit werkt voor lucht, olie en elektrische aandrijvingen. Kies bovenaan GRAFCET als actieve besturing.</p><p class="gr-hint">Beschikbare aanduidingen: ${[...tags].map(esc).join(', ') || 'plaats eerst componenten'}.</p>`;
   el.grafcetSide.innerHTML = html;
   bindGrafcetSide();
@@ -1641,12 +1678,12 @@ const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) =>
 function bindGrafcetSide() {
   const chart = state.circuit.chart;
   const sel = state.grSel;
-  const commitChart = () => { state.circuit.touch(); commit(); redrawGrafcet(); };
+  const commitChart = () => { state.circuit.touch(); stopSim(); commit(); redrawGrafcet(); };
 
   const name = $('#gr-name');
   if (name) name.addEventListener('input', () => {
     chart.steps.get(sel.id).name = name.value;
-    state.circuit.touch(); commit(`gr:${sel.id}:name`);
+    state.circuit.touch(); stopSim(); commit(`gr:${sel.id}:name`);
     // Redraw the chart but not the panel — rebuilding it would drop focus mid-typing.
     drawChartOnly();
   });
@@ -1661,7 +1698,7 @@ function bindGrafcetSide() {
   const recep = $('#gr-recep');
   if (recep) recep.addEventListener('input', () => {
     chart.transitions.get(sel.id).receptivity = recep.value;
-    state.circuit.touch(); commit(`gr:${sel.id}:recep`);
+    state.circuit.touch(); stopSim(); commit(`gr:${sel.id}:recep`);
     const err = receptivityError(recep.value);
     recep.classList.toggle('bad', !!err);
     let note = recep.parentElement.querySelector('.gr-err');
@@ -1687,7 +1724,7 @@ function bindGrafcetSide() {
   }));
   el.grafcetSide.querySelectorAll('[data-atarget]').forEach((n) => n.addEventListener('input', () => {
     chart.steps.get(sel.id).actions[+n.dataset.atarget].target = n.value;
-    state.circuit.touch(); commit(`gr:${sel.id}:act`);
+    state.circuit.touch(); stopSim(); commit(`gr:${sel.id}:act`);
     drawChartOnly();
   }));
   el.grafcetSide.querySelectorAll('[data-avalue]').forEach((n) => n.addEventListener('change', () => {
@@ -1979,7 +2016,7 @@ $('#scope-csv').addEventListener('click', () => {
   if (!csv) { toast('Er is nog geen opname'); return; }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = 'oszilloskop.csv';
+  a.download = 'oscilloscoop.csv';
   a.click();
   URL.revokeObjectURL(a.href);
   toast('Kanalen als CSV geëxporteerd');
@@ -1991,7 +2028,7 @@ $('#diag-csv').addEventListener('click', () => {
   if (!csv) { toast('Er is nog geen opname'); return; }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = 'spuren.csv';
+  a.download = 'weg-stapdiagram.csv';
   a.click();
   URL.revokeObjectURL(a.href);
   toast('Traces als CSV geëxporteerd');
@@ -2030,10 +2067,25 @@ exportMenu.addEventListener('click', async (e) => {
     const blob = new Blob([JSON.stringify(state.circuit.toJSON(), null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'schaltplan.fluidlab.json';
+    a.download = 'sh-technieklab-schema.json';
     a.click();
     URL.revokeObjectURL(a.href);
     toast('Schakelschema geëxporteerd');
+  } else if (what === 'print') {
+    document.activeElement?.blur();
+    const pages = [];
+    if (state.tab === 'ladder') {
+      for (const [n,row] of (state.circuit.ladder?.rungs || []).entries()) pages.push({label:`PLC Ladder · Netwerk ${n+1}`,svg:ladderPrintSVG(row)});
+    } else if (state.tab === 'grafcet') {
+      if (state.circuit.chart?.steps.size) {
+      const svg=document.createElementNS(SVG_NS,'svg');
+      drawGrafcet(svg,state.circuit.chart,{width:1000,height:700});
+      const style=document.createElementNS(SVG_NS,'style');style.textContent='.gr-step,.gr-action{fill:white;stroke:#153b40;stroke-width:1.5}.gr-link{fill:none;stroke:#153b40;stroke-width:1.4}.gr-bar{stroke:#153b40;stroke-width:2}.gr-name,.gr-recep,.gr-act-t{fill:#153b40;font-family:monospace;font-size:10px}.gr-hit,.gr-nub,.gr-token{display:none}';svg.prepend(style);
+      pages.push({label:'GRAFCET',svg:new XMLSerializer().serializeToString(svg)});
+      }
+    } else if(state.tab==='machine') { const svg=$('.machine-illustration > svg');if(svg)pages.push({label:'Machinebeeld',svg:new XMLSerializer().serializeToString(svg)});
+    } else { const svg=sheetToSVG(el.sheet,{title});if(svg)pages.push({label:'Schakelschema',svg}); }
+    if (!openPrintPreview(title,pages)) toast('Er is geen schema om af te drukken');
   } else if (what === 'svg') {
     toast(exportSVG(el.sheet, title) ? 'SVG geëxporteerd' : 'Er is niets om te exporteren');
   } else if (what === 'png') {
@@ -2106,6 +2158,13 @@ examplesSel.addEventListener('change', (e) => {
 window.addEventListener('keydown', (e) => {
   // target is only guaranteed to be an Element when something is focused; when it is
   // the window or document, matches() does not exist and would take out every shortcut.
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    const printButton = $('#print-preview [data-print]');
+    if (printButton) printButton.click(); else $('[data-export="print"]').click();
+    return;
+  }
+  if ($('#print-preview')) return;
   const t = e.target;
   if (t instanceof Element && t.matches('input, select, textarea')) return;
   const k = e.key.toLowerCase();
@@ -2116,8 +2175,8 @@ window.addEventListener('keydown', (e) => {
   else if (e.key === 'Delete' || e.key === 'Backspace') {
     e.preventDefault();
     // The chart panel owns Delete while something in it is selected.
-    if (state.tab === 'grafcet' && state.grSel) deleteGrSelection();
-    else deleteSelection();
+    if (state.tab === 'grafcet') { if (state.grSel) deleteGrSelection(); }
+    else if (state.tab === 'circuit') deleteSelection();
   }
   else if (e.key === ' ') { e.preventDefault(); setRunning(!state.sim.running); }
   else if (e.key === 'Escape') stopSim();
@@ -2158,6 +2217,7 @@ function applyCircuit(c) {
   $('#controller-mode').value = controllerMode(c);
   if (state.tab === 'ladder') ladderEditor.draw();
   if (state.tab === 'grafcet') redrawGrafcet();
+  if (state.tab === 'machine') machineView.draw();
 }
 
 /** Loads a document as a fresh start: history cleared, view fitted. */
@@ -2195,6 +2255,12 @@ const ladderEditor = new LadderEditor($('#ladder-view'), {
   simulation: () => state.sim,
   changed: () => { state.circuit.touch(); stopSim(); commit(); },
 });
+const machineView = new MachineView($('#machine-view'), {
+  circuit:()=>state.circuit, simulation:()=>state.sim,
+  load:()=>{loadCircuit(EXAMPLES.drillingMachine.build());state.docTitle=EXAMPLES.drillingMachine.name;setPanelTab('machine');},
+  run:()=>setRunning(true),
+  mode:value=>{$('#controller-mode').value=value;$('#controller-mode').dispatchEvent(new Event('change'));machineView.draw();},
+});
 document.querySelectorAll('[data-workspace]').forEach(b => b.addEventListener('click', () => setPanelTab(b.dataset.workspace)));
 $('#controller-mode').addEventListener('change', e => {
   state.circuit.controller = e.target.value;
@@ -2216,6 +2282,6 @@ loadCircuit(initialExample.build());
 state.docTitle = initialExample.name;
 applyView();
 const requestedWorkspace = new URLSearchParams(window.location.search).get('workspace');
-setPanelTab(['grafcet', 'ladder'].includes(requestedWorkspace) ? requestedWorkspace : 'circuit');
+setPanelTab(['grafcet', 'ladder', 'machine'].includes(requestedWorkspace) ? requestedWorkspace : 'circuit');
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 requestAnimationFrame(frame);

@@ -1130,3 +1130,40 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .tool-window-resize::after { content:''; position:absolute; right:5px; bottom:5px; width:8px; height:8px; border-right:2px solid #8eb7a8; border-bottom:2px solid #8eb7a8; }
 @media(max-width:1100px) { .workspace-long { display:none; } }
 @media(max-width:700px) { .tool-window .probe-list { width:140px; }.tool-window-titlebar { min-height:40px; padding-left:12px; } }
+
+/* Ladder drawing tools and continuous wiring. */
+.ld-palette { display:flex; flex-wrap:wrap; gap:6px; position:sticky; top:-24px; z-index:5; padding:12px 0; background:var(--paper); border-bottom:1px solid var(--line); }
+.ld-palette button { display:flex; flex-direction:column; align-items:center; gap:4px; min-width:73px; font-size:10px; }
+.ld-palette button span { font:16px var(--mono); }
+.ld-palette button[aria-pressed="true"] { background:#dff2e9; border-color:var(--accent); color:var(--accent); }
+.ld-help { font-size:12px; color:var(--text-3); }
+.ld-rung { overflow-x:auto; }
+.ld-circuit { position:relative; min-width:720px; gap:24px; }
+.ld-wiring { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.ld-wiring path { fill:none; stroke:#68817b; stroke-width:2; }
+.ld-branches { min-width:max-content; }
+.ld-branch { border:0; overflow:visible; gap:0; }
+.ld-cell { width:110px; min-height:100px; justify-content:flex-start; background:white; }
+.ld-cell svg { flex-shrink:0; }
+.ld-cell input { text-align:center; border-color:transparent; background:transparent; font-family:var(--mono); }
+.ld-cell select, .ld-cell > label, .ld-cell > button { visibility:hidden; }
+.ld-cell.selected { outline:2px solid var(--accent); outline-offset:1px; background:#f1faf6; }
+.ld-cell.selected select, .ld-cell.selected > label, .ld-cell.selected > button { visibility:visible; }
+.ld-cell.selected input { border-color:var(--line); background:white; }
+.ld-cell.drop-target, .ld-insert.drop-target { background:#cceadd; outline:2px dashed var(--accent); }
+.ladder-view .ld-insert { padding:0; width:23px; height:23px; flex-shrink:0; border-radius:50%; font-size:15px; margin-top:-45px; z-index:1; }
+.ld-cell:focus-visible { outline:2px solid var(--focus); }
+
+#print-preview { width:min(1200px,96vw); height:90vh; max-height:95vh; padding:0; border:1px solid var(--line); border-radius:14px; color:var(--text); }
+#print-preview::backdrop { background:rgba(21,59,64,.35); }
+#print-preview > header { display:flex; align-items:center; gap:12px; padding:14px; background:white; border-bottom:1px solid var(--line); }
+#print-preview h2 { font-size:16px; margin:0; }#print-preview header span{font-size:11px;flex:1;color:var(--text-3)}
+#print-preview button { padding:8px 12px; background:#edf7f2; border:1px solid var(--line); border-radius:7px; color:var(--text); cursor:pointer; }
+#print-preview iframe { display:block; width:100%; height:calc(100% - 64px); border:0; }
+.ld-circuit { width:max-content; min-width:calc(100% - 8px); }
+
+.machine-view{position:absolute;inset:0;overflow:auto;padding:24px;background:var(--paper)}.machine-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.machine-head span,.machine-empty>span{font-size:11px;letter-spacing:.08em;color:var(--accent);font-weight:700}.machine-head h2{font-size:24px;margin:7px 0 20px}.machine-head label{font-size:12px}.machine-head select{display:block;padding:8px;margin-top:5px}.machine-layout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:20px}.machine-illustration svg{width:100%;height:auto;min-height:330px}.machine-control{background:white;border:1px solid var(--line);border-radius:14px;padding:16px}.machine-control h3{margin:0}.machine-control button,.machine-empty button{width:100%;margin:5px 0;padding:10px;border:1px solid var(--line);border-radius:8px;background:#f1f8f4;color:var(--text);cursor:pointer}.machine-control button:disabled{opacity:.45;cursor:default}.machine-control button[aria-pressed="true"]{background:#d0eade;border-color:var(--accent)}.machine-control .machine-stop{border-color:#d29b8f;background:#fff3ee}#machine-stage{font-weight:700;color:var(--accent)}#machine-signals{font-size:12px;margin-top:14px}#machine-signals>div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line-soft)}#machine-signals .on{color:var(--accent)}#machine-feedback,.machine-note{font-size:12px;line-height:1.5;color:var(--text-3)}.machine-empty{max-width:600px;margin:80px auto}.machine-empty h2{font-size:32px}.machine-empty p{line-height:1.6}.machine-empty button{width:auto;padding:12px 18px}@media(max-width:1250px){.machine-layout{grid-template-columns:1fr}.machine-control{display:flex;flex-wrap:wrap;gap:10px}.machine-control>*{flex:1;min-width:180px}.machine-illustration svg{max-height:420px}}@media(max-width:1100px){.workspace-tabs button{padding:5px;font-size:10px}.workspace-tabs select{max-width:130px}}
+
+.machine-editor .diagram-head{display:none}.valve-configuration{margin:12px 0;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.valve-configuration label{font-size:12px;font-weight:700}.valve-configuration select{width:100%;padding:8px;margin-top:8px}
+
+.valve-advanced{margin:12px 0;border:1px solid var(--line);border-radius:8px;padding:10px}.valve-advanced summary{font-size:12px;font-weight:700;cursor:pointer}.valve-advanced p{font-size:11px;line-height:1.5;color:var(--text-3)}.valve-advanced svg{width:100%;display:block}.valve-advanced [data-valve-port]{cursor:pointer}.valve-advanced select{width:100%;padding:6px;margin-top:6px}.valve-advanced label{display:block;font-size:12px;margin-top:10px}.valve-advanced button{padding:7px;background:white;border:1px solid var(--line);border-radius:6px;color:var(--text)}

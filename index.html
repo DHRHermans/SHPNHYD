@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SH PN · HYD — Het techniekatelier</title>
+<title>SH TechniekLab — Schema’s, besturingen &amp; machinesimulatie</title>
 <meta name="theme-color" content="#087f78">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23087f78'/%3E%3Ctext x='20' y='26' font-family='sans-serif' font-weight='bold' font-size='19' text-anchor='middle' fill='white'%3ESH%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="styles.css">
@@ -13,7 +13,7 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-monogram" aria-hidden="true">SH</span>
-    <span class="brand-copy"><span class="brand-name">SH PN · HYD</span><span class="brand-caption">Het techniekatelier · Pneumatica, hydraulica &amp; motoren</span></span>
+    <span class="brand-copy"><span class="brand-name">SH TechniekLab</span><span class="brand-caption">Schema’s, besturingen &amp; machinesimulatie</span></span>
   </div>
 
   <div class="tool-group" role="group" aria-label="Gereedschappen">
@@ -60,6 +60,7 @@
     <div class="menu-wrap">
       <button id="btn-export" class="btn btn-ghost" aria-haspopup="true" aria-expanded="false">Export ▾</button>
       <div id="export-menu" class="menu" hidden>
+        <button data-export="print">Afdrukken (met SH-logo)</button>
         <button data-export="json">Schakelschema (JSON)</button>
         <button data-export="svg">Tekening (SVG)</button>
         <button data-export="png">Tekening (PNG)</button>
@@ -93,7 +94,7 @@
       <button class="chip" data-domain="dig" aria-pressed="false">Digitale logica</button>
     </div>
     <div id="lib-list" class="lib-list"></div>
-    <p class="hint">Sleep een component naar het werkvlak of klik erop.<br><a href="lessen.html">Ontdek de lessen en oefeningen →</a><br><span id="release-label">Ontwikkelversie · Licht atelier</span></p>
+    <p class="hint">Sleep een component naar het werkvlak of klik erop.<br><a href="lessen.html">Ontdek de lessen en oefeningen →</a><br><a href="https://dhrhermans.github.io/SHIL/" target="_blank" rel="noopener noreferrer">SHIL · theorie en berekeningen →</a><br><span id="release-label">Ontwikkelversie · Licht atelier</span></p>
   </aside>
 
   <div class="resize-handle resize-v" data-resize="left" role="separator"
@@ -103,6 +104,7 @@
     <nav class="workspace-tabs" aria-label="Werkbladen">
       <button data-workspace="circuit" aria-pressed="true">Schakeling</button>
       <button data-workspace="grafcet" aria-pressed="false">GRAFCET<span class="workspace-long"> tekenen</span></button>
+      <button data-workspace="machine" aria-pressed="false">Machinebeeld</button>
       <button data-workspace="ladder" aria-pressed="false">PLC Ladder</button>
       <label for="controller-mode">Besturing</label>
       <select id="controller-mode" aria-label="Actieve besturing"><option value="manual">Handmatig / elektrisch</option><option value="grafcet">GRAFCET</option><option value="ladder">PLC Ladder</option></select>
@@ -213,6 +215,7 @@
           <aside id="probe-list" class="probe-list"></aside>
         </div>
         <div id="parts-view" class="parts-view is-hidden"></div>
+        <div id="machine-view" class="machine-view is-hidden"></div>
         <div id="ladder-view" class="ladder-view is-hidden"></div>
         <div id="grafcet-view" class="grafcet-view is-hidden">
           <svg id="grafcet" class="grafcet"></svg>

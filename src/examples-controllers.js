@@ -60,3 +60,17 @@ export function motorController(c, mode) {
   }
   return c;
 }
+
+export function wiredController(c,mode) {
+  const module=c.add(mode==='ladder'?'plc_io':'grafcet_io',900,100);
+  const power=c.add('rail_24v',780,20),ground=c.add('rail_0v',780,560),coil=c.add('sol_coil',1160,250);
+  coil.params.tag.value='Y1';module.params.output0.value='Y1';
+  const wire=(a,ap,b,bp)=>c.connect({inst:a.id,port:ap},{inst:b.id,port:bp});
+  wire(power,'a',module,'L+');wire(ground,'a',module,'M');wire(module,'Q0',coil,'a');wire(coil,'b',ground,'a');
+  for(const [n,tag] of ['S1','B0','B1'].entries()){
+    module.params[`input${n}`].value=tag;
+    const sensor=c.instances.find(i=>i.params.tag?.value===tag);
+    wire(power,'a',sensor,'a');wire(sensor,'b',module,`I${n}`);
+  }
+  return c;
+}

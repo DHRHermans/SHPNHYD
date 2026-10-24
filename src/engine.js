@@ -1,4 +1,6 @@
 import { LadderRuntime, controllerSignal, applyControllerOutputs } from './ladder.js';
+import { prepareControllerIO } from './controller-io.js';
+import { machineInputs, machineCommands, machineProgress } from './machine.js';
 
 // Pneumatic + electrical simulation engine.
 //
@@ -659,6 +661,9 @@ export class Simulation {
   rebuild() {
     this.ladderRuntime = null;
     this.controllerError = null;
+    this.controllerInputs=new Map();this.controllerOutputs=new Map();this.physicalOutputTags=new Set();this.ioError=null;
+    this.machineManual = {clamp:false,spindle:false,feed:false};
+    this.machineWorkpiece = true; this.machineHole = 0; this.machinePulseUntil = null;
     this.chart?.reset();
     this.nets = buildNets(this.circuit, 'pneumatic');
 
@@ -763,6 +768,8 @@ export class Simulation {
     // 2. GRAFCET, before the components read their commands. Its outputs are published
     //    into `energized` under their tag, which is the same channel relay coils use —
     //    so a solenoid does not know or care whether a ladder or a chart is driving it.
+    prepareControllerIO(this);
+    machineInputs(this);
     const mode = this.circuit.controller || (this.chart ? 'grafcet' : 'manual');
     if (mode === 'grafcet' && this.chart) this.evolveChart(ctx);
     if (mode === 'ladder' && this.circuit.ladder) {
@@ -775,6 +782,8 @@ export class Simulation {
         for (const row of Array.isArray(this.circuit.ladder.rungs) ? this.circuit.ladder.rungs : []) if (row?.coil) applyControllerOutputs(this, [[row.coil, false]]);
       }
     }
+
+    machineCommands(this, mode === 'manual');
 
     // 3. Discrete state: spool positions, latches, timers, limit switches.
     //    A "stuck" defect is enforced centrally rather than in each component: whatever
@@ -832,6 +841,7 @@ export class Simulation {
       if (def?.integrate) def.integrate(inst, ctx);
     }
 
+    machineProgress(this, dt);
     this.time += dt;
   }
 

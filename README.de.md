@@ -1,3 +1,5 @@
+> Historische Duitstalige documentatie van de FluidLab-basis. Voor SH TechniekLab 1.1, actuele mogelijkheden en aantallen: [README.md](README.md) en [Nederlandse handleiding](docs/HANDLEIDING-NL.md).
+
 # FluidLab
 
 **Ein Pneumatik-, Elektropneumatik-, Hydraulik- und Elektronik-Simulator im Browser — auf

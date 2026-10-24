@@ -1,13 +1,13 @@
 {
-  "name": "sh-pn-hyd",
-  "version": "1.0.0-nl.1",
-  "description": "Nederlandstalige onderwijssimulator voor pneumatica, hydraulica en elektrische besturing op één werkvlak.",
+  "name": "sh-technieklab",
+  "version": "1.1.0",
+  "description": "Nederlandstalig techniekatelier voor schema’s, pneumatiek, hydrauliek, motorbesturing, GRAFCET, PLC Ladder en visuele machinesimulatie.",
   "type": "module",
   "license": "PolyForm-Noncommercial-1.0.0",
   "author": "Alexander Hahn",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alex-hahn/fluidlab.git"
+    "url": "git+https://github.com/DHRHermans/SHPNHYD.git"
   },
   "keywords": [
     "simulation",

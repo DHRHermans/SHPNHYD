@@ -6,6 +6,6 @@ Dit project is een aangepaste versie van FluidLab, https://github.com/alex-hahn/
 
 Licentie: PolyForm Noncommercial 1.0.0, ongewijzigd opgenomen in LICENSE.
 
-Aanpassingen voor SH PN · HYD: Nederlandse gebruikersinterface, onderwijsuitleg, correctie van de hydraulische cilinderselectie voor sensoren, een elektrohydraulisch voorbeeld en bijbehorende regressietests. Het oorspronkelijke auteurschap en de oorspronkelijke licentie blijven behouden.
+Aanpassingen voor SH TechniekLab: Nederlandstalige interface en huisstijl, onderwijsvoorbeelden, motorbesturing, GRAFCET-/Ladderwerkbladen, visuele booropdracht, fysiek bedrade controller-I/O, instelbare ventielen, analysevensters, afdrukken met SH-logo en aanvullende regressietests. Het oorspronkelijke auteurschap en de oorspronkelijke niet-commerciële licentie blijven behouden. SHIL is alleen extern gelinkt; er is geen SHIL-, PLCioSim- of FluidSIM-programmacode toegevoegd.
 
 Upstream-commit: 0c218f4e06e187bb0f21527a8bef6f2d2cd2baf7

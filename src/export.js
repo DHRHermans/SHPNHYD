@@ -115,7 +115,7 @@ export function sheetToSVG(sheetEl, { title = 'Schakelschema', margin = 40 } = {
   label.setAttribute('x', x + margin / 2);
   label.setAttribute('y', y + h - 8);
   label.setAttribute('class', 'sym-tag');
-  label.textContent = `${title} · SH PN HYD · ${new Date().toLocaleDateString('nl-BE')}`;
+  label.textContent = `${title} · SH TechniekLab · ${new Date().toLocaleDateString('nl-BE')}`;
   block.appendChild(label);
   clone.appendChild(block);
 
@@ -659,9 +659,13 @@ function titleBlockContent(page, margin, titleH, title, dateStr, scalePct) {
   const ruleY = margin + titleH;
   const textY = margin + titleH / 2 - 2;
   const rule = `q\n0.8 0.82 0.85 RG\n1 w\n[] 0 d\n${num(margin)} ${num(ruleY)} m ${num(page.width - margin)} ${num(ruleY)} l S\nQ\n`;
-  const label = `${title} · SH PN HYD · ${dateStr} · Schaal ${scalePct}%`;
-  const text = `q\nBT\n/F2 9 Tf\n0.24 0.28 0.31 rg\n1 0 0 1 ${num(margin)} ${num(textY)} Tm\n(${escapePdfText(label)}) Tj\nET\nQ\n`;
-  return rule + text;
+  const label = `${title} · SH TechniekLab · ${dateStr} · Schaal ${scalePct}%`;
+  const text = `q\nBT\n/F2 9 Tf\n0.24 0.28 0.31 rg\n1 0 0 1 ${num(margin + 34)} ${num(textY)} Tm\n(${escapePdfText(label)}) Tj\nET\nQ\n`;
+  return rule + printLogoContent(margin, textY - 7) + text;
+}
+
+function printLogoContent(x, y) {
+  return `q\n0.0314 0.498 0.4706 rg\n${num(x)} ${num(y)} 24 24 re f\nQ\n` + textLine(x + 3, y + 7, 'SH', 13, true, '#ffffff');
 }
 
 function textLine(x, y, str, size, bold, colorHex = '#14171a') {
@@ -681,9 +685,9 @@ function partsPageContent(page, margin, rows, title, dateStr) {
   const cols = weights.map((wt, i) => { const c = { x, w: availW * wt, label: headers[i] }; x += c.w; return c; });
 
   let y = page.height - margin;
-  let out = textLine(margin, y, `Onderdelenlijst — ${title}`, 14, true);
+  let out = printLogoContent(page.width - margin - 24, y - 18) + textLine(margin, y, `Onderdelenlijst — ${title}`, 14, true);
   y -= 18;
-  out += textLine(margin, y, `FluidLab · ${dateStr}`, 9, false, '#5a646d');
+  out += textLine(margin, y, `SH TechniekLab · ${dateStr}`, 9, false, '#5a646d');
   y -= 20;
 
   const ruleAt = (yy) => `q\n0.6 0.65 0.7 RG\n0.6 w\n${num(margin)} ${num(yy)} m ${num(page.width - margin)} ${num(yy)} l S\nQ\n`;

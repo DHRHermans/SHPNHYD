@@ -84,7 +84,7 @@ function makeValve({
     faultTypes: ['stuck', 'clogged', 'leak'],
 
     stamp(inst, st, ctx, work) {
-      const box = geom.boxes[inst.sim.state ?? defaultState];
+      const box = (inst.valveLayout?.boxes || geom.boxes)[inst.sim.state ?? defaultState];
       const netOf = (pid) => ctx.net(inst, pid);
       // A clogged valve still switches — it just cannot pass its rated flow.
       const C = ctx.fault(inst, 'clogged') ? C_VALVE * 0.08 : C_VALVE;
@@ -1550,6 +1550,7 @@ import { HYDRAULIC_CATALOG } from './catalog-hydraulic.js';
 import { DIGITAL_CATALOG } from './catalog-digital.js';
 import { ELECTRONICS_CATALOG } from './catalog-electronics.js';
 import { INDUSTRIAL_CATALOG } from './catalog-industrial.js';
+import { CONTROL_IO_CATALOG } from './controller-io.js';
 
 export const CATALOG = [
   cylinderDouble, cylinderSingle, cylinderThroughRod,
@@ -1571,7 +1572,20 @@ export const CATALOG = [
   ...DIGITAL_CATALOG,
   ...ELECTRONICS_CATALOG,
   ...INDUSTRIAL_CATALOG,
+  ...CONTROL_IO_CATALOG,
 ];
+
+// Advanced per-instance port connections retain the selected valve's actuation and ports.
+for (const def of CATALOG.filter(d=>d.geom)) {
+  const originalRender=def.render;
+  def.render=inst=>{
+    if(!inst.valveLayout)return originalRender(inst);
+    const geom={...def.geom,boxes:inst.valveLayout.boxes};
+    return `<g transform="translate(0,${VALVE_Y})">${drawValve(geom,inst.sim?.state??def.restState??(geom.boxes.length===3?1:0),{label:inst.params.tag?.value||''})}`
+      +(inst.params.solA?text(-2,BOX/2+14,inst.params.solA.value,'sym-tag','end'):'')
+      +(inst.params.solB?text(valveSize(geom).w+2,BOX/2+14,inst.params.solB.value,'sym-tag','start'):'')+'</g>';
+  };
+}
 
 export const BY_ID = new Map(CATALOG.map((d) => [d.id, d]));
 
