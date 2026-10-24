@@ -2,8 +2,8 @@ import { MachineView } from './machine-view.js';
 
 /** Two views share one circuit and one simulation; a second window never runs a second solver. */
 export class SimulationScreen {
-  constructor(view,{toggleRun,stop,speed,setSpeed,returnToEditor,message}){
-    Object.assign(this,{view,toggleRun,stop,speed,setSpeed,returnToEditor,message});this.popup=null;this.popupView=null;this.shell=null;
+  constructor(view,{toggleRun,stop,speed,setSpeed,returnToEditor,message,learning}){
+    Object.assign(this,{view,toggleRun,stop,speed,setSpeed,returnToEditor,message,learning});this.popup=null;this.popupView=null;this.shell=null;
     view.screen=this;
     document.addEventListener('visibilitychange',()=>this.schedule(this.frameCallback));
     window.addEventListener('pagehide',()=>{this.popupView?.controls?.dispose();this.popup?.close();});
@@ -12,9 +12,12 @@ export class SimulationScreen {
     const doc=host.ownerDocument,detached=doc!==document;
     host.classList.toggle('simulation-dashboard',detached||!!this.shell);
     const tools=doc.createElement('nav');tools.className='simulation-toolbar';tools.setAttribute('aria-label','Simulatiescherm');
-    tools.innerHTML=`<strong>SH · Simulatie</strong><button data-screen-run>Start</button><button data-screen-stop>Stop / reset</button><label>Tempo <input data-screen-speed type="range" min="0.1" max="2" step="0.1" value="${this.speed()}"><output data-screen-speed-value></output></label><span data-screen-clock></span><span class="simulation-tools-spacer"></span><button data-screen-focus>${detached?'Volledig scherm':this.shell?'Terug naar werkblad':'Groot simulatiescherm'}</button>${detached?'<button data-screen-return>Terug naar hoofdvenster</button>':'<button data-screen-detach>Extra venster</button>'}<span class="simulation-window-status" role="status"></span>`;
+    tools.innerHTML=`<strong>SH · Simulatie</strong><button data-screen-run>Start</button><button data-screen-stop>Stop / reset</button><button data-screen-learning>Leeratelier</button><button data-screen-layout>Indeling</button><label>Tempo <input data-screen-speed type="range" min="0.1" max="2" step="0.1" value="${this.speed()}"><output data-screen-speed-value></output></label><span data-screen-clock></span><span class="simulation-tools-spacer"></span><button data-screen-focus>${detached?'Volledig scherm':this.shell?'Terug naar werkblad':'Groot simulatiescherm'}</button>${detached?'<button data-screen-return>Terug naar hoofdvenster</button>':'<button data-screen-detach>Extra venster</button>'}<span class="simulation-window-status" role="status"></span>`;
     host.prepend(tools);
     tools.querySelector('[data-screen-run]').onclick=()=>{this.toggleRun();this.live();};
+    tools.querySelector('[data-screen-learning]').onclick=()=>this.learning?.open(this.learning.tab,null,doc);
+    tools.querySelector('[data-screen-layout]').onclick=()=>this.learning?.open('layout',null,doc);
+    this.learning?.decorateHost(host);
     tools.querySelector('[data-screen-stop]').onclick=()=>{this.stop();this.live();};
     tools.querySelector('[data-screen-speed]').oninput=e=>{this.setSpeed(Number(e.target.value));this.live();};
     tools.querySelector('[data-screen-focus]').onclick=()=>{

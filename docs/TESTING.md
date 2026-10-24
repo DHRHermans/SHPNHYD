@@ -4,7 +4,7 @@
 npm test          # or: node tests/run.js
 ```
 
-166 tests in 15 suites, no framework. A test framework would cost more than it saves here, and
+175 tests in 16 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
@@ -13,6 +13,7 @@ work to collide on.
 | --- | --- |
 | `gate-controller-editor.js` | Saved controller programs, automatic cycles in all three domains, exclusive mode selection, timed outputs, broken coils, undo/redo, draft imports and visible GRAFCET return paths |
 | `gate-import.js` | Finite import coordinates/parameters and escaped recorder labels |
+| `gate-learning.js` | Local recovery and quota failures; metadata/ID remapping; component explanations; two-lead voltage measurement; real lesson evidence; read-only flow sampling; non-mutating condition inspection |
 | `gate-manual-controls.js` | Actual pneumatic motion with momentary control, electrical NO/NC inputs, latching controls, three-position hydraulic actuation and automatic-only valves |
 | `gate-actuators.js` | Automatic actuator recognition and read-only display of actual stroke, pressure and motor direction |
 | `gate-machine.js` | Manual and automatic drill cycles, clamping interlocks, controlled stop, jammed clamp, custom scene serialization, own tags and disabling teaching interlocks |
@@ -82,7 +83,7 @@ Chromium checks exercised palette click placement, drag/drop insertion, selectio
 
 ## Final 1.1 review
 
-The combined suite contains 166 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All sixteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
+The combined suite contains 175 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All sixteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
 
 CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.
 
@@ -91,3 +92,5 @@ The process controls were checked in Chromium for pointer and keyboard holds, re
 Physical process illustrations replace all schematic rendering in process cards. Browser checks verify round NO/NC buttons and emergency stop, valve blocks, working direct knob dragging, momentary and latching actuation, hydraulic lever return and the absence of schematic symbol classes in the process cards.
 
 The simulation dashboard was checked in Chromium for full-width layout and simultaneously visible machine, controls and actuators. The second window was exercised with shared pneumatic actuation, keyboard release, synchronized tempo and reset, main-editor navigation, document replacement, window closing and continuation in the main page.
+
+The learning release was exercised with a real lesson through input, end-position and return observations, reflection and reload recovery; live 24 V two-lead measurements and model probes; 1 ms / 100 ms stepping; flow activity; concealed fault reveal/repair; pointer-driven card order, groups and scale; and help/stepping in a synchronized second window. Earlier local versions and recorded snapshots were restored without browser errors.

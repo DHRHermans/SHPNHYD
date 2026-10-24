@@ -92,3 +92,7 @@ The drill-press scene follows existing cylinder stroke and motor speed state. It
 Controller modules have eight 24 V digital inputs and eight simplified sourcing outputs, with configurable program aliases. They require L+/M wiring and do not bypass disconnected signals. Inputs/outputs outside their alias map can still be virtual. No real PLC hardware protocol, galvanic isolation, short-circuit protection, analogue I/O or industrial diagnostics is modelled.
 
 Advanced valve editing changes paths only between the existing valve ports and existing positions. It does not create new port geometry, port counts, custom component families or one-way flow behaviour. Selecting a standard variant clears the custom path layout; incompatible connected pilot ports must be disconnected explicitly first.
+
+## Leeratelier en didactische controles
+
+Opdrachtvinkjes bevestigen beperkte waarnemingen; ze bewijzen geen volledige ontwerpcorrectheid. Reflecties worden niet inhoudelijk beoordeeld. De lokale opslag is browsergebonden en vervangt geen eigen JSON-reservekopie. Energiestippen gebruiken ondersteunde componentstromen en zuigerverplaatsing; zij lossen niet alle leidingtakken of laadstromen afzonderlijk op. De meettafel is onbelastend, met DC-spanningsverschil en U/R-stroom voor ondersteunde weerstandsbelastingen. Er is geen echte AC- of universele seriestroommeting. Verborgen storingen zijn een oefenweergave en geen beveiligde toetsmodus.

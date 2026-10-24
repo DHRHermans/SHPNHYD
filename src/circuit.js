@@ -34,6 +34,8 @@ export class Circuit {
     this.controller = null;
     this.ladder = null;
     this.scene = null;
+    this.learning = null;
+    this.challenge = null;
   }
 
   defOf(inst) { return BY_ID.get(inst.type); }
@@ -161,11 +163,14 @@ export class Circuit {
       instances: this.instances.map((i) => ({
         id: i.id, type: i.type, x: i.x, y: i.y, rot: i.rot,
         params: Object.fromEntries(Object.entries(i.params).map(([k, v]) => [k, v.value])),
+        ...(i.presentation ? {presentation:structuredClone(i.presentation)} : {}),
         ...(i.valveLayout ? {valveLayout:structuredClone(i.valveLayout)} : {}),
         ...(Object.keys(i.faults || {}).length ? { faults: { ...i.faults } } : {}),
       })),
       wires: this.wires.map((w) => ({ from: w.from, to: w.to })),
       ...(this.chart ? { chart: this.chart.toJSON() } : {}),
+      ...(this.challenge ? {challenge:structuredClone(this.challenge)} : {}),
+      ...(this.learning ? {learning:structuredClone(this.learning)} : {}),
       ...(this.scene ? { scene: structuredClone(this.scene) } : {}),
       ...(this.controller ? { controller: this.controller } : {}),
       ...(this.ladder ? { ladder: structuredClone(this.ladder) } : {}),
@@ -189,6 +194,11 @@ export class Circuit {
         else if(param.type==='text')param.value=String(v??'');
         else param.value=v;
       }
+      if(raw.presentation){
+        const p=raw.presentation,n=Number(p.order??0);
+        if(!Number.isFinite(n)||n<0||n>10000)throw new Error('Ongeldige simulatievolgorde.');
+        inst.presentation={order:Math.round(n),scale:['small','normal','large'].includes(p.scale)?p.scale:'normal',group:String(p.group??'').slice(0,60)};
+      }
       if (raw.valveLayout) inst.valveLayout = validateValveLayout(def,raw.valveLayout);
       if (def.initSim) def.initSim(inst);
       idMap.set(raw.id, inst.id);
@@ -206,6 +216,11 @@ export class Circuit {
       if (from.inst && to.inst) c.connect(from, to);
     }
     if (data.scene?.type === 'drill-press') c.scene = normalizeMachineScene(data.scene);
+    if(data.challenge&&idMap.has(data.challenge.inst)){
+      const inst=c.byId(idMap.get(data.challenge.inst)),allowed=BY_ID.get(inst.type).faultTypes||[];
+      if(allowed.includes(data.challenge.fault))c.challenge={inst:inst.id,fault:data.challenge.fault,revealed:!!data.challenge.revealed,baseline:Object.fromEntries(Object.entries(data.challenge.baseline||{}).filter(([k])=>allowed.includes(k)).map(([k,v])=>[k,!!v]))};
+    }
+    if(data.learning&&typeof data.learning==='object'){const l=data.learning;c.learning={lesson:String(l.lesson??'').slice(0,40),completed:Array.isArray(l.completed)?l.completed.filter(n=>Number.isInteger(n)&&n>=0&&n<20):[],notes:String(l.notes??'').slice(0,10000),prediction:String(l.prediction??'').slice(0,10000),measurements:Array.isArray(l.measurements)?l.measurements.filter(v=>typeof v==='string').slice(-100).map(v=>v.slice(0,2000)):[],traceLog:Array.isArray(l.traceLog)?l.traceLog.filter(v=>typeof v==='string').slice(-12).map(v=>v.slice(0,10000)):[],evidence:{...Object.fromEntries(Object.entries(l.evidence||{}).filter(([k,v])=>['input','moved','end','returned','motorRan','motorStopped','output','steps'].includes(k)).map(([k,v])=>[k,!!v])),...Object.fromEntries(['endTargets','runningTargets'].map(k=>[k,Array.isArray(l.evidence?.[k])?l.evidence[k].filter(v=>typeof v==='string').slice(0,128):[]]))}};}
     if (data.chart) c.chart = Grafcet.fromJSON(data.chart);
     if (["manual", "grafcet", "ladder"].includes(data.controller)) c.controller = data.controller;
     if (data.ladder) c.ladder = copyLadder(data.ladder);

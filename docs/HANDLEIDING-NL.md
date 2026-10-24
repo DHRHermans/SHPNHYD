@@ -287,3 +287,47 @@ Gebruik **PLC: fysiek bedrade module met cilinder** of het GRAFCET-voorbeeld om 
 Gebruik unieke programmanamen per poort en geen naam tegelijk voor in- en uitgang. Conflicten worden gemeld en de betrokken I/O wordt afgeschakeld. De module toont voeding en kanaalniveaus. De uitgangen zijn vereenvoudigde sourcing-uitgangen op 24 V DC, geen 400 V-motorvoeding. Gebruik bij motoren een contactorspoel tussen module-uitgang en M. Andere lucht- en olieactuatoren worden via hun elektrische ventielspoel bediend.
 
 De virtuele koppeling blijft beschikbaar voor programma-aanduidingen die niet aan een fysieke modulepoort gekoppeld zijn, bijvoorbeeld interne merkers. De fysieke uitgang kan een scantick later doorwerken dan het logische commando.
+
+## Leeratelier: opdrachten, uitleg, meten en onderzoeken
+
+Klik bovenaan op **Leeratelier**, of gebruik dezelfde knop in het grote/extra simulatievenster. Het venster blijft naast de toepassing bruikbaar: je kunt het verslepen via de titelbalk, vergroten en sluiten. Iedereen gebruikt dezelfde functies; er zijn geen aparte rollen.
+
+### Automatisch bewaren en herstel
+
+Een wijziging wordt na een korte pauze lokaal in deze browser bewaard. Bovenaan staat de opslagstatus. Bij herladen van dezelfde startlink wordt je laatste werk hersteld; een bewust andere voorbeeldlink blijft een andere startkeuze. Bij mislukte opslag meldt de toepassing dat je JSON moet exporteren.
+
+Onder **Bewaren / herstel** staan de huidige kopie en maximaal vier vorige documentversies. Herstel bewaart eerst de huidige versie. Schema, programma, machinebeeld, kaartindeling, opdrachttekst, voortgang, meetnotities en controller-momentopnamen zitten in de JSON. Dit bewaart de documentinstellingen, niet de dynamische toestand van een draaiende machine. Gebruik **Export → Schakelschema (JSON)** voor een eigen reservekopie en voor overdracht; browsergegevens wissen verwijdert lokale kopieën. Met `fresh=1` in de website-URL open je bewust de voorbeeldversie in plaats van automatisch herstel.
+
+### Begeleide opdrachten
+
+Kies onder **Opdrachten** pneumatiek, hydrauliek, motorzelfhouding, bedrade PLC, bedrade GRAFCET of klemmen/boren. Je kunt je eigen schema blijven gebruiken of met **Laad oefenschema** een passend voorbeeld openen.
+
+Schrijf eerst je voorspelling. Voer de handelingen uit en kies **Controleer huidige stap**. De controle gebruikt aanwezige voeding en werkelijk waargenomen bediening, eindstand, terugkeer of toerental. Een terugkeer hoort bij dezelfde cilinder die de eindstand bereikte; stilstand bij dezelfde motor die draaide. Hints helpen verder. De laatste reflectie wordt alleen op aanwezigheid gecontroleerd; de toepassing beoordeelt de inhoud van je redenering en de volledige juistheid van een schema niet automatisch.
+
+### Onderdeeluitleg en gerichte diagnose
+
+Via **Uitleg** op een fysieke kaart of **Uitleg van dit onderdeel** bij Eigenschappen krijg je de werking, poortbetekenissen en een praktijkonderzoek. Onder **Diagnose** worden aansluitproblemen en ondersteunde live observaties verzameld. **Wijs onderdeel aan** opent en centreert het onderdeel in het schema. Een lage druk in rust kan normaal zijn; een melding is een aanleiding tot onderzoeken, geen volledige ontwerpcontrole.
+
+### Meetgereedschap
+
+Kies het instrument en de relevante onderdelen/poorten. De DC-multimeter toont rode meetpen minus zwarte meetpen. **Toon meetpennen in schema** markeert de aansluitpunten. De manometer toont overdruk, de positiemeter een percentage van de slag en de toerentalmeter het berekende modeltoerental. De stroommeting is U/R voor ondersteunde tweepolige weerstandsbelastingen; echte seriemeting en AC-stroommeting worden niet voorgesteld. Niet-ondersteunde metingen tonen een streepje.
+
+Met **Meetwaarde vasthouden** zet je de aflezing vast. **Noteer meting** bewaart tijd, meetpunt en waarde in je document. De meetinstrumenten lezen zonder de schakeling te belasten.
+
+### Stapbediening en zichtbare energiestroom
+
+Onder **Stap voor stap** kun je één modeltick/PLC-scan (1 ms) of 100 ms uitvoeren terwijl de simulatie gepauzeerd blijft. **Tot volgende GRAFCET-situatie** rekent maximaal één modelseconde door en stopt zodra de actieve stappenset verandert; bij langere wachttijden kun je opnieuw stappen. Binnen een tick kan GRAFCET meerdere opeenvolgende ware overgangen uitvoeren.
+
+De live inspectie toont signalen, actieve stappen en ondersteunde voorwaarden. Flankvoorwaarden worden in de modeltick beoordeeld en niet opnieuw door de uitleesweergave geconsumeerd. **Bewaar momentopname** bewaart de signalen en uitgangen met tijdstip in het document.
+
+**Toon energiestroom in het schema** tekent bewegende stippen waar componentdoorstroming berekend kan worden. Het gebruikt dezelfde restrictiewetten en de werkelijke zuigerverplaatsing. Dit is geen volledige oplossing van iedere leidingtak: leidingvolume-oplading, niet-ondersteunde componenten en onbekende stromen worden niet als exacte leidingdebieten weergegeven. De driefasenkring blijft een functioneel model zonder echte AC-stroom. Stilstaande lijnen kunnen wel druk of spanning hebben; volg ook de kleur en meetwaarden.
+
+### Storingsopdrachten
+
+**Maak een willekeurige storingsopdracht** voegt één ondersteunde storing toe. De interface verbergt de storingsmarkeringen en instellingen zolang de opdracht niet onthuld is. Meet en volg de energieketen, kies je verdachte onderdeel en controleer de diagnose. **Onthul storing** maakt de oorzaak zichtbaar. **Herstel opdrachtstoring** zet alleen de oorspronkelijke defectinstellingen van dat onderdeel terug; andere storingen blijven behouden.
+
+Dit is een oefenfunctie, geen beveiligde toetsmodus. JSON bevat de storing. De opdracht en oorspronkelijke instellingen blijven bewaard bij opslaan/herstel.
+
+### Eigen simulatie-indeling
+
+Open **Indeling → Indeling bewerken**. De simulatie wordt gepauzeerd. Sleep kaarten via **Verplaats** om ze binnen hetzelfde paneel te ordenen. Kies Klein/Normaal/Groot en typ een groepsnaam, bijvoorbeeld Klemkring. Dit wijzigt de weergave, niet je schema of berekeningen. Kies daarna **Klaar met indelen**. Groepen en kaartinstellingen zijn onderdeel van je document en ondersteunen ongedaan maken. Het betreft een geordende kaartindeling, geen vrije mechanische tekening of botsingsberekening.

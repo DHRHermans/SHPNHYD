@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0 — Leeratelier zonder aparte rollen
+
+- Automatisch lokaal bewaren en herstellen, met vier vorige versies en JSON-export als overdraagbare reservekopie.
+- Zes begeleide opdrachten met voorspelling, stapsgewijze waarnemingscontrole, hints en bewaarde reflectie.
+- Onderdeeluitleg met werking, poortbetekenissen en praktijkonderzoek voor de onderdelen uit het schema.
+- Meettafel met twee meetpennen voor DC-spanning, ondersteunde U/R-stroommeting, druk, positie en toerental, HOLD en bewaarde meetnotities.
+- Stapbediening van de echte 1 ms-modeltick, PLC-scan en GRAFCET-situatie, voorwaardeninspectie en bewaarde momentopnamen.
+- Berekende componentdoorstroming zichtbaar in ondersteunde schemaleidingen, zonder fictieve AC- of onbekende leidingstromen.
+- Gerichte diagnose en een willekeurige verborgen storingsopdracht met onthullen en herstel van de oorspronkelijke defectinstellingen.
+- Simulatiekaarten ordenen door slepen, beeldgrootte kiezen en groeperen; indeling wordt met het document opgeslagen.
+- Leeratelier is ook beschikbaar in het extra simulatievenster; geen aparte accounts of leerling-/leerkrachtrollen.
+
 ## 1.2.1 — Losse aandrijvingen als hoofdweergave
 
 - Zonder machineopstelling staan cilinders en motoren groot op de hoofdplek links, met fysieke bediening rechts.

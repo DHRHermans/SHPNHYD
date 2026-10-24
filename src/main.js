@@ -1,3 +1,6 @@
+import { AutoSave } from './autosave.js';
+import { LearningLab } from './learning-lab.js';
+import { drawFlowActivity } from './flow-view.js';
 import { SimulationScreen } from './simulation-screen.js';
 import { pressManual, releaseManual } from './manual-control.js';
 // App shell: sheet rendering, direct manipulation, inspector, and the run loop.
@@ -295,6 +298,7 @@ function applyView() {
 /** Full structural rebuild. Cheap enough at these sizes; called only on edits. */
 function render() {
   const c = state.circuit;
+  document.body.classList.toggle('challenge-hidden',!!c.challenge&&!c.challenge.revealed);
   if (state.sim && state.sim.circuit === c && c.revision !== state.renderedRevision) {
     state.sim.rebuild();
   }
@@ -307,7 +311,7 @@ function render() {
 
   for (const inst of c.instances) {
     const def = c.defOf(inst);
-    const faulty = Object.values(inst.faults || {}).some(Boolean);
+    const faulty = (!c.challenge||c.challenge.revealed)&&Object.values(inst.faults || {}).some(Boolean);
     const g = svgEl('g', {
       class: `part${def.interactive ? ' interactive' : ''}${faulty ? ' faulty' : ''}`,
       'data-id': inst.id,
@@ -745,6 +749,7 @@ function buildInspector() {
   let html = `<h3 class="insp-title">${def.name}</h3>
     <p class="insp-sub">${esc(inst.params?.tag?.value ?? def.short)} · ${def.id}</p>`;
 
+  html+='<button class="btn btn-ghost" id="component-help">Uitleg van dit onderdeel</button>';
   const variants=valveVariants(inst.type);
   if(variants.length) html += `<div class="valve-configuration"><label for="valve-variant">Ventieluitvoering</label><select id="valve-variant" aria-label="Ventieluitvoering">${variants.map(v=>`<option value="${v.id}"${v.id===inst.type?' selected':''}>${esc(v.name)}</option>`).join('')}</select><p class="hint" style="border:0;padding:6px 0">Kies bediening, terugstelling en beschikbare middenstand. Alleen geteste varianten worden aangeboden; poortnamen en gemeenschappelijke instellingen blijven behouden.</p></div>`;
 
@@ -778,7 +783,7 @@ function buildInspector() {
   html += valveEditorMarkup(def);
   if (inst.params.solA) html += `<p class="hint" style="border:0;padding:6px 0">Geef de elektrische ventielspoel dezelfde aanduiding als Spoel links/rechts (bijvoorbeeld Y1/Y2). De spoel bedient het ventiel; de olieleidingen verbinden het ventiel met de cilinder.</p>`;
 
-  if (def.faultTypes?.length) {
+  if (def.faultTypes?.length&&(!state.circuit.challenge||state.circuit.challenge.revealed)) {
     const armed = def.faultTypes.filter((f) => inst.faults?.[f]).length;
     html += `<div class="faults">
       <div class="faults-head">
@@ -802,6 +807,7 @@ function buildInspector() {
 
   el.inspector.innerHTML = html;
 
+  $('#component-help')?.addEventListener('click',()=>learningLab.open('help',inst.id));
   bindValveEditor(el.inspector,inst,def,()=>{state.circuit.touch();stopSim();commit();});
   $('#valve-variant')?.addEventListener('change', event=>{
     try { replaceValve(state.circuit,inst.id,event.target.value);stopSim();buildInspector();commit();toast('Ventieluitvoering aangepast'); }
@@ -889,7 +895,7 @@ function buildEmptyInspector() {
         ? state.sim.nets.count + state.sim.elec.count + state.sim.hyd.count : 0)}
     </div>`;
 
-  if (armed.length) {
+  if (armed.length&&(!c.challenge||c.challenge.revealed)) {
     html += `<div class="empty-block warn">
       <span class="block-title">${armed.length} storingen ingeschakeld</span>
       <ul class="issue-list">`;
@@ -1132,6 +1138,7 @@ function updateReadouts() {
 function commit(tag = null) {
   state.history.push(state.circuit, tag);
   refreshHistoryButtons();
+  autosave.schedule();
 }
 
 function refreshHistoryButtons() {
@@ -1488,6 +1495,7 @@ function frame(now) {
     let steps = 0;
     while (accumulator >= DT && steps < MAX_STEPS) {
       sim.step(DT);
+      learningLab.observe(sim);
       // Sampled inside the tick loop, not once per frame: at 60 fps the scope would
       // capture ~1 of every 17 ticks, which aliases every transient it exists to show.
       state.scope.sample(sim);
@@ -1507,7 +1515,22 @@ function frame(now) {
   if (state.tab === 'machine') machineView.live();
   }
   simulationScreen.live();
+  learningLab.live();
+  if(learningLab.flowEnabled&&sim?.running)drawFlowActivity(el.wires,sim,true);
   simulationScreen.schedule(frame);
+}
+
+function advanceSimulation(ticks){
+  setRunning(false);accumulator=0;
+  if(ticks==='transition'&&(!state.sim.chart||controllerMode(state.circuit)!=='grafcet')){toast('Kies een actieve GRAFCET om naar een volgende situatie te stappen');return false;}
+  const before=state.sim.chart?[...state.sim.chart.active].sort().join('|'):'';let changed=false;
+  for(let n=0;n<(ticks==='transition'?1000:Number(ticks));n++){
+    state.sim.step(DT);state.scope.sample(state.sim);state.rec.sample(state.sim);learningLab.observe(state.sim);
+    if(ticks==='transition'&&[...state.sim.chart.active].sort().join('|')!==before){changed=true;break;}
+  }
+  el.clock.textContent=`${num(state.sim.time)} s`;updateDynamic();updateReadouts();updateProbeValues();redrawDiagram();redrawScope();redrawGrafcet();ladderEditor.live();machineView.live();simulationScreen.live();
+  if(learningLab.flowEnabled)drawFlowActivity(el.wires,state.sim,true);
+  return changed;
 }
 
 /** The legend must describe the domain on the sheet; "0–6 bar" over an 80 bar oil
@@ -2173,6 +2196,7 @@ for (const [key, ex] of Object.entries(EXAMPLES)) {
 examplesSel.addEventListener('change', (e) => {
   const ex = EXAMPLES[e.target.value];
   if (!ex) return;
+  autosave.flush();
   state.docTitle = ex.name;
   loadCircuit(ex.build());
   toast(ex.description);
@@ -2243,14 +2267,19 @@ function applyCircuit(c) {
   if (state.tab === 'grafcet') redrawGrafcet();
   if (state.tab === 'machine') machineView.draw();
   simulationScreen.refresh();
+  learningLab.sync();
+  if(learningLab.panel?.isConnected)learningLab.paint();
+  autosave.schedule();
 }
 
 /** Loads a document as a fresh start: history cleared, view fitted. */
 function loadCircuit(c) {
+  if(state.circuit&&state.history&&state.circuit!==c)autosave.flush();
   applyCircuit(c);
   state.history = new History(c);
   refreshHistoryButtons();
   zoomFit();
+  autosave.schedule();
 }
 
 const toolWindows = new ToolWindows(() => { redrawDiagram(); redrawScope(); });
@@ -2288,7 +2317,33 @@ const machineView = new MachineView($('#machine-view'), {
   run:()=>setRunning(true),
   mode:value=>{$('#controller-mode').value=value;$('#controller-mode').dispatchEvent(new Event('change'));machineView.draw();},
 });
+const routeKey=JSON.stringify(['example','workspace','screen'].map(k=>new URLSearchParams(location.search).get(k)||''));
+const storage=(()=>{try{return localStorage;}catch{return null;}})();
+const autosave=new AutoSave(storage,()=>state.circuit?{circuit:state.circuit.toJSON(),title:state.docTitle,workspace:state.tab,route:routeKey}:null,text=>{$('#work-save-status').textContent=text;});
+const learningLab=new LearningLab({
+  state:()=>state,autosave,save:()=>autosave.schedule(),flush:()=>autosave.flush(),commit,
+  loadExample:key=>{const example=EXAMPLES[key];state.docTitle=example.name;loadCircuit(example.build());setPanelTab('machine');},
+  restore:entry=>{try{loadCircuit(Circuit.fromJSON(entry.circuit));state.docTitle=entry.title||'Hersteld schema';setPanelTab(['machine','grafcet','ladder'].includes(entry.workspace)?entry.workspace:'circuit');toast('Lokale versie hersteld');}catch{toast('Deze lokale versie kon niet worden hersteld');}},
+  locate:id=>{setPanelTab('circuit');select([id]);centerOn(id);},checkCircuit,
+  mutate:tag=>{state.circuit.touch();stopSim();render();buildInspector();commit(tag);simulationScreen.refresh();},
+  markMeters:(config,navigate)=>{
+    if(navigate){setPanelTab('circuit');if(state.circuit.byId(config.a))centerOn(config.a);}
+    el.overlay.querySelectorAll('.learning-probe').forEach(n=>n.remove());
+    for(const [id,port,label,color]of [[config.a,config.ap,'+','#d85243'],...(config.mode==='voltage'?[[config.b,config.bp,'−','#284a50']]:[])]){
+      const p=state.circuit.portRef({inst:id,port});if(!p)continue;const g=document.createElementNS(SVG_NS,'g');g.classList.add('learning-probe');g.setAttribute('transform',`translate(${p.x} ${p.y})`);
+      const dot=document.createElementNS(SVG_NS,'circle');dot.setAttribute('r','7');dot.setAttribute('fill','white');dot.setAttribute('stroke',color);dot.setAttribute('stroke-width','2');
+      const text=document.createElementNS(SVG_NS,'text');text.setAttribute('x','10');text.setAttribute('y','-8');text.setAttribute('fill',color);text.textContent=label;g.append(dot,text);el.overlay.appendChild(g);
+    }
+  },
+  pause:()=>setRunning(false),step:advanceSimulation,
+  showFlow:enabled=>drawFlowActivity(el.wires,state.sim,enabled),
+  openMachine:()=>setPanelTab('machine'),redraw:()=>{machineView.draw();simulationScreen.refresh();},
+});
+$('#btn-learning').addEventListener('click',()=>learningLab.open());
+window.addEventListener('pagehide',()=>autosave.flush());
+document.addEventListener('visibilitychange',()=>{if(document.hidden)autosave.flush();});
 const simulationScreen=new SimulationScreen(machineView,{
+  learning:learningLab,
   toggleRun:()=>setRunning(!state.sim.running),stop:stopSim,
   speed:()=>state.speed,setSpeed:value=>{$('#speed').value=value;$('#speed').dispatchEvent(new Event('input'));},
   returnToEditor:()=>setPanelTab('machine'),message:toast,
@@ -2310,11 +2365,18 @@ buildProbeList();
 buildTriggerSources();
 const requestedExample = new URLSearchParams(window.location.search).get('example');
 const initialExample = Object.hasOwn(EXAMPLES, requestedExample) ? EXAMPLES[requestedExample] : EXAMPLES.electroHydraulic;
-loadCircuit(initialExample.build());
-state.docTitle = initialExample.name;
+const localWork=autosave.read();
+let restored=false;
+if(localWork?.current.route===routeKey&&!new URLSearchParams(location.search).has('fresh')){
+  try{state.docTitle=localWork.current.title;loadCircuit(Circuit.fromJSON(localWork.current.circuit));restored=true;toast('Je vorige werk is automatisch hersteld');}catch{/* A malformed local copy never blocks opening the app. */}
+}
+if(!restored){state.docTitle=initialExample.name;loadCircuit(initialExample.build());}
+
 applyView();
-const requestedWorkspace = new URLSearchParams(window.location.search).get('workspace');
+const requestedWorkspace = restored?localWork.current.workspace:new URLSearchParams(window.location.search).get('workspace');
 setPanelTab(['grafcet', 'ladder', 'machine'].includes(requestedWorkspace) ? requestedWorkspace : 'circuit');
 if(new URLSearchParams(window.location.search).get('screen')==='focus'){setPanelTab('machine');simulationScreen.toggleFocus();}
+const requestedLearning=new URLSearchParams(location.search).get('learn');
+if(['lesson','help','meter','issues','faults','step','save','layout'].includes(requestedLearning))learningLab.open(requestedLearning);
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
 simulationScreen.schedule(frame);
