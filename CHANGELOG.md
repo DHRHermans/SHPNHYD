@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.3 — Fysieke componenten in het machinebeeld
+
+- Eigen fysieke afbeeldingen vervangen de schemasymbolen in het procesbeeld: ronde drukknoppen, paddenstoelnoodstop, ventielblokken, hefbomen, spoelen, sensoren, lampen en modules.
+- Het afgebeelde onderdeel zelf is bedienbaar met muis, aanraking en toetsenbord.
+- Indrukbeweging, hefboomstand, spoelindicatie en lampstatus volgen de simulatie.
+- Instelventielen hebben een draaiknop die via verslepen instelbaar is; de schuif blijft als alternatief beschikbaar.
+- Het schema behoudt zijn technische symbolen; afdrukken van Machinebeeld gebruikt de fysieke afbeeldingen.
+
 ## 1.1.2 — Handbediening in het procesbeeld en correcte export
 
 - Drukknoppen, handventielen, automatische ventielen, sensoren, spoelen en overige onderdelen worden in Machinebeeld zichtbaar.

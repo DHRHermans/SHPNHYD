@@ -198,15 +198,15 @@ Onder **Extra: interne verbindingen tekenen** kies je een stand en klik je twee 
 
 ## Drukknoppen en ventielen bedienen in Machinebeeld
 
-Onder **Bediening en ventielen uit mijn schema** verschijnen automatisch de drukknoppen, noodstop, handventielen, elektrische/pneumatische stuurventielen, sensoren, spoelen en lampen uit je schema. Onder **Voedingen en overige schemaonderdelen** vind je de overige componenten. De symbolen en meetwaarden volgen dezelfde simulatie als het schema.
+Onder **Bediening en ventielen uit mijn schema** verschijnen automatisch de drukknoppen, noodstop, handventielen, elektrische/pneumatische stuurventielen, sensoren, spoelen en lampen uit je schema. Onder **Voedingen en overige schemaonderdelen** vind je de overige componenten. Je ziet fysieke afbeeldingen: ronde drukknoppen, een rode paddenstoelnoodstop, metalen ventielblokken met hefboom, drukknop of spoelen, sensoren en lampen. Druk rechtstreeks op de afbeelding om het onderdeel te bedienen. Standen, indicatielampjes en meetwaarden volgen dezelfde simulatie als het schema.
 
 - **Indrukken (vasthouden)** bedient een momentane knop zolang je de muis/vinger of Spatie/Enter ingedrukt houdt. Loslaten, annuleren, focusverlies en een ander tabblad openen geven de knop vrij.
 - Vergrendelende knoppen en ventielen blijven in hun gekozen toestand staan. Druk opnieuw om vrij te geven. Bij de noodstop heet dit **Noodstop ontgrendelen**.
 - Een hydraulisch 4/3-handventiel heeft **Links vasthouden** en **Rechts vasthouden**. Loslaten laat de hefboom terugveren naar de middenstand.
-- Met de schuiven wijzig je smooropeningen en drukinstellingen. Dit verandert dezelfde componentinstelling als het eigenschappenpaneel en wordt met je schema opgeslagen; ongedaan maken is beschikbaar.
+- Bij een instelventiel kun je de afgebeelde draaiknop naar rechts/omhoog slepen om de instelling te verhogen, of naar links/omlaag om te verlagen. Met de schuiven wijzig je eveneens smooropeningen en drukinstellingen. Dit verandert dezelfde componentinstelling als het eigenschappenpaneel en wordt met je schema opgeslagen; ongedaan maken is beschikbaar.
 - Automatisch bediende ventielen krijgen geen rechtstreekse handbediening. Ze schakelen via hun echte spoel- of stuursignalen. Eindstandsensoren blijven door hun gekoppelde cilinder bediend.
 
-Handbediening start de simulatie als die nog niet loopt. Het geeft een fysieke input aan het model en omzeilt geen bedrading, defecten of programmavoorwaarden. Afdrukken neemt de zichtbare componentsymbolen mee, zonder bedieningsknoppen.
+Handbediening start de simulatie als die nog niet loopt. Het geeft een fysieke input aan het model en omzeilt geen bedrading, defecten of programmavoorwaarden. Afdrukken neemt de fysieke afbeeldingen mee. In het schemablad blijven de technische symbolen behouden.
 
 ## Alle cilinders en motoren zichtbaar simuleren
 

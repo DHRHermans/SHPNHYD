@@ -87,3 +87,5 @@ The combined suite contains 166 executed tests. Browser checks cover manual and 
 CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.
 
 The process controls were checked in Chromium for pointer and keyboard holds, release on blur and workspace changes, latching buttons, spring-centred hydraulic levers and live throttle adjustment. Export choices were verified with actual pointer hit testing at 1600, 1024 and 700 px. A real one-page A4 PDF and standalone SVG were inspected after removing wire hit targets; the SH logo and clean open wire paths are retained.
+
+Physical process illustrations replace all schematic rendering in process cards. Browser checks verify round NO/NC buttons and emergency stop, valve blocks, working direct knob dragging, momentary and latching actuation, hydraulic lever return and the absence of schematic symbol classes in the process cards.
