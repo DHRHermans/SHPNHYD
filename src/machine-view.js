@@ -1,11 +1,13 @@
+import { ProcessControls } from './process-controls.js';
 import { ActuatorView } from './actuator-view.js';
 import { MACHINE_PARTS, MACHINE_BINDINGS, newMachineScene, sceneBinding, sceneParts } from './machine-scene.js';
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import { drillState } from './machine.js';
 
 export class MachineView {
-  constructor(host,{circuit,simulation,load,run,mode,changed}) {Object.assign(this,{host,circuit,simulation,load,run,mode,changed});this.editing=false;this.selected=null;}
+  constructor(host,{circuit,simulation,load,run,mode,changed,parametersChanged}) {Object.assign(this,{host,circuit,simulation,load,run,mode,changed,parametersChanged});this.editing=false;this.selected=null;}
   draw() {
+    this.controls?.dispose();
     if(this.lastScene!==this.circuit().scene){this.lastScene=this.circuit().scene;this.editing=this.lastScene?.parts?.length===0;this.selected=null;}
     if(this.circuit().scene?.type!=='drill-press'){
       this.host.innerHTML='<section class="machine-empty"><span>VISUEEL PROCES</span><h2>Van schema naar een werkende machine</h2><p>Plaats zelf machineonderdelen en koppel ze aan je eigen schema. Teken vervolgens je eigen GRAFCET of Ladder. Er wordt geen schema of programma voor je ingevuld.</p><button id="machine-create">Zelf een machineopstelling maken</button><button id="machine-load">Open uitgewerkt lesvoorbeeld</button></section>';
@@ -93,11 +95,14 @@ export class MachineView {
     this.host.querySelector('.machine-example-caption').style.display='none';
   }
   drawActuators() {
+    const controls=document.createElement('div');this.host.appendChild(controls);
+    this.controls=new ProcessControls(controls,{circuit:this.circuit,simulation:this.simulation,run:this.run,parametersChanged:this.parametersChanged});this.controls.draw();
     const host=document.createElement('div');this.host.appendChild(host);
     this.actuators=new ActuatorView(host,this.circuit,this.simulation);this.actuators.draw();
   }
   live() {
     this.actuators?.live();
+    this.controls?.live();
     const sim=this.simulation(),s=sim&&drillState(sim);if(!s||!this.host.querySelector('#machine-feed'))return;
     const manual=(this.circuit().controller||'manual')==='manual';
     const assisted=this.circuit().scene.interlocks!==false;

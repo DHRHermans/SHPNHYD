@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.2 — Handbediening in het procesbeeld en correcte export
+
+- Drukknoppen, handventielen, automatische ventielen, sensoren, spoelen en overige onderdelen worden in Machinebeeld zichtbaar.
+- Momentane bediening met muis, aanraking en toetsenbord; veerterugstelling, vergrendeling en 4/3-hefboom links/rechts volgen het echte schema.
+- Smooropening en drukinstellingen direct aanpasbaar; live standen en poortdrukken/-spanningen.
+- Exportmenu losgemaakt van de schuifbare bovenbalk zodat alle keuzes zichtbaar blijven.
+- Onzichtbare leidingklikzones verwijderd uit de export; voorkomt zwarte vlakken in SVG, PNG en afdrukken.
+
 ## 1.1.1 — Zelf machineopstellingen bouwen
 
 - Automatische bewegende beelden voor vier cilindertypes en beide elektromotoren, met echte slag, druk en draairichting.

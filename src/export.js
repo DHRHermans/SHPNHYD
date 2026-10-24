@@ -60,7 +60,9 @@ function buildContentLayer(sheetEl) {
   if (!parts || !parts.childNodes.length) return null;
 
   const g = document.createElementNS(SVG_NS, 'g');
-  g.appendChild(wires.cloneNode(true));
+  const wiresCopy=wires.cloneNode(true);
+  wiresCopy.querySelectorAll('.wire-hit').forEach(n=>n.remove());
+  g.appendChild(wiresCopy);
   const partsCopy = parts.cloneNode(true);
   partsCopy.querySelectorAll('.sel-box, .hit').forEach((n) => n.remove());
   g.appendChild(partsCopy);

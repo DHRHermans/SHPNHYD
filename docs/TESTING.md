@@ -4,7 +4,7 @@
 npm test          # or: node tests/run.js
 ```
 
-163 tests in 14 suites, no framework. A test framework would cost more than it saves here, and
+166 tests in 15 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
@@ -13,6 +13,7 @@ work to collide on.
 | --- | --- |
 | `gate-controller-editor.js` | Saved controller programs, automatic cycles in all three domains, exclusive mode selection, timed outputs, broken coils, undo/redo, draft imports and visible GRAFCET return paths |
 | `gate-import.js` | Finite import coordinates/parameters and escaped recorder labels |
+| `gate-manual-controls.js` | Actual pneumatic motion with momentary control, electrical NO/NC inputs, latching controls, three-position hydraulic actuation and automatic-only valves |
 | `gate-actuators.js` | Automatic actuator recognition and read-only display of actual stroke, pressure and motor direction |
 | `gate-machine.js` | Manual and automatic drill cycles, clamping interlocks, controlled stop, jammed clamp, custom scene serialization, own tags and disabling teaching interlocks |
 | `gate-valves.js` | Safe variant replacement, custom pneumatic/hydraulic port paths and layout validation |
@@ -81,6 +82,8 @@ Chromium checks exercised palette click placement, drag/drop insertion, selectio
 
 ## Final 1.1 review
 
-The combined suite contains 163 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All sixteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
+The combined suite contains 166 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All sixteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
 
 CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.
+
+The process controls were checked in Chromium for pointer and keyboard holds, release on blur and workspace changes, latching buttons, spring-centred hydraulic levers and live throttle adjustment. Export choices were verified with actual pointer hit testing at 1600, 1024 and 700 px. A real one-page A4 PDF and standalone SVG were inspected after removing wire hit targets; the SH logo and clean open wire paths are retained.

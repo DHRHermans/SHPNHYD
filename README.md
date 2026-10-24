@@ -12,6 +12,7 @@ De vroegere naam was **SH PN · HYD**. De repository blijft `DHRHermans/SHPNHYD`
 - Ventielbediening, veer/geheugen en beschikbare middenstanden kiezen. Als extra kun je per stand interne verbindingen tussen bestaande poorten tekenen.
 - GRAFCET tekenen en PLC Ladder opbouwen met contacten, parallelle takken, spoelen, set/reset en TON/TOF-timers.
 - Een **PLC- of GRAFCET-module met 8 ingangen en 8 uitgangen** in het schema plaatsen en elektrisch bedraden.
+- Drukknoppen en handventielen direct bedienen in Machinebeeld; automatische ventielen, sensoren, spoelen en overige onderdelen volgen dezelfde schematoestand.
 - Automatisch bewegende beelden van alle pneumatische/hydraulische cilinders en driefasen-/DC-motoren uit je schema, inclusief slag, druk, toerental en draairichting.
 - In **Machinebeeld** zelf een kolombooropstelling bouwen: onderdelen plaatsen en verslepen, eigen cilinders/motor/signalen koppelen en zelf GRAFCET of Ladder tekenen. Het beeld volgt jouw schema; een uitgewerkt lesvoorbeeld is apart beschikbaar.
 - Oscilloscoop, weg-stapdiagram en onderdelenlijst als verplaatsbare analysevensters openen.
@@ -44,7 +45,7 @@ npm start
 
 `npm start` serveert de toepassing op poort 8777. Open lokaal `http://localhost:8777`. JavaScript-modules hebben een webserver nodig; open `index.html` niet door te dubbelklikken.
 
-De tests omvatten **163 controles in 14 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
+De tests omvatten **166 controles in 15 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
 
 ## GitHub Pages publiceren
 

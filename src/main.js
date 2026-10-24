@@ -1,3 +1,4 @@
+import { pressManual, releaseManual } from './manual-control.js';
 // App shell: sheet rendering, direct manipulation, inspector, and the run loop.
 
 import { BY_ID, GROUPS, FAULT_LABELS } from './catalog.js';
@@ -685,6 +686,7 @@ function setPanelTab(tab) {
   $('#ladder-view').classList.toggle('is-hidden', tab !== 'ladder');
   $('#machine-view').classList.toggle('is-hidden', tab !== 'machine');
   if(tab === 'machine') machineView.draw();
+  else machineView.controls?.dispose();
   if (tab === 'ladder') ladderEditor.draw();
   redrawDiagram();
   redrawScope();
@@ -1220,17 +1222,17 @@ el.sheet.addEventListener('pointerdown', (evt) => {
       // of the symbol was clicked decides the direction, and releasing springs it back.
       const b = state.circuit.bounds(inst);
       const p = toSheet(evt);
-      inst.sim.lever = p.x < b.x + b.w / 2 ? -1 : 1;
-      const release = () => { inst.sim.lever = 0; window.removeEventListener('pointerup', release); };
+      pressManual(inst,def,p.x < b.x + b.w / 2 ? -1 : 1);
+      const release = () => { releaseManual(inst,def); window.removeEventListener('pointerup', release); };
       window.addEventListener('pointerup', release);
       evt.preventDefault();
       return;
     }
     if (def.toggle) {
-      inst.sim.pressed = !inst.sim.pressed;
+      pressManual(inst,def);
     } else {
-      inst.sim.pressed = true;
-      const release = () => { inst.sim.pressed = false; window.removeEventListener('pointerup', release); };
+      pressManual(inst,def);
+      const release = () => { releaseManual(inst,def); window.removeEventListener('pointerup', release); };
       window.addEventListener('pointerup', release);
     }
     evt.preventDefault();
@@ -2045,6 +2047,12 @@ $('#btn-new').addEventListener('click', () => {
 });
 
 const exportMenu = $('#export-menu');
+document.body.appendChild(exportMenu);
+function positionExportMenu(){
+  const rect=$('#btn-export').getBoundingClientRect();
+  exportMenu.style.left=`${Math.max(8,Math.min(rect.right-exportMenu.offsetWidth,innerWidth-exportMenu.offsetWidth-8))}px`;
+  exportMenu.style.top=`${Math.max(8,Math.min(rect.bottom+6,innerHeight-exportMenu.offsetHeight-8))}px`;
+}
 const closeMenu = () => {
   exportMenu.hidden = true;
   $('#btn-export').setAttribute('aria-expanded', 'false');
@@ -2053,9 +2061,22 @@ $('#btn-export').addEventListener('click', (e) => {
   e.stopPropagation();
   exportMenu.hidden = !exportMenu.hidden;
   $('#btn-export').setAttribute('aria-expanded', String(!exportMenu.hidden));
+  if(!exportMenu.hidden){positionExportMenu();exportMenu.querySelector('button').focus();}
 });
 window.addEventListener('pointerdown', (e) => {
-  if (!exportMenu.hidden && !e.target.closest('.menu-wrap')) closeMenu();
+  if (!exportMenu.hidden && !e.target.closest('#export-menu, #btn-export')) closeMenu();
+});
+
+window.addEventListener('resize',closeMenu);
+document.querySelector('.topbar').addEventListener('scroll',closeMenu);
+exportMenu.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='p')return;
+  e.stopPropagation();
+  if(e.key==='Escape'){e.preventDefault();closeMenu();$('#btn-export').focus();}
+  if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+    e.preventDefault();const buttons=[...exportMenu.querySelectorAll('button')],at=buttons.indexOf(document.activeElement);
+    buttons[e.key==='Home'?0:e.key==='End'?buttons.length-1:(at+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length].focus();
+  }
 });
 
 exportMenu.addEventListener('click', async (e) => {
@@ -2084,7 +2105,7 @@ exportMenu.addEventListener('click', async (e) => {
       const style=document.createElementNS(SVG_NS,'style');style.textContent='.gr-step,.gr-action{fill:white;stroke:#153b40;stroke-width:1.5}.gr-link{fill:none;stroke:#153b40;stroke-width:1.4}.gr-bar{stroke:#153b40;stroke-width:2}.gr-name,.gr-recep,.gr-act-t{fill:#153b40;font-family:monospace;font-size:10px}.gr-hit,.gr-nub,.gr-token{display:none}';svg.prepend(style);
       pages.push({label:'GRAFCET',svg:new XMLSerializer().serializeToString(svg)});
       }
-    } else if(state.tab==='machine') { const svg=$('.machine-illustration > svg');if(svg)pages.push({label:'Machinebeeld',svg:new XMLSerializer().serializeToString(svg)});for(const card of document.querySelectorAll('.actuator-card'))pages.push({label:card.querySelector('h4').textContent,svg:new XMLSerializer().serializeToString(card.querySelector('svg'))});
+    } else if(state.tab==='machine') { const svg=$('.machine-illustration > svg');if(svg)pages.push({label:'Machinebeeld',svg:new XMLSerializer().serializeToString(svg)});for(const card of document.querySelectorAll('.actuator-card, .process-card'))pages.push({label:card.querySelector('h4').textContent,svg:new XMLSerializer().serializeToString(card.querySelector('svg'))});
     } else { const svg=sheetToSVG(el.sheet,{title});if(svg)pages.push({label:'Schakelschema',svg}); }
     if (!openPrintPreview(title,pages)) toast('Er is geen schema om af te drukken');
   } else if (what === 'svg') {
@@ -2259,6 +2280,7 @@ const ladderEditor = new LadderEditor($('#ladder-view'), {
 const machineView = new MachineView($('#machine-view'), {
   circuit:()=>state.circuit, simulation:()=>state.sim,
   changed:()=>{state.circuit.touch();stopSim();commit();},
+  parametersChanged:(inst,key)=>{redrawPart(inst);commit(`param:${inst.id}:${key}`);},
   load:()=>{loadCircuit(EXAMPLES.drillingMachine.build());state.docTitle=EXAMPLES.drillingMachine.name;setPanelTab('machine');},
   run:()=>setRunning(true),
   mode:value=>{$('#controller-mode').value=value;$('#controller-mode').dispatchEvent(new Event('change'));machineView.draw();},
