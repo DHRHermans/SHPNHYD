@@ -196,6 +196,19 @@ Aanduiding, bestaande spoelnamen en gemeenschappelijke instellingen blijven beho
 
 Onder **Extra: interne verbindingen tekenen** kies je een stand en klik je twee bestaande poorten aan. Dit voegt een verbinding toe; dezelfde twee poorten opnieuw aanklikken verwijdert die verbinding. Niet verbonden poorten zijn afgesloten. De tekening én de lucht-/oliestroming gebruiken de aangepaste verbindingen. Bewaren als JSON en undo/redo behouden deze instellingen. Vrij nieuwe poorten, aantallen standen of complete componenttypen maken is nog niet inbegrepen.
 
+## Simulatie op één scherm of een tweede monitor
+
+Open het tabblad **Machinebeeld**. De bovenste simulatiebalk bevat twee weergaven:
+
+- **Groot simulatiescherm** gebruikt het hele werkvlak zonder bibliotheek of eigenschappenpaneel. Machine en aandrijvingen staan links, de fysieke bediening en ventielen rechts. **Terug naar werkblad** herstelt de editor.
+- **Extra venster** opent een apart browservenster. Verplaats dit naar je tweede monitor en maximaliseer het, of kies daar **Volledig scherm**. Het hoofdvenster blijft beschikbaar voor je schema. **Terug naar hoofdvenster** sluit het extra venster.
+
+Elke weergave bevat **Start/Pauze**, **Stop / reset**, tempo en simulatietijd. Alle vensters gebruiken hetzelfde schema en dezelfde simulatie. Een knop bedienen in het extra venster heeft dus onmiddellijk effect op het schema. Onderdelen toevoegen of een ander schema laden werkt ook door in het extra venster.
+
+Momentane knoppen worden vrijgegeven bij focusverlies of sluiten. Het sluiten van het extra venster wist je schema niet. Bij veel componenten kun je het bedieningspaneel apart verschuiven; op smallere schermen staan de panelen onder elkaar.
+
+Als de browser het extra venster blokkeert, verschijnt een melding. Sta pop-ups voor deze website toe of gebruik **Groot simulatiescherm**. Je kunt de grote weergave ook rechtstreeks openen met `?workspace=machine&screen=focus` achter de website-URL.
+
 ## Drukknoppen en ventielen bedienen in Machinebeeld
 
 Onder **Bediening en ventielen uit mijn schema** verschijnen automatisch de drukknoppen, noodstop, handventielen, elektrische/pneumatische stuurventielen, sensoren, spoelen en lampen uit je schema. Onder **Voedingen en overige schemaonderdelen** vind je de overige componenten. Je ziet fysieke afbeeldingen: ronde drukknoppen, een rode paddenstoelnoodstop, metalen ventielblokken met hefboom, drukknop of spoelen, sensoren en lampen. Druk rechtstreeks op de afbeelding om het onderdeel te bedienen. Standen, indicatielampjes en meetwaarden volgen dezelfde simulatie als het schema.

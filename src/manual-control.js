@@ -13,6 +13,7 @@ export function releaseManual(inst,def){
 
 /** Pointer and keyboard holds return on release, cancellation, blur or disposal. */
 export function bindManualButton(button,{inst,def,direction=1,run,live}){
+  const doc=button.ownerDocument,win=doc.defaultView;
   let held=false,pointer=null;
   const release=()=>{if(!held)return;held=false;releaseManual(inst,def);pointer=null;live();};
   const press=()=>{if(held)return;held=true;pressManual(inst,def,direction);run();live();};
@@ -25,7 +26,7 @@ export function bindManualButton(button,{inst,def,direction=1,run,live}){
   button.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();release();}});
   // Assistive technology may activate a button without pointer/keyboard events.
   button.addEventListener('click',e=>{if(e.detail===0&&!held){press();release();}});
-  button.addEventListener('blur',release);window.addEventListener('blur',release);
-  const visibility=()=>{if(document.hidden)release();};document.addEventListener('visibilitychange',visibility);
-  return ()=>{release();window.removeEventListener('blur',release);document.removeEventListener('visibilitychange',visibility);};
+  button.addEventListener('blur',release);win.addEventListener('blur',release);
+  const visibility=()=>{if(doc.hidden)release();};doc.addEventListener('visibilitychange',visibility);
+  return ()=>{release();win.removeEventListener('blur',release);doc.removeEventListener('visibilitychange',visibility);};
 }

@@ -95,10 +95,11 @@ export class MachineView {
     this.host.querySelector('.machine-example-caption').style.display='none';
   }
   drawActuators() {
-    const controls=document.createElement('div');this.host.appendChild(controls);
+    const controls=document.createElement('div');controls.className='simulation-process-panel';this.host.appendChild(controls);
     this.controls=new ProcessControls(controls,{circuit:this.circuit,simulation:this.simulation,run:this.run,parametersChanged:this.parametersChanged});this.controls.draw();
-    const host=document.createElement('div');this.host.appendChild(host);
+    const host=document.createElement('div');host.className='simulation-actuator-panel';this.host.appendChild(host);
     this.actuators=new ActuatorView(host,this.circuit,this.simulation);this.actuators.draw();
+    this.screen?.decorate(this.host);
   }
   live() {
     this.actuators?.live();

@@ -1,3 +1,4 @@
+import { SimulationScreen } from './simulation-screen.js';
 import { pressManual, releaseManual } from './manual-control.js';
 // App shell: sheet rendering, direct manipulation, inspector, and the run loop.
 
@@ -1505,7 +1506,8 @@ function frame(now) {
     if (state.tab === 'ladder') ladderEditor.live();
   if (state.tab === 'machine') machineView.live();
   }
-  requestAnimationFrame(frame);
+  simulationScreen.live();
+  simulationScreen.schedule(frame);
 }
 
 /** The legend must describe the domain on the sheet; "0–6 bar" over an 80 bar oil
@@ -2240,6 +2242,7 @@ function applyCircuit(c) {
   if (state.tab === 'ladder') ladderEditor.draw();
   if (state.tab === 'grafcet') redrawGrafcet();
   if (state.tab === 'machine') machineView.draw();
+  simulationScreen.refresh();
 }
 
 /** Loads a document as a fresh start: history cleared, view fitted. */
@@ -2285,6 +2288,11 @@ const machineView = new MachineView($('#machine-view'), {
   run:()=>setRunning(true),
   mode:value=>{$('#controller-mode').value=value;$('#controller-mode').dispatchEvent(new Event('change'));machineView.draw();},
 });
+const simulationScreen=new SimulationScreen(machineView,{
+  toggleRun:()=>setRunning(!state.sim.running),stop:stopSim,
+  speed:()=>state.speed,setSpeed:value=>{$('#speed').value=value;$('#speed').dispatchEvent(new Event('input'));},
+  returnToEditor:()=>setPanelTab('machine'),message:toast,
+});
 document.querySelectorAll('[data-workspace]').forEach(b => b.addEventListener('click', () => setPanelTab(b.dataset.workspace)));
 $('#controller-mode').addEventListener('change', e => {
   state.circuit.controller = e.target.value;
@@ -2307,5 +2315,6 @@ state.docTitle = initialExample.name;
 applyView();
 const requestedWorkspace = new URLSearchParams(window.location.search).get('workspace');
 setPanelTab(['grafcet', 'ladder', 'machine'].includes(requestedWorkspace) ? requestedWorkspace : 'circuit');
+if(new URLSearchParams(window.location.search).get('screen')==='focus'){setPanelTab('machine');simulationScreen.toggleFocus();}
 window.addEventListener('resize', () => { redrawDiagram(); redrawScope(); redrawGrafcet(); });
-requestAnimationFrame(frame);
+simulationScreen.schedule(frame);

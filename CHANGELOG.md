@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 — Groot simulatiescherm en extra venster
+
+- Groot simulatiescherm combineert machinebeeld, fysieke bediening en bewegende aandrijvingen zonder editorpanelen.
+- Extra venster voor een tweede monitor, met dezelfde simulatie en eigen Start/Pauze, Stop/reset en tempo.
+- Hoofdvenster blijft bruikbaar voor het schema; nieuwe onderdelen en documentwissels worden doorgegeven aan het simulatievenster.
+- Veilige vrijgave van momentane knoppen bij focusverlies en sluiten; de simulatieklok wordt vanuit het zichtbare venster bijgewerkt.
+- Direct openen van de grote weergave via `screen=focus`.
+
 ## 1.1.3 — Fysieke componenten in het machinebeeld
 
 - Eigen fysieke afbeeldingen vervangen de schemasymbolen in het procesbeeld: ronde drukknoppen, paddenstoelnoodstop, ventielblokken, hefbomen, spoelen, sensoren, lampen en modules.
