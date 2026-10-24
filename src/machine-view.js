@@ -8,11 +8,16 @@ export class MachineView {
   constructor(host,{circuit,simulation,load,run,mode,changed,parametersChanged}) {Object.assign(this,{host,circuit,simulation,load,run,mode,changed,parametersChanged});this.editing=false;this.selected=null;}
   draw() {
     this.controls?.dispose();
-    if(this.lastScene!==this.circuit().scene){this.lastScene=this.circuit().scene;this.editing=this.lastScene?.parts?.length===0;this.selected=null;}
-    if(this.circuit().scene?.type!=='drill-press'){
-      this.host.innerHTML='<section class="machine-empty"><span>VISUEEL PROCES</span><h2>Van schema naar een werkende machine</h2><p>Plaats zelf machineonderdelen en koppel ze aan je eigen schema. Teken vervolgens je eigen GRAFCET of Ladder. Er wordt geen schema of programma voor je ingevuld.</p><button id="machine-create">Zelf een machineopstelling maken</button><button id="machine-load">Open uitgewerkt lesvoorbeeld</button></section>';
+    if(this.lastScene!==this.circuit().scene){this.lastScene=this.circuit().scene;this.editing=this.lastScene?.parts?.length===0;this.selected=null;this.showActuators=false;}
+    const hasMachine=this.circuit().scene?.type==='drill-press';
+    const standalone=!hasMachine||this.showActuators;
+    this.host.classList.toggle('machine-standalone',standalone);
+    if(standalone){
+      this.host.innerHTML='<header class="machine-head"><div><span>MIJN AANDRIJVINGEN</span><h2>Cilinders en motoren</h2><p class="machine-standalone-intro">De onderdelen uit je schema bewegen hier mee met de simulatie.</p></div><div class="machine-scene-actions"><button id="machine-create">Zelf een machineopstelling maken</button><button id="machine-load">Open uitgewerkt lesvoorbeeld</button></div></header>';
       this.host.querySelector('#machine-create').addEventListener('click',()=>this.create());
-      this.host.querySelector('#machine-load').addEventListener('click',()=>this.load());this.drawActuators();return;
+      this.host.querySelector('#machine-load').addEventListener('click',()=>this.load());
+      if(hasMachine)this.bindViewSwitch('Machineopstelling tonen');
+      this.drawActuators();return;
     }
     this.host.innerHTML=`<header class="machine-head"><div><span>MIJN VISUELE PROCES</span><h2>${escape(this.circuit().scene.title||(this.circuit().scene.parts===undefined?'Bankschroef & kolomboormachine':'Mijn machineopstelling'))}</h2><button id="machine-edit">${this.editing?'Klaar met opbouwen':'Opstelling bewerken'}</button></div><label>Oefenstand <select id="machine-mode"><option value="manual">Handmatig</option><option value="grafcet">Automatisch · GRAFCET</option><option value="ladder">Automatisch · PLC Ladder</option></select></label></header>
       ${this.editing?this.editor():''}<div class="machine-layout"><div class="machine-illustration"><svg viewBox="0 0 900 560" role="img" aria-label="Visuele bankschroef en kolomboormachine"><defs><linearGradient id="machine-metal"><stop stop-color="#d5e3e4"/><stop offset=".5" stop-color="#f8fbfa"/><stop offset="1" stop-color="#9fb7b7"/></linearGradient><pattern id="machine-drill-pattern" width="10" height="12" patternUnits="userSpaceOnUse"><path d="M-5 12L10 0M5 12L20 0" stroke="#365d62" stroke-width="3"/></pattern></defs>
@@ -29,6 +34,7 @@ export class MachineView {
       <aside class="machine-control"><h3>Bediening</h3><p id="machine-stage"></p><div id="machine-manual-controls"><button data-manual="clamp">Klem sluiten</button><button data-manual="spindle">Spindel starten</button><button data-manual="feed">Boor omlaag</button></div><button id="machine-start">Start automatische cyclus</button><button id="machine-stop" class="machine-stop">Stop cyclus</button><button id="machine-piece">Werkstuk verwijderen</button><div id="machine-signals"></div><p id="machine-feedback" role="status"></p></aside></div>
       <p class="machine-note">Het beeld volgt de werkelijke modelposities en het modeltoerental. ${this.circuit().scene.interlocks!==false?'De oefenhulp bewaakt klemvrijgave en boorvoeding.':'Oefenhulp staat uit: je eigen schema en programma bepalen de volgorde en vergrendelingen.'} De boring is een visuele tijdsindicatie; snijkrachten, materiaalgedrag en een gecertificeerde machinebeveiliging worden niet berekend.</p>`;
     this.drawActuators();
+    this.bindViewSwitch('Losse cilinders en motoren');
     this.bindEditor();
     this.placeParts();
     this.host.querySelector('#machine-mode').value=this.circuit().controller||'manual';
@@ -38,6 +44,11 @@ export class MachineView {
     this.host.querySelector('#machine-stop').addEventListener('click',()=>{const sim=this.simulation();const stop=sim.circuit.instances.find(i=>i.params.tag?.value===sceneBinding(this.circuit().scene,'stop'));if(stop){stop.sim.pressed=!stop.sim.pressed;this.run();this.live();}});
     this.host.querySelector('#machine-piece').addEventListener('click',()=>{const sim=this.simulation(),s=drillState(sim);if(s.top&&s.open&&s.stopped){sim.machineWorkpiece=!s.workpiece;sim.machineHole=0;this.live();}});
     this.live();
+  }
+  bindViewSwitch(label) {
+    const button=this.host.ownerDocument.createElement('button');button.id='machine-view-switch';button.textContent=label;
+    button.addEventListener('click',()=>{this.showActuators=!this.showActuators;this.draw();});
+    this.host.querySelector('.machine-head>div').appendChild(button);
   }
   create() {
     this.circuit().scene=newMachineScene();this.editing=true;this.selected=null;
@@ -99,6 +110,7 @@ export class MachineView {
     this.controls=new ProcessControls(controls,{circuit:this.circuit,simulation:this.simulation,run:this.run,parametersChanged:this.parametersChanged});this.controls.draw();
     const host=document.createElement('div');host.className='simulation-actuator-panel';this.host.appendChild(host);
     this.actuators=new ActuatorView(host,this.circuit,this.simulation);this.actuators.draw();
+    if(this.host.classList.contains('machine-standalone'))this.host.insertBefore(host,controls);
     this.screen?.decorate(this.host);
   }
   live() {

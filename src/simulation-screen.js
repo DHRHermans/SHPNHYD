@@ -44,6 +44,7 @@ export class SimulationScreen {
     const host=doc.createElement('main');host.className='machine-view';doc.body.appendChild(host);
     const source=this.view;
     this.popupView=new MachineView(host,{circuit:source.circuit,simulation:source.simulation,run:source.run,load:source.load,changed:source.changed,parametersChanged:source.parametersChanged,mode:value=>{source.mode(value);this.popupView?.draw();}});
+    this.popupView.showActuators=source.showActuators;this.popupView.lastScene=source.circuit().scene;this.popupView.editing=source.editing;
     this.popupView.screen=this;this.popupCircuit=source.circuit();this.popupRevision=this.popupCircuit.revision;this.popupView.draw();
     const leave=()=>{if(this.popup!==popup)return;this.popupView?.controls?.dispose();this.popupView=null;this.popup=null;this.schedule(this.frameCallback);};
     doc.addEventListener('visibilitychange',()=>this.schedule(this.frameCallback));

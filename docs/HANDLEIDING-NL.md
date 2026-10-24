@@ -223,6 +223,8 @@ Handbediening start de simulatie als die nog niet loopt. Het geeft een fysieke i
 
 ## Alle cilinders en motoren zichtbaar simuleren
 
+Zonder kolomboor- of eigen machineopstelling staan de losse cilinders en motoren automatisch groot op de hoofdplek links. De drukknoppen en ventielen blijven rechts beschikbaar. Dit werkt in Machinebeeld, Groot simulatiescherm en Extra venster. Bij een bestaande opstelling kun je met **Losse cilinders en motoren** dezelfde aandrijvingen bekijken; **Machineopstelling tonen** schakelt terug. Deze weergavekeuze verwijdert geen onderdelen of koppelingen.
+
 Open **Machinebeeld** nadat je onderdelen in **Schakeling** hebt geplaatst. Onder **Aandrijvingen uit mijn schema** verschijnen automatisch:
 
 - Pneumatische enkelwerkende en dubbelwerkende cilinders, ook met doorlopende zuigerstang.

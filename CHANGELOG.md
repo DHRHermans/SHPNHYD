@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 — Losse aandrijvingen als hoofdweergave
+
+- Zonder machineopstelling staan cilinders en motoren groot op de hoofdplek links, met fysieke bediening rechts.
+- Kolombooropstellingen kunnen via Losse cilinders en motoren tijdelijk als losse aandrijvingen worden bekeken; terugschakelen behoudt de opstelling.
+- Het extra simulatievenster neemt de gekozen weergave over.
+
 ## 1.2.0 — Groot simulatiescherm en extra venster
 
 - Groot simulatiescherm combineert machinebeeld, fysieke bediening en bewegende aandrijvingen zonder editorpanelen.
