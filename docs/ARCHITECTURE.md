@@ -186,3 +186,7 @@ The light interface remains independent of the exported engineering symbols. `le
 Per-instance `valveLayout.boxes` overrides the paths used by both the valve renderer and pneumatic/hydraulic stamping. Import validates known ports, position count and duplicate paths. Standard variant replacement preserves common parameters and refuses to discard wires attached to removed pilot ports.
 
 `controller-io.js` supplies the two physical controller definitions and builds alias maps after the electric solve. `controllerSignal` prioritizes mapped input voltages. `applyControllerOutputs` routes mapped output requests to module drivers instead of writing actuator tags directly. The following electric solve determines whether an actually wired coil is energized. Missing power and disconnected wires cannot be bypassed by a shared tag. Ambiguous aliases fail closed. Normal virtual program variables retain their previous behavior.
+
+## Functional mains and mechanical drives
+
+`power-network.js` resolves conductor identities through drawn wires, closed contactors and protection poles; it carries RMS nameplate metadata without extending the DC numerical solver to AC. `motor-mechanics.js` resolves separate shaft graphs or optional motor-tag bindings, derives load and inertia contributions, and updates first-order speed/current/thermal teaching models. `catalog-drives.js` provides the additional workshop components. A shaft graph with multiple motors is reported as ambiguous rather than silently selecting a drive.

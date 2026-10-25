@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 — Uitgebreid motoratelier
+
+- 230 V-monofasemotor en driefasenmotor met zes klemmen; de getekende ster-/driehoekbruggen bepalen de aansluiting.
+- Monofase- en driefasennet met TN-S, TN-C, TN-C-S, TT of IT en functionele N/PE/PEN-aansluitingen; lokale aardelektrode.
+- Tweepolige contactor en vertraagd opkomende/afvallende NO- en NC-contacten.
+- Instelbare B/C/D-automaat en motorbeveiligingsschakelaar met thermisch/magnetisch onderwijsmodel.
+- Motorverwarming, temperatuurcontact met hysterese en PT100-weerstandsmodel.
+- Mechanische asverbindingen, constant-koppel-/ventilatorlast en vliegwiel. Pompopbrengst volgt motortoerental en pomplast beïnvloedt de motor.
+- Compressor met motoraandrijving, drukregeling en buffervolume; opgebouwde luchtdruk blijft na stoppen opgeslagen.
+- Fysieke bediening, motorselectie en instelknoppen in het simulatiescherm; acht nieuwe voorbeelden.
+- Totaal 106 componenten, 34 voorbeelden en 190 tests.
+
 ## 1.3.0 — Leeratelier zonder aparte rollen
 
 - Automatisch lokaal bewaren en herstellen, met vier vorige versies en JSON-export als overdraagbare reservekopie.

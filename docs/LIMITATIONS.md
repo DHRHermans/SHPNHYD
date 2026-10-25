@@ -96,3 +96,11 @@ Advanced valve editing changes paths only between the existing valve ports and e
 ## Leeratelier en didactische controles
 
 Opdrachtvinkjes bevestigen beperkte waarnemingen; ze bewijzen geen volledige ontwerpcorrectheid. Reflecties worden niet inhoudelijk beoordeeld. De lokale opslag is browsergebonden en vervangt geen eigen JSON-reservekopie. Energiestippen gebruiken ondersteunde componentstromen en zuigerverplaatsing; zij lossen niet alle leidingtakken of laadstromen afzonderlijk op. De meettafel is onbelastend, met DC-spanningsverschil en U/R-stroom voor ondersteunde weerstandsbelastingen. Er is geen echte AC- of universele seriestroommeting. Verborgen storingen zijn een oefenweergave en geen beveiligde toetsmodus.
+
+## Expanded motor and network models
+
+The mains graph models conductor identity, switching, phase order and nameplate RMS voltage. It does not solve sinusoidal AC circuits, neutral displacement, touch voltage, earth-fault loops, prospective fault current, selectivity, real breaker tolerance bands or certified protection times. TN/TT/IT choices distinguish distributed N/PEN and source/local PE; this is not an earthing-system safety assessment.
+
+The new motor current, heating, inertia, stall threshold and protection integrals are teaching models. A 230 V motor has an internal functional capacitor rather than a solved auxiliary winding/capacitor circuit. Six-terminal star/delta wiring is checked topologically; voltage-factor scaling is approximate. PT100 uses a linear resistance law without self-heating, lead resistance or a complete IEC calibration curve; use a suitable measuring circuit. The temperature contact is digital, the PT100 is not a direct digital PLC input.
+
+Pump delivery scales with motor speed and imposes a pressure-dependent shaft load; compressor delivery has a pressure demand and a lumped receiver. Detailed torque curves, mechanical losses, real starting dynamics and compressor thermodynamics are not solved. Stored air is not removed artificially when the motor stops. Never infer real protection settings or safe wiring from this simulator.

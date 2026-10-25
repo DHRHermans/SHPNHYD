@@ -16,15 +16,16 @@ export function componentFlows(sim){
    // Some stamps retain working diagnostics; run those on a detached instance copy.
    try{const copy={...inst,sim:structuredClone(inst.sim),params:structuredClone(inst.params),faults:{...inst.faults}};(oil?d.stampHydraulic:d.stamp)(copy,st,ctx,oil?sim.ph:sim.p);}catch{for(const p of ports)values.delete(key(inst.id,p.id));}
   }
-  if(d.resistance&&d.ports.length===2&&d.ports.every(p=>p.kind==='electric')){
-   const q=inst.faults.coil_open||inst.faults.off?0:(sim.volts(inst.id,d.ports[0].id)-sim.volts(inst.id,d.ports[1].id))/d.resistance;
-   values.set(key(inst.id,d.ports[0].id),q);values.set(key(inst.id,d.ports[1].id),-q);
+  const electricPorts=d.ports.filter(p=>p.kind==='electric');
+  if(d.resistance&&electricPorts.length===2){
+   const q=inst.faults.coil_open||inst.faults.off?0:(sim.volts(inst.id,electricPorts[0].id)-sim.volts(inst.id,electricPorts[1].id))/d.resistance;
+   values.set(key(inst.id,electricPorts[0].id),q);values.set(key(inst.id,electricPorts[1].id),-q);
   }
  }
  return values;
 }
 export function wireActivity(w,flows){
- if(w.kind==='motor')return 0;
+ if(w.kind==='motor'||w.kind==='mechanical')return 0;
  const a=flows.get(key(w.from.inst,w.from.port)),b=flows.get(key(w.to.inst,w.to.port)),epsilon=w.kind==='hydraulic'?1e-9:w.kind==='electric'?1e-6:1e-8;
  if(a!=null&&b!=null){if(a< -epsilon&&b>epsilon)return 1;if(a>epsilon&&b< -epsilon)return -1;return 0;}
  if(b!=null&&Math.abs(b)>epsilon)return Math.sign(b);if(a!=null&&Math.abs(a)>epsilon)return -Math.sign(a);return 0;

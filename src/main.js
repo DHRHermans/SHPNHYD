@@ -1,3 +1,4 @@
+import {isMotor} from './power-network.js';
 import { AutoSave } from './autosave.js';
 import { LearningLab } from './learning-lab.js';
 import { drawFlowActivity } from './flow-view.js';
@@ -343,11 +344,11 @@ function render() {
       const p = c.portPos(inst, port);
       const wired = c.hasWire(inst.id, port.id);
       const dot = svgEl('circle', {
-        class: `port-dot${wired ? '' : ' open'}`,
+        class: `port-dot ${port.kind||'pneumatic'}${wired ? '' : ' open'}`,
         cx: p.x, cy: p.y, r: wired ? 2.6 : 3.4,
         'data-inst': inst.id, 'data-port': port.id,
       });
-      dot.appendChild(svgEl('title')).textContent = `${inst.params?.tag?.value || def.short} · Anschluss ${port.id}`;
+      dot.appendChild(svgEl('title')).textContent = `${inst.params?.tag?.value || def.short} · ${port.kind==='mechanical'?'mechanische as':'aansluiting'} ${port.id}`;
       el.ports.appendChild(dot);
     }
   }
@@ -437,7 +438,7 @@ function updateDynamic() {
   // Note: these must be inline styles, not presentation attributes — the .wire class
   // rule in the stylesheet outranks any attribute, so setAttribute('stroke', …) would
   // silently do nothing and every line would stay grey.
-  const phaseNetwork = state.circuit.instances.some(i => i.type === 'industrial_supply') ? motorNetwork(state.circuit, sim) : null;
+  const phaseNetwork = state.circuit.instances.some(i => ['industrial_supply','industrial_supply_1p','industrial_mains'].includes(i.type)) ? motorNetwork(state.circuit, sim) : null;
   for (const w of state.circuit.wires) {
     const node = el.wires.querySelector(`[data-wire-line="${w.id}"]`);
     if (!node) continue;
@@ -448,8 +449,11 @@ function updateDynamic() {
       node.style.strokeWidth = live ? '2.4' : '';
     } else if (w.kind === 'motor') {
       const phases = phaseNetwork?.(w.from.inst, w.from.port);
+      if([w.from.port,w.to.port].some(p=>p==='PE'||p==='PEN')){node.style.stroke=[...(phases||[])].some(s=>/\/[123]$/.test(s))?'#d24e43':'#719c53';node.style.strokeWidth='3';continue;}
       node.style.stroke = phases?.size > 1 ? '#e5484d' : phases?.size ? '#c084fc' : '';
       node.style.strokeWidth = phases?.size ? '2.8' : '';
+    } else if(w.kind==='mechanical'){
+      node.style.stroke='#527d77';node.style.strokeWidth='4';
     } else if (w.kind === 'hydraulic') {
       const i = sim.hydIndex(w.from.inst, w.from.port);
       const bar = i == null ? 0 : barG(sim.ph[i]);
@@ -761,7 +765,7 @@ function buildInspector() {
         <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}">`;
     } else if (p.type === 'text') {
       html += `<div class="field-label"><span>${p.label}</span></div>
-        <input type="text" value="${esc(p.value ?? '')}">`;
+        <input type="text" ${key==='motor'?'list="motor-targets"':''} value="${esc(p.value ?? '')}">`;
     } else if (p.type === 'select') {
       html += `<div class="field-label"><span>${p.label}</span></div><select aria-label="${esc(p.label)}">`
         + p.options.map((o) => `<option value="${o.value}"${o.value === p.value ? ' selected' : ''}>${o.label}</option>`).join('')
@@ -777,9 +781,11 @@ function buildInspector() {
     html += `</div>`;
   }
 
-  if (def.group === 'Motorschakelingen') html += `<p class="hint" style="border:0;padding:6px 0">De gestreepte hoofdkring gebruikt een functioneel driefasenmodel; de stuurkring werkt op 24 V DC. Koppel hoofdcontacten en hulpcontacten via dezelfde spoelaanduiding (KM1/KM2). De getoonde motorstroom is een modelwaarde. Klik tijdens de simulatie op F1 om na afkoeling te resetten.</p>`;
+  if (def.group === 'Motorschakelingen') html += `<p class="hint" style="border:0;padding:6px 0">De hoofdkring gebruikt een functioneel AC-topologiemodel; de stuurkring werkt op 24 V DC. De as-aansluiting is mechanisch en kan met een belasting, pomp of compressor verbonden worden. Koppel hoofdcontacten en hulpcontacten via dezelfde spoelaanduiding (KM1/KM2). De getoonde motorstroom is een modelwaarde. Klik tijdens de simulatie op F1 om na afkoeling te resetten.</p>`;
 
   if(['plc_io','grafcet_io'].includes(inst.type))html += '<p class="hint" style="border:0">Sluit L+ aan op +24 V en M op 0 V. I0–I7 lezen spanning ten opzichte van M. Q0–Q7 leveren een geschakelde 24 V-uitgang naar een spoel of lamp; verbind de andere kant met M. Koppel hieronder iedere poort aan de programmanaam. Kies de bijbehorende actieve besturing.</p>';
+  if(inst.type.startsWith('industrial_contact_'))html+='<p class="hint">Geef het tijdcontact dezelfde aanduiding als de bijbehorende contactorspoel (bijvoorbeeld KM1). NO en NC met dezelfde aanduiding volgen dezelfde spoel.</p>';
+  html+='<datalist id="motor-targets">'+state.circuit.instances.filter(isMotor).map(i=>`<option value="${esc(i.params.tag?.value)}"></option>`).join('')+'</datalist>';
   html += valveEditorMarkup(def);
   if (inst.params.solA) html += `<p class="hint" style="border:0;padding:6px 0">Geef de elektrische ventielspoel dezelfde aanduiding als Spoel links/rechts (bijvoorbeeld Y1/Y2). De spoel bedient het ventiel; de olieleidingen verbinden het ventiel met de cilinder.</p>`;
 
@@ -865,7 +871,7 @@ function buildEmptyInspector() {
     // Count by the domain the component's ports actually live in, not by its group name.
     const kinds = new Set(def.ports.map((p) => p.kind || 'pneumatic'));
     if (kinds.has('hydraulic')) counts.hydraulic++;
-    else if (kinds.has('electric') || kinds.has('motor')) counts.electric++;
+    else if (kinds.has('electric') || kinds.has('motor') || kinds.has('mechanical')) counts.electric++;
     else counts.pneumatic++;
   }
 
@@ -965,9 +971,9 @@ function checkCircuit(c) {
   // teaches people to stop reading this panel.
   const airParts = c.instances.filter((i) => {
     const def = c.defOf(i);
-    return def?.ports.some((p) => (p.kind || 'pneumatic') === 'pneumatic') && i.type !== 'supply';
+    return def?.ports.some((p) => (p.kind || 'pneumatic') === 'pneumatic') && !['supply','air_compressor'].includes(i.type);
   });
-  if (airParts.length && !c.instances.some((i) => i.type === 'supply')) {
+  if (airParts.length && !c.instances.some((i) => ['supply','air_compressor'].includes(i.type))) {
     out.push({ level: 'err', text: 'Er ontbreekt een persluchtbron in het schema' });
   }
   if (usesDomain('hydraulic')) {
@@ -984,11 +990,11 @@ function checkCircuit(c) {
     }
   }
 
-  if (usesDomain('motor') && !c.instances.some(i => i.type === 'industrial_supply')) {
+  if (usesDomain('motor') && !c.instances.some(i => ['industrial_supply','industrial_supply_1p','industrial_mains'].includes(i.type))) {
     out.push({ level: 'err', text: 'Er ontbreekt een driefasenvoeding in de hoofdkring' });
   }
   for (const i of c.instances.filter(i => i.type === 'industrial_overload')) {
-    if (!c.instances.some(m => m.type === 'industrial_motor' && m.params.tag.value === i.params.motor.value)) {
+    if (!c.instances.some(m => isMotor(m) && m.params.tag.value === i.params.motor.value)) {
       out.push({ level: 'warn', text: `${i.params.tag.value}: geen bijbehorende motor`, id: i.id });
     }
   }
@@ -1009,7 +1015,7 @@ function checkCircuit(c) {
     const tag = inst.params?.tag?.value;
     if (!tag) continue;
     const def = c.defOf(inst);
-    if (def?.id === 'contact_no' || def?.id === 'contact_nc' || def?.id === 'industrial_contactor') continue; // contacts share a coil's tag by design
+    if (def?.id === 'contact_no' || def?.id === 'contact_nc' || def?.id === 'industrial_contactor' || def?.id === 'industrial_contactor_1p' || def?.id?.startsWith('industrial_contact_')) continue; // contacts share a coil's tag by design
     if (seen.has(tag)) out.push({ level: 'warn', text: `Aanduiding ${tag} meermaals gebruikt`, id: inst.id });
     else seen.set(tag, inst.id);
   }
@@ -1050,6 +1056,7 @@ function checkCircuit(c) {
     if (tag && chartTags.has(tag)) continue;
     // A solenoid valve's coil is addressed by tag too, wired or not.
     if (inst.params?.solA && chartTags.has(inst.params.solA.value)) continue;
+    if(def.ports.every(p=>p.kind==='mechanical')&&inst.params.motor?.value&&c.instances.some(m=>isMotor(m)&&m.params.tag.value===inst.params.motor.value))continue;
     const loose = def.ports.filter((p) => !p.vent && !c.hasWire(inst.id, p.id));
     if (loose.length === def.ports.length && def.ports.length) {
       out.push({ level: 'warn', text: `${tag ?? def.short} is niet aangesloten`, id: inst.id });
@@ -1106,6 +1113,11 @@ function updateReadouts() {
     if (inst.sim.status) rows += `<div class="readout"><span>Motorstatus</span><span>${inst.sim.status}</span></div>`;
     if (inst.sim.current != null) rows += `<div class="readout"><span>Stroomschatting</span><span>${num(inst.sim.current, 1)} A</span></div>`;
   }
+  if(inst.sim?.temperature!=null)rows+=`<div class="readout"><span>Temperatuur (model)</span><span>${num(inst.sim.temperature,1)} °C</span></div>`;
+  if(inst.sim?.loadTorque!=null)rows+=`<div class="readout"><span>Gekoppeld lastkoppel</span><span>${num(inst.sim.loadTorque,1)} Nm</span></div>`;
+  if(inst.sim?.resistance!=null)rows+=`<div class="readout"><span>Sensorweerstand</span><span>${num(inst.sim.resistance,1)} Ω</span></div>`;
+  if(typeof inst.sim?.q==='number')rows+=`<div class="readout"><span>Pompopbrengst</span><span>${num(inst.sim.q,1)} l/min</span></div>`;
+  if(inst.sim?.driveStatus)rows+=`<p class="hint">${esc(inst.sim.driveStatus)}</p>`;
   if (inst.sim?.heat != null) rows += `<div class="readout"><span>Thermische belasting</span><span>${Math.round(inst.sim.heat * 100)} %</span></div><div class="readout"><span>Thermisch relais</span><span>${inst.sim.tripped ? 'uitgeschakeld' : 'gereed'}</span></div>`;
   if (inst.sim?.state != null) {
     rows += `<div class="readout"><span>Schakelstand</span><span>${inst.sim.state}</span></div>`;

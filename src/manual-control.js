@@ -12,13 +12,13 @@ export function releaseManual(inst,def){
 }
 
 /** Pointer and keyboard holds return on release, cancellation, blur or disposal. */
-export function bindManualButton(button,{inst,def,direction=1,run,live}){
+export function bindManualButton(button,{inst,def,direction=1,run,live,hitTest=()=>true}){
   const doc=button.ownerDocument,win=doc.defaultView;
   let held=false,pointer=null;
   const release=()=>{if(!held)return;held=false;releaseManual(inst,def);pointer=null;live();};
   const press=()=>{if(held)return;held=true;pressManual(inst,def,direction);run();live();};
   button.addEventListener('pointerdown',e=>{
-    if(e.button!==0)return;e.preventDefault();button.focus();pointer=e.pointerId;button.setPointerCapture(e.pointerId);press();
+    if(e.button!==0||!hitTest(e))return;e.preventDefault();button.focus();pointer=e.pointerId;button.setPointerCapture(e.pointerId);press();
   });
   button.addEventListener('pointerup',e=>{if(e.pointerId===pointer)release();});
   button.addEventListener('pointercancel',release);button.addEventListener('lostpointercapture',release);

@@ -1,0 +1,401 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i314",
+      "type": "rail_24v",
+      "x": 610,
+      "y": 50,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i315",
+      "type": "estop",
+      "x": 610,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "S0"
+      }
+    },
+    {
+      "id": "i316",
+      "type": "btn_nc",
+      "x": 610,
+      "y": 190,
+      "rot": 0,
+      "params": {
+        "tag": "S2"
+      }
+    },
+    {
+      "id": "i317",
+      "type": "industrial_overload",
+      "x": 600,
+      "y": 270,
+      "rot": 0,
+      "params": {
+        "tag": "F1",
+        "motor": "M1",
+        "rated": 8,
+        "delay": 20
+      }
+    },
+    {
+      "id": "i321",
+      "type": "btn_no",
+      "x": 580,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i322",
+      "type": "contact_no",
+      "x": 670,
+      "y": 390,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i323",
+      "type": "industrial_coil",
+      "x": 580,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "KM1"
+      }
+    },
+    {
+      "id": "i324",
+      "type": "rail_0v",
+      "x": 590,
+      "y": 700,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i325",
+      "type": "lamp",
+      "x": 680,
+      "y": 590,
+      "rot": 0,
+      "params": {
+        "tag": "H1"
+      }
+    },
+    {
+      "id": "i333",
+      "type": "industrial_mains",
+      "x": 80,
+      "y": 30,
+      "rot": 0,
+      "params": {
+        "tag": "QNET",
+        "voltage": 400,
+        "system": "TN-S",
+        "neutral": "no",
+        "missing": 0
+      }
+    },
+    {
+      "id": "i334",
+      "type": "industrial_breaker",
+      "x": 80,
+      "y": 170,
+      "rot": 0,
+      "params": {
+        "tag": "QF1",
+        "rated": 10,
+        "curve": "C",
+        "delay": 6,
+        "motor": ""
+      }
+    },
+    {
+      "id": "i335",
+      "type": "industrial_contactor",
+      "x": 80,
+      "y": 350,
+      "rot": 0,
+      "params": {
+        "tag": "KM1",
+        "interlock": ""
+      }
+    },
+    {
+      "id": "i336",
+      "type": "industrial_motor",
+      "x": 80,
+      "y": 550,
+      "rot": 0,
+      "params": {
+        "tag": "M1",
+        "speed": 1450,
+        "current": 4,
+        "load": 0.3,
+        "torque": 10,
+        "ambient": 20,
+        "thermalTime": 4
+      }
+    },
+    {
+      "id": "i346",
+      "type": "industrial_load",
+      "x": 300,
+      "y": 650,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 10,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i348",
+      "type": "industrial_motor_temperature",
+      "x": 760,
+      "y": 220,
+      "rot": 0,
+      "params": {
+        "tag": "BTH1",
+        "motor": "M1",
+        "threshold": 75,
+        "hysteresis": 15,
+        "contact": "nc"
+      }
+    },
+    {
+      "id": "i349",
+      "type": "industrial_pt100",
+      "x": 950,
+      "y": 650,
+      "rot": 0,
+      "params": {
+        "tag": "BT1",
+        "motor": "M1"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i314",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i315",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i315",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i316",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i317",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i321",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i317",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i322",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i321",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i322",
+        "port": "b"
+      }
+    },
+    {
+      "from": {
+        "inst": "i321",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i323",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i323",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i324",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i323",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i325",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i325",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i324",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i333",
+        "port": "L1"
+      },
+      "to": {
+        "inst": "i334",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i334",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i335",
+        "port": "L1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i335",
+        "port": "T1"
+      },
+      "to": {
+        "inst": "i336",
+        "port": "U"
+      }
+    },
+    {
+      "from": {
+        "inst": "i333",
+        "port": "L2"
+      },
+      "to": {
+        "inst": "i334",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i334",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i335",
+        "port": "L2"
+      }
+    },
+    {
+      "from": {
+        "inst": "i335",
+        "port": "T2"
+      },
+      "to": {
+        "inst": "i336",
+        "port": "V"
+      }
+    },
+    {
+      "from": {
+        "inst": "i333",
+        "port": "L3"
+      },
+      "to": {
+        "inst": "i334",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i334",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i335",
+        "port": "L3"
+      }
+    },
+    {
+      "from": {
+        "inst": "i335",
+        "port": "T3"
+      },
+      "to": {
+        "inst": "i336",
+        "port": "W"
+      }
+    },
+    {
+      "from": {
+        "inst": "i336",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i346",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i316",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i348",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i348",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i317",
+        "port": "a"
+      }
+    }
+  ]
+}

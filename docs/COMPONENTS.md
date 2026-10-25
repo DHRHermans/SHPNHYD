@@ -1,4 +1,4 @@
-# Component library — 90 components
+# Component library — 106 components
 
 Each entry is one record in a catalog file: symbol, ports, physics and plausible faults. See
 [the component contract](ARCHITECTURE.md#the-component-contract) for how to add one.
@@ -75,3 +75,26 @@ The GRAFCET example runs the same sequence as the pneumatic one with **10 compon
 of 11 and without a single limit valve**: the logic lives in the chart, not in the plumbing.
 
 The current example menu contains **25 examples**, including electrohydraulic end switches, mixed pneumatic release, direct/reversing motor control, a DC conveyor, GRAFCET and Ladder in all three domains, physically wired controller modules and the drill-press scene. The scene uses two existing pneumatic cylinders and a functional motor; it is not an additional simulated component type. See the Dutch manual for the 1.1 additions.
+
+## Expanded motor workshop
+
+Sixteen additions in `catalog-drives.js` extend the original motor model:
+
+| Component | Functional behaviour |
+| --- | --- |
+| `industrial_supply_1p` | Single-phase nameplate source, L/N/PE/PEN identities |
+| `industrial_mains` | Three-phase source, selectable TN-S/TN-C/TN-C-S/TT/IT conductor roles |
+| `industrial_earth` | Local protective-earth conductor identity |
+| `industrial_motor_1p` | 230 V motor with internal functional capacitor, U1/U2/PE and shaft |
+| `industrial_motor_6` | U1/V1/W1/U2/V2/W2 motor, externally drawn star/delta bridges |
+| `industrial_contactor_1p` | Two power poles linked to a 24 V coil tag |
+| `industrial_contact_ton_no`, `industrial_contact_ton_nc` | Pickup-delayed auxiliary contacts |
+| `industrial_contact_tof_no`, `industrial_contact_tof_nc` | Dropout-delayed auxiliary contacts |
+| `industrial_breaker` | Adjustable B/C/D thermal/magnetic functional circuit breaker |
+| `industrial_motor_protector` | Power-pole protection plus trip contact 95–96 |
+| `industrial_motor_temperature` | Motor temperature threshold contact with hysteresis |
+| `industrial_pt100` | Temperature-dependent resistance, R = 100(1 + 0.00385T) |
+| `industrial_load` | Constant torque, fan torque or flywheel inertia |
+| `air_compressor` | Motor-driven air source with pressure demand and receiver volume |
+
+Existing three-phase/DC motors gain a separate mechanical shaft. Existing hydraulic pumps gain an optional shaft/motor binding; unbound older pump circuits retain their own-drive behaviour. These ports cannot be connected to fluid, 24 V or mains conductors.

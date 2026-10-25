@@ -9,6 +9,13 @@
 
 /** Parameters worth printing per type. Everything else is noise on a BOM. */
 const SPEC_KEYS = {
+  industrial_supply_1p:['voltage','system','neutral'],industrial_mains:['voltage','system','neutral'],
+  industrial_motor_1p:['voltage','speed','current','torque'],industrial_motor_6:['windingVoltage','speed','current','torque'],
+  industrial_breaker:['rated','curve','delay'],industrial_motor_protector:['rated','curve','delay'],
+  industrial_contact_ton_no:['delay'],industrial_contact_ton_nc:['delay'],industrial_contact_tof_no:['delay'],industrial_contact_tof_nc:['delay'],
+  industrial_motor_temperature:['motor','threshold','hysteresis','contact'],industrial_pt100:['motor'],
+  industrial_load:['kind','torque','inertia','motor'],air_compressor:['capacity','receiver','pressure','motor'],
+
   industrial_dc_motor: ['speed'],
   industrial_motor: ['speed', 'current', 'load'],
   industrial_overload: ['rated', 'delay', 'motor'],
@@ -71,7 +78,7 @@ export function buildParts(circuit) {
   const domainOf = (def) => {
     const kinds = new Set(def.ports.map((p) => p.kind || 'pneumatic'));
     if (kinds.has('hydraulic')) return 2;
-    if (kinds.has('electric') || kinds.has('motor')) return 3;
+    if (kinds.has('electric') || kinds.has('motor') || kinds.has('mechanical')) return 3;
     return 1;
   };
 

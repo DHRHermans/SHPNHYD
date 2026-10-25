@@ -40,6 +40,7 @@ const EXPORT_CSS = `
   .sym-tag { font-size: 9px; font-weight: 500; fill: #3d4750; }
   .wire { fill: none; stroke: #99a3ad; stroke-width: 2; stroke-linecap: round; }
   .wire.electric { stroke: #5a646d; }
+  .wire.mechanical {stroke:#527d77;stroke-width:4;stroke-dasharray:10 4;}
   .wire.motor { stroke: #7957a6; stroke-dasharray: 7 3; }
   .junction { fill: #14171a; stroke: none; }
 `;

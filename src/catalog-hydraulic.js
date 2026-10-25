@@ -1,3 +1,4 @@
+import {shaft,driveState} from './motor-mechanics.js';
 // Hydraulic components.
 //
 // Same contract as the pneumatic catalog, with `stampHydraulic` instead of `stamp`.
@@ -55,14 +56,17 @@ const tank = {
 const pump = {
   id: 'h_pump', name: 'Hydraulische pomp met constant debiet', short: 'Pomp',
   group: 'Hydraulica-Voeding',
-  size: { w: 44, h: 62 },
+  size: { w: 100, h: 76 },
   ports: [
     { id: 'P', x: 22, y: 0, dir: 'up', kind: 'hydraulic' },
-    { id: 'T', x: 22, y: 62, dir: 'down', kind: 'hydraulic' },
+    { id: 'T', x: 22, y: 62, dir: 'down', kind: 'hydraulic' },shaft(95,31),
   ],
   params: {
     tag: { label: 'Aanduiding', type: 'text', value: '0P1' },
     flow: { label: 'Debiet', type: 'range', value: 8, min: 0.5, max: 40, step: 0.5, unit: 'l/min' },
+    motor:{label:'Aandrijfmotor (of verbind de as)',type:'text',value:''},
+    nominalRpm:{label:'Nominaal pomptoerental',type:'range',value:1450,min:50,max:6000,step:50,unit:'omw/min'},
+    reverse:{label:'Omgekeerde aandrijving',type:'select',value:'no',options:[{value:'no',label:'Niet toegestaan'},{value:'yes',label:'Toegestaan'}]},
     running: { label: 'Aandrijving', type: 'select', value: 'on',
       options: [{ value: 'on', label: 'draait' }, { value: 'off', label: 'uit' }] },
   },
@@ -73,7 +77,9 @@ const pump = {
     const off = inst.params.running.value === 'off' || ctx.fault(inst, 'off');
     // A worn pump still turns; it just loses most of its flow past the vanes.
     const eff = ctx.fault(inst, 'worn') ? 0.35 : 1;
-    const q = off ? 0 : (inst.params.flow.value / 60000) * eff;
+    const drive=driveState(inst,ctx.sim.circuit);
+    const q = off ? 0 : (inst.params.flow.value / 60000) * eff*drive.ratio;
+    inst.sim.rpm=drive.rpm;inst.sim.driveStatus=drive.status;
 
     st.inject(nP, q);
     st.inject(nT, -q);
@@ -88,8 +94,8 @@ const pump = {
     return line(22, 0, 22, 9) + line(22, 53, 22, 62)
       + circle(22, 31, 16)
       + hydTriangle(22, 15, 9, 'up')
-      + line(10, 44, 34, 44)
-      + text(22, 60, on ? `${num(inst.params.flow.value, 1)} l/min` : 'uit', 'sym-tag');
+      + line(10, 44, 34, 44)+line(38,31,95,31)+text(78,24,'as','sym-tag')
+      + text(43,75,on?`${num(inst.sim.q||0,1)} l/min`:'uit','sym-tag');
   },
 };
 

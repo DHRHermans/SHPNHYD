@@ -1,3 +1,4 @@
+import {isMotor} from './power-network.js';
 import { ProcessControls } from './process-controls.js';
 import { ActuatorView } from './actuator-view.js';
 import { MACHINE_PARTS, MACHINE_BINDINGS, newMachineScene, sceneBinding, sceneParts } from './machine-scene.js';
@@ -57,7 +58,7 @@ export class MachineView {
   editor() {
     const scene=this.circuit().scene,parts=sceneParts(scene),part=parts.find(p=>p.type===this.selected);
     const instances=this.circuit().instances;
-    const options=key=>instances.filter(i=>key==='motor'?['industrial_motor','industrial_dc_motor'].includes(i.type):key==='clamp'||key==='feed'?/^(cyl_|h_cyl)/.test(i.type):true).flatMap(i=>(key==='clamp'||key==='feed'||key==='motor'?['tag']:['tag','solA','solB']).map(p=>i.params[p]?.value)).filter(Boolean);
+    const options=key=>instances.filter(i=>key==='motor'?isMotor(i):key==='clamp'||key==='feed'?/^(cyl_|h_cyl)/.test(i.type):true).flatMap(i=>(key==='clamp'||key==='feed'||key==='motor'?['tag']:['tag','solA','solB']).map(p=>i.params[p]?.value)).filter(Boolean);
     return `<section class="machine-builder" aria-label="Machineopstelling opbouwen"><div><h3>1 · Onderdelen plaatsen</h3><p>Plaats onderdelen en sleep ze in het beeld. Selecteer een onderdeel om het te verwijderen of precies te positioneren.</p>${Object.entries(MACHINE_PARTS).map(([type,label])=>`<button ${parts.some(p=>p.type===type)?'data-select-part':'data-add-part'}="${type}">${parts.some(p=>p.type===type)?'✓':'+'} ${label}</button>`).join('')}
       ${part?`<p><b>${MACHINE_PARTS[part.type]}</b></p><label>X <input type="number" data-part-position="x" min="-800" max="800" value="${part.x}"></label><label>Y <input type="number" data-part-position="y" min="-500" max="500" value="${part.y}"></label><button id="machine-remove">Onderdeel verwijderen</button>`:''}
       <button id="machine-new">Nieuwe lege opstelling</button></div>

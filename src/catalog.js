@@ -46,7 +46,9 @@ export const FAULT_LABELS = {
   check_stuck: 'Terugslagventiel zit dicht vast',
   stuck_open: 'Zit open vast',
   stuck_closed: 'Zit dicht vast',
-  seized: 'Zuiger zit vast',
+  seized: 'Mechanische beweging geblokkeerd',
+  capacitor: 'Bedrijfscondensator defect',
+  worn: 'Pomp versleten (interne lekkage)',
   drift: 'Instelwaarde verloopt',
   coil_open: 'Spoel onderbroken',
   contact_welded: 'Contact vastgelast',
@@ -1549,6 +1551,7 @@ const pressureSwitch = {
 import { HYDRAULIC_CATALOG } from './catalog-hydraulic.js';
 import { DIGITAL_CATALOG } from './catalog-digital.js';
 import { ELECTRONICS_CATALOG } from './catalog-electronics.js';
+import { DRIVE_CATALOG } from './catalog-drives.js';
 import { INDUSTRIAL_CATALOG } from './catalog-industrial.js';
 import { CONTROL_IO_CATALOG } from './controller-io.js';
 
@@ -1572,6 +1575,7 @@ export const CATALOG = [
   ...DIGITAL_CATALOG,
   ...ELECTRONICS_CATALOG,
   ...INDUSTRIAL_CATALOG,
+  ...DRIVE_CATALOG,
   ...CONTROL_IO_CATALOG,
 ];
 

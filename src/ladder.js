@@ -8,7 +8,7 @@ export function controllerSignal(sim, tag) {
   if(sim.controllerInputs?.has(tag))return !!sim.controllerInputs.get(tag);
   // Inputs represent closed/healthy contacts, not merely a button's pressed flag.
   const candidates = sim.circuit.instances.filter(i => i.params.tag?.value === tag);
-  const input = candidates.find(i => ['btn_no', 'btn_nc', 'estop', 'industrial_overload'].includes(i.type) || i.params.target);
+  const input = candidates.find(i => ['btn_no', 'btn_nc', 'estop', 'industrial_overload','industrial_motor_temperature'].includes(i.type) || i.params.target);
   if (input) {
     if (input.type === 'btn_nc' || input.type === 'estop') return !input.sim.pressed;
     if (input.type === 'industrial_overload') return !input.sim.tripped;

@@ -1,3 +1,4 @@
+import {isMotor} from './power-network.js';
 import { sceneBinding, sceneParts } from './machine-scene.js';
 import { applyControllerOutputs } from './ladder.js';
 
@@ -8,7 +9,7 @@ export function drillState(sim) {
   const clamp=byTag(sim,scene.clamp), feed=byTag(sim,scene.feed), motor=byTag(sim,scene.motor);
   const assembled=['drill','vise','workpiece'].every(type=>sceneParts(scene).some(p=>p.type===type));
   const clampX=clamp?.sim.x??0, feedX=feed?.sim.x??0, rpm=motor?.sim.rpm??0;
-  return {clampX,feedX,rpm,clamped:clampX>=.985,open:clampX<=.015,top:feedX<=.015,bottom:feedX>=.985,stopped:Math.abs(rpm)<50,ready:assembled&&/^(cyl_|h_cyl)/.test(clamp?.type||'')&&/^(cyl_|h_cyl)/.test(feed?.type||'')&&clamp!==feed&&['industrial_motor','industrial_dc_motor'].includes(motor?.type),workpiece:sim.machineWorkpiece!==false,hole:sim.machineHole||0};
+  return {clampX,feedX,rpm,clamped:clampX>=.985,open:clampX<=.015,top:feedX<=.015,bottom:feedX>=.985,stopped:Math.abs(rpm)<50,ready:assembled&&/^(cyl_|h_cyl)/.test(clamp?.type||'')&&/^(cyl_|h_cyl)/.test(feed?.type||'')&&clamp!==feed&&isMotor(motor),workpiece:sim.machineWorkpiece!==false,hole:sim.machineHole||0};
 }
 
 export function machineInputs(sim) {

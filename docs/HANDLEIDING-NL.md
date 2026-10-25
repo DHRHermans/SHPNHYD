@@ -331,3 +331,55 @@ Dit is een oefenfunctie, geen beveiligde toetsmodus. JSON bevat de storing. De o
 ### Eigen simulatie-indeling
 
 Open **Indeling → Indeling bewerken**. De simulatie wordt gepauzeerd. Sleep kaarten via **Verplaats** om ze binnen hetzelfde paneel te ordenen. Kies Klein/Normaal/Groot en typ een groepsnaam, bijvoorbeeld Klemkring. Dit wijzigt de weergave, niet je schema of berekeningen. Kies daarna **Klaar met indelen**. Groepen en kaartinstellingen zijn onderdeel van je document en ondersteunen ongedaan maken. Het betreft een geordende kaartindeling, geen vrije mechanische tekening of botsingsberekening.
+
+## Motoratelier: monofase, zes klemmen en netstelsels
+
+Onder **Motoren → Motorschakelingen** staan de nieuwe onderdelen. De gewone stuurkring blijft 24 V DC. De AC-hoofdkring gebruikt een afzonderlijk functioneel nettype; verbind die nooit met 24 V-, lucht-, olie- of aspoorten. De zichtbare motorstroom is een modelwaarde.
+
+### 230 V-monofasemotor
+
+Plaats **230 V · 1~ net**, een automaat, **Contactor 2-polig · 1~** en **Motor 230 V · 1~**. Verbind L/N via de hoofdcontacten met U1/U2 en PE rechtstreeks met de beschermingsaansluiting. De contactor volgt een 24 V-spoel met dezelfde aanduiding. Het voorbeeld **Motor: 230 V monofase met automaat en asbelasting** bevat start, stop en zelfhouding. De bedrijfscondensator is intern functioneel gemodelleerd; de condensatorstoring verhindert starten.
+
+### U1/V1/W1 en U2/V2/W2: ster of driehoek tekenen
+
+De motor **Motor 6 klemmen · Y/Δ** heeft zes afzonderlijke wikkelingsklemmen, PE en een as. De simulatie leest je echte verbindingen:
+
+- **Ster:** L1/L2/L3 naar U1/V1/W1; U2/V2/W2 onderling verbinden tot één sterpunt.
+- **Driehoek:** U2–V1, V2–W1 en W2–U1 verbinden; L1/L2/L3 naar U1/V1/W1.
+- Ontbrekende of ongeldige bruggen verhinderen een geldige aansluiting. Twee fasen wisselen keert de draairichting om.
+
+Let op de typeplaat: een 230/400 V-motor hoort bij 400 V in ster; een 400/690 V-motor kan bij 400 V in driehoek. Stel **Nominale wikkelingsspanning (Δ op typeplaat)** passend in. In het automatische ster-driehoekvoorbeeld is dit 400 V. In ster is de wikkelingsspanning ongeveer lijnspanning/√3 en wordt het aanloopkoppel in het model gereduceerd.
+
+Het voorbeeld **Motor: automatische ster-driehoek met tijdcontacten** gebruikt KM1 hoofd, KM2 ster en KM3 driehoek. Ster valt na 3 s af; driehoek volgt na 3,3 s. Wederzijdse vergrendelingen voorkomen gelijktijdige sluiting. Dit is een functionele lesopstelling, geen ontwerpberekening van een echte motorstarter.
+
+### Vertraagd opkomende en afvallende contacten
+
+Er zijn NO- en NC-uitvoeringen van **TON** en **TOF**. Geef het contact dezelfde aanduiding als zijn bijbehorende spoel, bijvoorbeeld KM1. TON schakelt de NO vertraagd aan en terug bij afvallen; NC is complementair. TOF schakelt direct aan en valt pas na de ingestelde tijd af. Opnieuw bekrachtigen tijdens de afvaltijd herstart de timing. De contacten kunnen in de echte 24 V-stuurkring bedraad worden.
+
+### Aslast, vliegwiel en motorwarmte
+
+Motoren hebben een apart aansluitpunt **shaft / as**. Verbind dit met de as van **Motorbelasting / vliegwiel**, een pomp of compressor. Deze groene aslijn is mechanisch en vormt geen elektrische of fluïdische verbinding.
+
+Een last kun je ook rechtstreeks in het simulatiescherm koppelen: kies de motor bij de fysieke lastkaart. Een getekende asverbinding heeft voorrang; de motorselectie is dan vergrendeld. De kaart toont koppeling, koppel en toerental. Je kunt de last aan-/afleggen en het koppel met de schuif of fysieke draaiknop veranderen.
+
+Kies constant remkoppel, ventilator (koppel stijgt met toerental²) of vliegwiel (extra traagheid). Meer last verhoogt de berekende motorstroom en temperatuur; een te grote last kan de motor blokkeren. Dit zijn vereenvoudigde eerste-orde modellen, geen volledige motor- of asberekening.
+
+### Temperatuursensor, PT100 en beveiliging
+
+Koppel **Motor · temperatuurcontact** aan een motor. Het NC-contact opent bij de ingestelde temperatuur en sluit pas na afkoeling met het ingestelde hystereseverschil. Een NO-functie is ook beschikbaar. Bedraad dit contact in de stuurkring of naar een PLC-ingang. Het voorbeeld **Motor: asbelasting, temperatuurcontact en PT100** schakelt bij 75 °C uit; afkoeling start de motor niet vanzelf opnieuw.
+
+De **PT100** volgt dezelfde motortemperatuur met R = 100 × (1 + 0,00385 × T) Ω. Dit is een analoge weerstand, geen rechtstreeks digitaal PLC-signaal. Het voorbeeld toont de sensor; voeg desgewenst zelf een geschikte meetbrug toe. Temperatuur kun je ook lezen in het Leeratelier met **Temperatuurmeter**; **Motorstroom (model)** leest de geschatte motorstroom.
+
+De **Automaat B/C/D** en **Motorbeveiliging** hebben instelbare stroom en een thermische tijdconstante. De modelgrenzen voor directe magnetische uitschakeling zijn 5/10/20 × In voor B/C/D. De hoofdcontacten openen bij trip; opnieuw inschakelen vereist een bewuste bediening en bij thermische trip voldoende afkoeling. Het model bewaakt de downstream aangesloten motoren. De motorbeveiliging heeft daarnaast een NC-tripcontact **95–96**: zet dit in serie met de stuurkring om de contactor te laten afvallen. Het zijn onderwijsinstellingen, geen normatieve uitschakelcurves of echte insteladviezen.
+
+### Motor aan hydraulische pomp of compressor
+
+**Hydraulische pomp:** verbind de as met de motoras, of kies de motor op de pompkaart. Het werkelijke toerental schaalt het debiet ten opzichte van het ingestelde nominale pomptoerental. Oliedruk geeft een berekende aslast terug aan de motor. Stop of verkeerde draairichting onderbreekt de aandrijving; oudere pompschema’s zonder motorkoppeling houden hun eigen aandrijving. Bekijk **Motor: mechanisch gekoppelde hydraulische pomp**.
+
+**Compressor:** koppel altijd een motor. Het toerental bepaalt de vrije luchtopbrengst, een drukschakelaar vraagt compressie aan en het buffervolume slaat lucht op. Bij bereiken van de uitschakeldruk wordt het comprimeren ontlast; de motor wordt hiermee niet automatisch elektrisch uitgeschakeld. Na stoppen kan opgeslagen lucht nog een cilinder bewegen. Het voorbeeld **Motor: compressor, buffervolume en pneumatische cilinder** laat dit zien.
+
+### TN-S, TN-C, TN-C-S, TT en IT
+
+Kies het stelsel bij de netvoeding. TN-S en TN-C-S geven afzonderlijke N en PE na de aangegeven scheiding; TN-C gebruikt PEN. TT en IT gebruiken een lokale aardelektrode. In IT is standaard geen N verdeeld; dit kun je expliciet wijzigen. De bron geeft alleen de bij het gekozen stelsel beschikbare conductor-identiteiten door.
+
+Het IT-voorbeeld heeft een driefasenmotor in ster en een lokale PE-verbinding. Wissel het stelsel en onderzoek welke klemmen beschikbaar zijn. Dit model berekent geen aanraakspanningen, aardfoutstromen, eerste/tweede IT-fout of aardlekbeveiliging. Gebruik het voor begrip van geleiders en verbindingen, niet om een echte installatie te beoordelen.

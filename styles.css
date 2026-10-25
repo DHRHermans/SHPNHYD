@@ -1187,3 +1187,5 @@ a { color: var(--accent); text-underline-offset: 3px; }
 #export-menu,#analysis-menu{z-index:50000}
 .learning-probe{pointer-events:none}
 .brand .save-status{max-width:none;white-space:nowrap;font-size:9px}
+.wire.mechanical{stroke:#527d77;stroke-width:4;stroke-dasharray:10 4}.port-dot.mechanical{fill:#527d77;stroke:#254f49;stroke-width:2}.port-dot.motor{stroke:#8963a9}
+.process-card select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--line);border-radius:5px;padding:5px;font-size:11px;color:var(--text);background:white}

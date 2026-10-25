@@ -3,6 +3,11 @@ const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const text=(x,y,label,size=12,color='#335d5d')=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${size}" fill="${color}">${esc(label)}</text>`;
 const bolt=(x,y)=>`<circle cx="${x}" cy="${y}" r="5" fill="#667e82"/><path d="M${x-2} ${y-2}l4 4m0-4l-4 4" stroke="#dce7e5" stroke-width="1.5"/>`;
 export function physicalKind(inst,def){
+  if(['industrial_supply','industrial_supply_1p','industrial_mains'].includes(inst.type))return 'mains';
+  if(['industrial_motor_temperature','industrial_pt100'].includes(inst.type))return 'sensor';
+  if(['industrial_breaker','industrial_motor_protector'].includes(inst.type))return 'breaker';
+  if(inst.type==='industrial_load')return 'load';
+  if(['h_pump','air_compressor'].includes(inst.type))return 'pump';
   if(['btn_no','btn_nc','estop'].includes(inst.type))return 'pushbutton';
   if(def.geom||/ventiel|smoor/i.test(def.name))return 'valve';
   if(/gauge/.test(inst.type))return 'gauge';
@@ -44,13 +49,28 @@ function gauge(i,d,sim){
   return `<rect x="172" y="171" width="16" height="26" fill="#b99350"/><circle cx="180" cy="103" r="77" fill="#95aaa9"/><circle cx="180" cy="103" r="68" fill="#fffdf5" stroke="#3d5c5f" stroke-width="3"/>${marks}<path d="M180 103V49" transform="rotate(${angle} 180 103)" stroke="#cd5143" stroke-width="4"/><circle cx="180" cy="103" r="7" fill="#365d62"/>${text(180,136,bar.toFixed(1)+' bar',17)}`;
 }
 function moduleImage(i,d){
-  const on=!!(i.sim.on||i.sim.closed||i.sim.powered),sensor=/sensor|switch|schakelaar/i.test(d.name),lamp=i.type==='lamp';
+  const on=!!(i.sim.on||i.sim.closed||i.sim.powered),sensor=/sensor|switch|schakelaar/i.test(d.name)||['industrial_motor_temperature','industrial_pt100'].includes(i.type),lamp=i.type==='lamp';
   if(lamp)return `<rect x="105" y="31" width="150" height="155" rx="14" fill="#e0e9e3"/>${bolt(118,44)}${bolt(242,173)}<circle cx="180" cy="103" r="53" fill="#819c96"/><circle cx="180" cy="103" r="44" fill="${on?'#ffd35c':'#a3aa80'}" stroke="#6b805e" stroke-width="4"/><ellipse cx="171" cy="88" rx="23" ry="14" fill="${on?'#fff1a6':'#bcc5a0'}"/>${text(180,172,on?'LAMP AAN':'LAMP UIT',11)}`;
-  if(sensor)return `<path d="M72 109H120" stroke="#4c7279" stroke-width="9"/><rect x="118" y="81" width="133" height="48" rx="14" fill="#b7c6c4" stroke="#6c898a" stroke-width="2"/><path d="M140 83V127M150 83V127M160 83V127M170 83V127" stroke="#839b9b" stroke-width="3"/><ellipse cx="253" cy="105" rx="12" ry="24" fill="#42656d"/><circle cx="226" cy="93" r="6" fill="${on?'#ffcb47':'#809385'}"/>${text(185,158,on?'GEDETECTEERD':'SENSOR VRIJ',12)}`;
+  if(sensor)return `<path d="M72 109H120" stroke="#4c7279" stroke-width="9"/><rect x="118" y="81" width="133" height="48" rx="14" fill="#b7c6c4" stroke="#6c898a" stroke-width="2"/><path d="M140 83V127M150 83V127M160 83V127M170 83V127" stroke="#839b9b" stroke-width="3"/><ellipse cx="253" cy="105" rx="12" ry="24" fill="#42656d"/><circle cx="226" cy="93" r="6" fill="${on?'#ffcb47':'#809385'}"/>${text(185,158,i.sim.temperature!=null?i.sim.temperature.toFixed(1)+' °C':on?'GEDETECTEERD':'SENSOR VRIJ',12)}`;
   const controller=/^(plc|grafcet)_io$/.test(i.type),tank=i.type==='h_tank';
   return `<path d="M95 54L117 38H269L287 54V172L268 190H95Z" fill="#8fa5a5"/><rect x="95" y="54" width="174" height="136" rx="9" fill="${tank?'#8eaaa7':controller?'#d4dfdb':'#dfe8e1'}" stroke="#637e80" stroke-width="2"/>${bolt(108,67)}${bolt(256,177)}<rect x="116" y="77" width="131" height="51" rx="5" fill="#375b60"/>${text(181,99,controller?(i.type==='plc_io'?'PLC':'GRAFCET'):tank?'OLIERESERVOIR':d.short,controller?17:11,'#eef6eb')}${text(181,118,on?'ACTIEF':'SH TechniekLab',10,'#b6d7c6')}<circle cx="237" cy="141" r="6" fill="${on?'#70cf95':'#829b8f'}"/>${Array.from({length:5},(_,n)=>`<rect x="${123+n*24}" y="165" width="16" height="17" rx="2" fill="#617e82"/><circle cx="${131+n*24}" cy="174" r="3" fill="#d5e2dc"/>`).join('')}`;
 }
+function driveDevice(i,kind,sim){
+ if(kind==='mains'){
+  const names=i.type==='industrial_supply'?['L1','L2','L3']:i.type==='industrial_supply_1p'?['L','N','PE','PEN']:['L1','L2','L3','N','PE','PEN'];
+  return `<rect x="38" y="30" width="284" height="158" rx="10" fill="#dce5de" stroke="#809d91" stroke-width="2"/><rect x="65" y="47" width="231" height="53" rx="5" fill="#345b60"/>${text(180,70,(i.params.voltage?.value||400)+' V · '+(i.type==='industrial_supply_1p'?'1~':'3~'),19,'white')}${text(180,91,i.params.system?.value||'TN-S',12,'#b9e4c9')}${names.map((p,n)=>{const x=65+n*(230/Math.max(1,names.length-1));return `<rect x="${x-12}" y="123" width="24" height="39" rx="4" fill="${p==='N'?'#4c9cb9':p==='PE'||p==='PEN'?'#83ad64':'#9b8274'}"/><circle cx="${x}" cy="139" r="7" fill="#456568"/>${text(x,179,p,11)}`;}).join('')}`;
+ }
+ if(kind==='breaker'){
+  const on=i.sim.pressed&&!i.sim.tripped;
+  return `<rect x="109" y="26" width="142" height="181" rx="9" fill="#d9e2dc" stroke="#77958b" stroke-width="2"/><rect x="133" y="51" width="94" height="84" rx="8" fill="#637d7c"/><rect x="145" y="${on?60:96}" width="70" height="29" rx="6" fill="${i.sim.tripped?'#d45642':'#2b464b'}"/>${text(180,on?80:116,on?'I / AAN':'0 / UIT',13,'white')}<circle cx="157" cy="165" r="18" fill="#2e5758"/><path d="M157 151V163" stroke="#e1efe2" stroke-width="3"/>${text(207,161,i.params.rated.value+' A',13)}${text(181,194,i.sim.tripped?'UITGESCHAKELD':i.params.curve.value+' · beveiliging',10)}`;
+ }
+ if(kind==='load'){
+  const angle=(sim.time*(i.sim.rpm||0)*6)%360;
+  return `<rect x="69" y="157" width="221" height="22" rx="5" fill="#638a85"/><rect x="157" y="79" width="121" height="19" fill="#98a9a6"/><g transform="rotate(${angle} 157 88)"><circle cx="157" cy="88" r="67" fill="#92acaa" stroke="#385e63" stroke-width="8"/><path d="M157 34V142M103 88H211" stroke="#587d79" stroke-width="15"/><circle cx="157" cy="88" r="22" fill="#36575e"/></g><rect x="228" y="76" width="43" height="72" rx="7" fill="${i.sim.pressed?'#bd6a50':'#819992'}"/><circle cx="270" cy="40" r="19" fill="#2d5658"/><path d="M270 25V36" stroke="#e0f3e6" stroke-width="3"/>${text(180,204,(i.sim.pressed?'LAST AAN · ':'VRIJ · ')+i.params.torque.value+' Nm',13)}`;
+ }
+ return `<rect x="91" y="54" width="137" height="105" rx="15" fill="${i.type==='h_pump'?'#829a97':'#478a94'}" stroke="#365e61" stroke-width="3"/><circle cx="158" cy="105" r="35" fill="#c2d2ca" stroke="#517570" stroke-width="5"/><circle cx="158" cy="105" r="15" fill="#36575e"/><rect x="228" y="94" width="68" height="20" fill="#9dafab"/><rect x="127" y="31" width="28" height="24" rx="4" fill="#b59755"/><path d="M141 31V20" stroke="${i.type==='h_pump'?'#bd8a35':'#278fbb'}" stroke-width="8"/><rect x="93" y="161" width="138" height="16" rx="4" fill="#365b5d"/>${text(177,198,Math.round(i.sim.rpm||0)+' rpm · '+(i.sim.q||0).toFixed(1)+' l/min',13)}`;
+}
 export function physicalComponentSVG(inst,def,sim){
-  const kind=physicalKind(inst,def),image=kind==='pushbutton'?pushbutton(inst):kind==='valve'?valve(inst,def,sim):kind==='gauge'?gauge(inst,def,sim):moduleImage(inst,def);
+  const kind=physicalKind(inst,def),image=['mains','breaker','load','pump'].includes(kind)?driveDevice(inst,kind,sim):kind==='pushbutton'?pushbutton(inst):kind==='valve'?valve(inst,def,sim):kind==='gauge'?gauge(inst,def,sim):moduleImage(inst,def);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 230" role="img" aria-label="${esc('Fysieke uitvoering: '+def.short)}" data-physical-kind="${kind}"><rect x="20" y="12" width="320" height="205" rx="18" fill="#f1f6f2"/>${image}</svg>`;
 }

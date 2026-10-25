@@ -1,3 +1,4 @@
+import {advancedDriveExample} from './examples-drives.js';
 // The document model: instances, wires, and everything that mutates them.
 //
 // The editor and the solver both read through this object. Any structural change bumps
@@ -235,6 +236,15 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  motor230:{name:'Motor: 230 V monofase met automaat en asbelasting',description:'L/N-voeding via een tweepolige contactor en instelbare automaat; een getekende as koppelt de belasting.',build:()=>advancedDriveExample(Circuit,'mono')},
+  motorSixStar:{name:'Motor: zes klemmen, sterbruggen 230/400 V',description:'U1/V1/W1 op de drie fasen; verbind U2/V2/W2 tot het sterpunt. De bruggen bepalen de schakeling.',build:()=>advancedDriveExample(Circuit,'star')},
+  motorSixDelta:{name:'Motor: zes klemmen, driehoek 400/690 V',description:'Een 400 V-wikkeling in driehoek op 400 V. Verkeerde bruggen en wikkelingsspanning worden zichtbaar.',build:()=>advancedDriveExample(Circuit,'delta')},
+  motorStarDelta:{name:'Motor: automatische ster-driehoek met tijdcontacten',description:'KM1 hoofd, KM2 ster, KM3 driehoek; vertraagde NO/NC-contacten en wederzijdse vergrendeling verzorgen de omschakeling.',build:()=>advancedDriveExample(Circuit,'starDelta')},
+  motorPump:{name:'Motor: mechanisch gekoppelde hydraulische pomp',description:'De motoras drijft pomp P1 aan. Toerental bepaalt debiet en oliedruk bepaalt de aslast.',build:()=>advancedDriveExample(Circuit,'pump')},
+  motorCompressor:{name:'Motor: compressor, buffervolume en pneumatische cilinder',description:'De motor drijft de compressor aan; druk en opgeslagen lucht bouwen op in het buffervolume.',build:()=>advancedDriveExample(Circuit,'compressor')},
+  motorTemperature:{name:'Motor: asbelasting, temperatuurcontact en PT100',description:'Een aangelegde aslast verwarmt M1. BTH1 onderbreekt de stuurkring bij 75 °C; BT1 volgt als PT100-weerstand.',build:()=>advancedDriveExample(Circuit,'thermal')},
+  motorIT:{name:'Netstelsels: IT-net met lokale aardelektrode',description:'Vergelijk IT, TT en TN. In IT is standaard geen N beschikbaar; de motor werkt op drie fasen met lokaal verbonden PE.',build:()=>advancedDriveExample(Circuit,'it')},
+
   machineBuilder: {name:'Machinebeeld: zelf een opstelling bouwen',description:'Leeg schema, lege machineopstelling en geen vooraf ingevulde besturing. Plaats onderdelen en koppel je eigen cilinders, motor en signalen.',build:()=>{const c=new Circuit();c.scene=newMachineScene();c.controller='manual';return c;}},
   drillingMachine: {name:'Machinebeeld: bankschroef en kolomboormachine',description:'Oefen handmatig of start de automatische boorcyclus. Bekijk Machinebeeld; dezelfde cilinders, sensoren en motor staan in het schema.',build:()=>drillingMachine(Circuit)},
   motorConveyor: {
