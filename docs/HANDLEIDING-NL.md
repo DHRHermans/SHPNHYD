@@ -360,7 +360,7 @@ Er zijn NO- en NC-uitvoeringen van **TON** en **TOF**. Geef het contact dezelfde
 
 Motoren hebben een apart aansluitpunt **shaft / as**. Verbind dit met de as van **Motorbelasting / vliegwiel**, een pomp of compressor. Deze groene aslijn is mechanisch en vormt geen elektrische of fluïdische verbinding.
 
-Een last kun je ook rechtstreeks in het simulatiescherm koppelen: kies de motor bij de fysieke lastkaart. Een getekende asverbinding heeft voorrang; de motorselectie is dan vergrendeld. De kaart toont koppeling, koppel en toerental. Je kunt de last aan-/afleggen en het koppel met de schuif of fysieke draaiknop veranderen.
+Een last kun je ook rechtstreeks in het simulatiescherm koppelen: kies de motor bij de fysieke lastkaart. Een getekende asverbinding heeft voorrang; de motorselectie is dan vergrendeld. De kaart toont koppeling, koppel en toerental. Je kunt de last aan-/afleggen en het lastkoppel in Nm typen en met **Last bevestigen** toepassen (Enter werkt ook). Typen alleen verandert de lopende simulatie nog niet.
 
 Kies constant remkoppel, ventilator (koppel stijgt met toerental²) of vliegwiel (extra traagheid). Meer last verhoogt de berekende motorstroom en temperatuur; een te grote last kan de motor blokkeren. Dit zijn vereenvoudigde eerste-orde modellen, geen volledige motor- of asberekening.
 
@@ -383,3 +383,28 @@ De **Automaat B/C/D** en **Motorbeveiliging** hebben instelbare stroom en een th
 Kies het stelsel bij de netvoeding. TN-S en TN-C-S geven afzonderlijke N en PE na de aangegeven scheiding; TN-C gebruikt PEN. TT en IT gebruiken een lokale aardelektrode. In IT is standaard geen N verdeeld; dit kun je expliciet wijzigen. De bron geeft alleen de bij het gekozen stelsel beschikbare conductor-identiteiten door.
 
 Het IT-voorbeeld heeft een driefasenmotor in ster en een lokale PE-verbinding. Wissel het stelsel en onderzoek welke klemmen beschikbaar zijn. Dit model berekent geen aanraakspanningen, aardfoutstromen, eerste/tweede IT-fout of aardlekbeveiliging. Gebruik het voor begrip van geleiders en verbindingen, niet om een echte installatie te beoordelen.
+
+### Pressostaten, schakelaars en extra tijdrelais
+
+Zoek in de componentbibliotheek op **pressostaat**. De luchtvariant staat bij Meettechniek; de olievariant bij Hydraulica-Meettechniek. Sluit **P** op de drukleiding aan. De elektrische wisselcontacten zijn **11** (gemeenschappelijk), **12** (verbreekcontact) en **14** (maakcontact). Bij de ingestelde schakeldruk sluit 11–14; op de ondergrens `schakeldruk − hysterese` valt het contact terug naar 11–12. Gebruik een hysterese kleiner dan de schakeldruk als je bij drukloos worden wilt terugschakelen. Het contact is potentiaalvrij: sluit zelf de 24 V-stuurkring of PLC-ingang aan. Voor compressorregeling kun je 11–12 gebruiken om de motorcontactor bij voldoende druk te laten afvallen. Het drukcontact is geen vermogensschakelaar.
+
+Bij **Schakelaars en tijdrelais** vind je tuimel-, sleutel-, voet- en trekkoordschakelaars met dezelfde wisselcontacten. De voetschakelaar veert terug na loslaten. De trekkoordschakelaar is vergrendelend; opnieuw bedienen geeft vrij. De sleutelschakelaar simuleert een onderhouden contact, zonder gebruikersrechten of echte toegangscontrole. De keuzeschakelaar heeft gescheiden **11–14 (Hand)** en **23–24 (Auto)**. Kies Hand/Auto in Eigenschappen of op de simulatiekaart en schakel in; uitschakelen geeft de middenstand 0. Trekkoord- en andere schakelaars zijn functionele onderwijsmodellen, zonder veiligheidsrelaisbewaking.
+
+Extra relais hebben een echte 24 V-spoel op **a/b**. Geef een gewoon maak- of verbreekcontact dezelfde aanduiding, bijvoorbeeld **KT1**:
+
+- **TP-pulsrelais:** een stijgende flank start een vaste puls. Loslaten verkort die puls niet; tijdens de puls herstart deze niet. Een vastgehouden ingang geeft geen nieuwe puls.
+- **Knipperrelais:** begint met de aan-fase; aan- en uit-tijd zijn afzonderlijk instelbaar. Spanningsverlies stopt en reset de cyclus.
+- **Retentief tijdrelais:** telt bekrachtigingsintervallen op en onthoudt de uitgang bij spanningsverlies van de spoel. Zet 24 V tussen **R** en **b** om tijd en uitgang te resetten. Reset heeft voorrang. Simulatie resetten wist het geheugen ook.
+- **Impulsrelais / teleruptor:** iedere nieuwe stijgende flank wisselt de uitgang aan/uit. De tijdinstelling is hiervoor niet van toepassing.
+
+De bestaande TON/TOF-relais en vertraagd opkomende/afvallende NO/NC-contactorcontacten blijven beschikbaar. Alle relais kunnen lucht-, olie- en elektrische aandrijvingen sturen via hun aangesloten stuurkring. Voorbeelden: **Pressostaat: luchtdruk schakelt een lamp**, **Pressostaat: hydraulische drukbewaking** en **Schakelaars: tuimelschakelaar en knipperrelais**.
+
+### Hydromotor en luchtmotor
+
+Zoek **Hydromotor** of **Luchtmotor** in de bibliotheek. Beide motoren hebben **A**, **B** en een mechanische **as**. Verbind bij de hydromotor A met de pomp via je ventiel en B met de tank; voor de luchtmotor A met perslucht en B via een ventiel of geluiddemper met de buitenlucht. Een afgesloten B-aansluiting is geen vrije uitlaat. Omkeren van toevoer en retour keert de draairichting om. Je kunt beide richtingen met een richtingsventiel aansturen. Lucht en olie blijven gescheiden media.
+
+Verbind de as met **Motorbelasting / vliegwiel**, of kies de motor bij de lastkaart. Typ het lastkoppel in Nm en klik **Last bevestigen**. De bewegende motor verschijnt automatisch in het simulatiescherm met toerental, draairichting, drukken, debiet en lastkoppel. Elektromotoren hebben een elektrische voeding nodig; deze motoren krijgen hun energie uitsluitend uit lucht- of oliedruk.
+
+Stel slagvolume, mechanisch rendement, wrijving en lekkage in via Eigenschappen. Het drukverschil levert het berekende koppel; last en wrijving bepalen het doorstromende volume en het stationaire toerental. Bij onvoldoende koppel stopt de motor, met nog eventuele interne lekkage. Een eerste-orde vertraging toont aanlopen en uitlopen. Dit is een vereenvoudigd quasi-statisch onderwijsmodel: geen volledige compressibele expansie, cavitatie, aselasticiteit, regeneratie of mechanische energieterugwinning. De luchtmotor toont debiet als l/min ANR; de hydromotor als l/min olie. De traagheidsinstelling vertraagt de weergegeven rotorrespons, zonder volledige transiënte fluïd-mechanische energiebalans.
+
+Open **Luchtmotor: asbelasting en vrije uitlaat** of **Hydromotor: pomp, drukbegrenzing en aslast** om te beginnen.

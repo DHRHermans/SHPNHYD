@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i28",
+      "type": "rail_24v",
+      "x": 370,
+      "y": 30,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i29",
+      "type": "rail_0v",
+      "x": 370,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i30",
+      "type": "lamp",
+      "x": 370,
+      "y": 310,
+      "rot": 0,
+      "params": {
+        "tag": "P1"
+      }
+    },
+    {
+      "id": "i31",
+      "type": "h_pressostat",
+      "x": 180,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "BP1",
+        "setpoint": 50,
+        "hysteresis": 5
+      }
+    },
+    {
+      "id": "i35",
+      "type": "h_pump",
+      "x": 20,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 8,
+        "motor": "",
+        "nominalRpm": 1450,
+        "reverse": "no",
+        "running": "on"
+      }
+    },
+    {
+      "id": "i36",
+      "type": "h_tank",
+      "x": 20,
+      "y": 400,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i37",
+      "type": "h_relief",
+      "x": 180,
+      "y": 350,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 60
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i28",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "11"
+      }
+    },
+    {
+      "from": {
+        "inst": "i31",
+        "port": "14"
+      },
+      "to": {
+        "inst": "i30",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i30",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i29",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i35",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i36",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i35",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i31",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i35",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i37",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i37",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i36",
+        "port": "T"
+      }
+    }
+  ]
+}

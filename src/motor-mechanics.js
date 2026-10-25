@@ -1,4 +1,4 @@
-import {isMotor} from './power-network.js';
+import {isRotaryMotor as isMotor} from './power-network.js';
 export {isMotor} from './power-network.js';
 export const shaft=(x,y)=>({id:'shaft',x,y,dir:'right',kind:'mechanical'});
 export function resolveDrive(device,circuit){

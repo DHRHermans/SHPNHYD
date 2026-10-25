@@ -205,7 +205,7 @@ function thumbFor(def) {
 function domainOfGroup(group) {
   if (group === 'Motorschakelingen') return 'motor';
   if (group.startsWith('Hydraulica')) return 'hyd';
-  if (group === 'Elektrisch' || group === 'Elektronica' || group === 'Besturingsmodules') return 'elec';
+  if (group === 'Elektrisch' || group === 'Elektronica' || group === 'Besturingsmodules' || group === 'Schakelaars en tijdrelais') return 'elec';
   if (group === 'Digitale logica') return 'dig';
   return 'pneu';
 }
@@ -759,7 +759,9 @@ function buildInspector() {
 
   for (const [key, p] of Object.entries(inst.params)) {
     html += `<div class="field" data-key="${key}">`;
-    if (p.type === 'range') {
+    if(inst.type==='industrial_load'&&key==='torque'){
+      html+=`<div class="field-label"><span>${p.label} (Nm)</span></div><input type="number" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}" required><button type="button" data-confirm-load>Last bevestigen</button><span data-load-result role="status"></span>`;
+    } else if (p.type === 'range') {
       const shown = p.unit ? `${num(p.value, p.step < 1 ? 2 : 0)} ${p.unit}` : num(p.value, 2);
       html += `<div class="field-label"><span>${p.label}</span><span class="field-value">${shown}</span></div>
         <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}">`;
@@ -836,6 +838,10 @@ function buildInspector() {
     const p = inst.params[key];
     const input = field.querySelector('input, select');
     if (!input) return;
+    if(inst.type==='industrial_load'&&key==='torque'){
+      const apply=()=>{if(!input.reportValidity())return;const value=Number(input.value);if(!Number.isFinite(value))return;p.value=value;redrawPart(inst);commit(`param:${inst.id}:${key}`);field.querySelector('[data-load-result]').textContent=`${value} Nm bevestigd`;};
+      field.querySelector('[data-confirm-load]').addEventListener('click',apply);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();apply();}});return;
+    }
     input.addEventListener('input', () => {
       if (p.type === 'range') {
         p.value = parseFloat(input.value);

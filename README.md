@@ -8,7 +8,7 @@ De vroegere naam was **SH PN · HYD**. De repository blijft `DHRHermans/SHPNHYD`
 
 ## Wat kun je ermee?
 
-- Pneumatiek, hydrauliek, elektrische besturing, elektronica en motoren combineren op één werkvlak: **106 componenten en 34 voorbeelden**.
+- Pneumatiek, hydrauliek, elektrische besturing, elektronica en motoren combineren op één werkvlak: **119 componenten en 39 voorbeelden**.
 - Ventielbediening, veer/geheugen en beschikbare middenstanden kiezen. Als extra kun je per stand interne verbindingen tussen bestaande poorten tekenen.
 - GRAFCET tekenen en PLC Ladder opbouwen met contacten, parallelle takken, spoelen, set/reset en TON/TOF-timers.
 - Een **PLC- of GRAFCET-module met 8 ingangen en 8 uitgangen** in het schema plaatsen en elektrisch bedraden.
@@ -51,7 +51,7 @@ npm start
 
 `npm start` serveert de toepassing op poort 8777. Open lokaal `http://localhost:8777`. JavaScript-modules hebben een webserver nodig; open `index.html` niet door te dubbelklikken.
 
-De tests omvatten **190 controles in 17 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
+De tests omvatten **202 controles in 19 testgroepen**, waaronder fysica, elektronica, PLC, GRAFCET, afdrukken, machinevolgorde, bedrade I/O en instelbare ventielen. Zie [TESTING.md](docs/TESTING.md).
 
 ## GitHub Pages publiceren
 

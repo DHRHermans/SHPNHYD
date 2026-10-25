@@ -1,3 +1,5 @@
+import {fluidMotorExample} from './examples-switchgear.js';
+import {switchgearExample} from './examples-switchgear.js';
 import {advancedDriveExample} from './examples-drives.js';
 // The document model: instances, wires, and everything that mutates them.
 //
@@ -236,6 +238,11 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  airMotor:{name:'Luchtmotor: asbelasting en vrije uitlaat',description:'Persluchtbron naar A, B via geluiddemper naar buiten. Wissel A en B om de draairichting om te keren.',build:()=>fluidMotorExample(Circuit,false)},
+  hydraulicMotor:{name:'Hydromotor: pomp, drukbegrenzing en aslast',description:'Pomp naar A, B naar tank. De druk levert koppel; een mechanisch gekoppelde last beïnvloedt het toerental.',build:()=>fluidMotorExample(Circuit,true)},
+  airPressostat:{name:'Pressostaat: luchtdruk schakelt een lamp',description:'Wisselcontact 11–12/14 met instelbare schakeldruk en hysterese. Verander de brondruk.',build:()=>switchgearExample(Circuit)},
+  oilPressostat:{name:'Pressostaat: hydraulische drukbewaking',description:'Pomp en overdrukventiel bouwen oliedruk op; de pressostaat schakelt bij de ingestelde drempel.',build:()=>switchgearExample(Circuit,true)},
+  blinkingRelay:{name:'Schakelaars: tuimelschakelaar en knipperrelais',description:'Een echte 24 V-spoel stuurt een hulpcontact met afzonderlijk instelbare aan- en uit-tijd.',build:()=>switchgearExample(Circuit,false,true)},
   motor230:{name:'Motor: 230 V monofase met automaat en asbelasting',description:'L/N-voeding via een tweepolige contactor en instelbare automaat; een getekende as koppelt de belasting.',build:()=>advancedDriveExample(Circuit,'mono')},
   motorSixStar:{name:'Motor: zes klemmen, sterbruggen 230/400 V',description:'U1/V1/W1 op de drie fasen; verbind U2/V2/W2 tot het sterpunt. De bruggen bepalen de schakeling.',build:()=>advancedDriveExample(Circuit,'star')},
   motorSixDelta:{name:'Motor: zes klemmen, driehoek 400/690 V',description:'Een 400 V-wikkeling in driehoek op 400 V. Verkeerde bruggen en wikkelingsspanning worden zichtbaar.',build:()=>advancedDriveExample(Circuit,'delta')},

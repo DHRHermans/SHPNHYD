@@ -1,6 +1,8 @@
 /** Functional mains topology. Conductors carry identities and RMS nameplate values, not AC waveforms. */
 export const MOTOR_TYPES=['industrial_motor','industrial_dc_motor','industrial_motor_1p','industrial_motor_6'];
 export const isMotor=i=>!!i&&MOTOR_TYPES.includes(i.type);
+export const isFluidMotor=i=>!!i&&['air_motor','h_motor'].includes(i.type);
+export const isRotaryMotor=i=>isMotor(i)||isFluidMotor(i);
 export function contactorClosed(i,sim){
  if(i.faults?.contact_welded)return true;
  return !!sim.energized.get(i.params.tag.value)&&!(i.params.interlock?.value&&sim.energized.get(i.params.interlock.value));

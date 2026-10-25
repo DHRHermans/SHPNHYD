@@ -1,4 +1,4 @@
-import {isMotor} from './power-network.js';
+import {isRotaryMotor as isMotor} from './power-network.js';
 import {resolveDrive} from './motor-mechanics.js';
 import { physicalComponentSVG } from './physical-components.js';
 import { BY_ID } from './catalog.js';
@@ -10,6 +10,10 @@ export function processStatus(inst,def){
   const s=inst.sim,parts=[];
   if(def.manual)parts.push(`Hefboom: ${s.lever<0?'links':s.lever>0?'rechts':'midden'}`);
   if(def.interactive&&!def.manual)parts.push(s.pressed?'Ingedrukt / ingeschakeld':'Losgelaten / uitgeschakeld');
+  if(s.position!=null)parts.push(`Stand: ${s.position}`);
+  if(s.pressure!=null)parts.push(`${s.pressure.toFixed(1)} bar`);
+  if(s.elapsed!=null)parts.push(`Tijd: ${s.elapsed.toFixed(2)} s`);
+  if(s.out!=null)parts.push(s.out?'Uitgang actief':'Uitgang uit');
   if(s.state!=null)parts.push(`Ventielstand ${Number(s.state)+1}`);
   if(s.on!=null)parts.push(s.on?'Bekrachtigd':'Niet bekrachtigd');
   if(s.closed!=null)parts.push(s.closed?'Contact gesloten':'Contact open');
@@ -32,11 +36,11 @@ export class ProcessControls {
     const parts=this.circuit().instances.filter(i=>!isVisualActuator(i));
     const primary=i=>{const d=BY_ID.get(i.type);return ['h_pump','air_compressor'].includes(i.type)||d.interactive||d.geom||/ventiel|sensor|schakelaar|drukknop|spoel|lamp|relais|contactor|contact|automaat|beveilig/i.test(d.name);};
     const card=i=>{
-      const def=BY_ID.get(i.type),knobs=Object.entries(i.params).filter(([key,p])=>p.type==='range'&&['opening','pressure','setpoint','rated','torque'].includes(key));
+      const def=BY_ID.get(i.type),knobs=Object.entries(i.params).filter(([key,p])=>!(i.type==='industrial_load'&&key==='torque')&&p.type==='range'&&['opening','pressure','setpoint','rated','torque','hysteresis','delay','offTime'].includes(key));
       const buttons=def.interactive?(def.manual?'<button data-operate="-1">◀ Links vasthouden</button><button data-operate="1">Rechts vasthouden ▶</button>':'<button data-operate="1"></button>'):`<p class="process-automatic">${knobs.length?'Handmatig instelbaar via schuif':'Volgt het schema / de besturing'}</p>`;
       const drive=instDrive(i,this.circuit());
       const binding=i.params.motor?`<label>${esc(i.params.motor.label)}<select data-drive-motor ${drive.wired?'disabled':''}><option value="">${i.type==='h_pump'?'Eigen aandrijving':'Geen motor gekozen'}</option>${this.circuit().instances.filter(isMotor).map(m=>`<option value="${esc(m.params.tag.value)}" ${(drive.wired?drive.motor?.params.tag.value:i.params.motor.value)===m.params.tag.value?'selected':''}>${esc(m.params.tag.value)}</option>`).join('')}</select></label>${drive.wired?'<p>Mechanische asverbinding uit het schema heeft voorrang.</p>':''}`:'';
-      return `<article class="process-card" data-process="${esc(i.id)}"><h4>${esc(i.params.tag?.value||def.short)}</h4><p>${esc(def.short)}</p><div class="process-device ${def.interactive?'process-device-operable':''}"><div data-process-physical>${physicalComponentSVG(i,def,this.simulation())}</div><div class="process-buttons">${def.interactive?buttons:''}</div></div><p data-process-action>${def.interactive?'Bedien het fysieke onderdeel hierboven.':knobs.length?'Instelbaar met de draaiknop en schuif.':'Volgt het schema / de besturing'}</p>${def.manual?'<p>Veerterugstelling: loslaten = middenstand.</p>':''}${binding}${knobs.map(([key,p])=>`<label>${esc(p.label)} <output data-knob-value="${key}"></output><input data-process-knob="${key}" type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}"></label>`).join('')}<div data-process-state></div><div data-process-ports></div></article>`;
+      return `<article class="process-card" data-process="${esc(i.id)}"><h4>${esc(i.params.tag?.value||def.short)}</h4><p>${esc(def.short)}</p><div class="process-device ${def.interactive?'process-device-operable':''}"><div data-process-physical>${physicalComponentSVG(i,def,this.simulation())}</div><div class="process-buttons">${def.interactive?buttons:''}</div></div><p data-process-action>${def.interactive?'Bedien het fysieke onderdeel hierboven.':knobs.length?'Instelbaar met de draaiknop en schuif.':'Volgt het schema / de besturing'}</p>${def.manual?'<p>Veerterugstelling: loslaten = middenstand.</p>':''}${binding}${i.type==='industrial_load'?`<form data-load-form><label>Lastkoppel <input data-load-torque type="number" min="${i.params.torque.min}" max="${i.params.torque.max}" step="${i.params.torque.step}" value="${i.params.torque.value}" required aria-label="Lastkoppel in Nm"> Nm</label><button type="submit">Last bevestigen</button><p data-load-confirmation role="status">Ingestelde last: ${i.params.torque.value} Nm</p></form>`:''}${i.type==='selector_3'?`<label>Gekozen stand<select data-selector-mode><option value="hand" ${i.params.mode.value==='hand'?'selected':''}>Hand</option><option value="auto" ${i.params.mode.value==='auto'?'selected':''}>Auto</option></select></label>`:''}${knobs.map(([key,p])=>`<label>${esc(p.label)} <output data-knob-value="${key}"></output><input data-process-knob="${key}" type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}"></label>`).join('')}<div data-process-state></div><div data-process-ports></div></article>`;
     };
     this.host.innerHTML=`<section class="process-overview"><h3>Bediening en ventielen uit mijn schema</h3><p>Bedien handmatige onderdelen hier rechtstreeks. Houd drukknoppen en veerteruggestelde hefbomen ingedrukt; vergrendelende knoppen blijven staan tot je opnieuw drukt. Elektrische ventielen volgen hun spoelen en sensoren volgen hun schema.</p><div class="process-grid">${parts.filter(primary).map(card).join('')}</div>${parts.some(i=>!primary(i))?`<details class="process-other"><summary>Voedingen en overige schemaonderdelen</summary><div class="process-grid">${parts.filter(i=>!primary(i)).map(card).join('')}</div></details>`:''}${parts.length?'':'<p>Plaats drukknoppen, ventielen of andere onderdelen in Schakeling; ze verschijnen hier automatisch.</p>'}</section>`;
     for(const node of this.host.querySelectorAll('[data-process]')){
@@ -60,6 +64,8 @@ export class ProcessControls {
         });
         const end=()=>{drag=null;};device.addEventListener('pointerup',end);device.addEventListener('pointercancel',end);device.addEventListener('lostpointercapture',end);
       }
+      node.querySelector('[data-load-form]')?.addEventListener('submit',e=>{e.preventDefault();const input=node.querySelector('[data-load-torque]');if(!input.reportValidity())return;const value=Number(input.value);if(!Number.isFinite(value))return;inst.params.torque.value=value;this.parametersChanged(inst,'torque');node.querySelector('[data-load-confirmation]').textContent=`Last bevestigd: ${value} Nm`;this.live();});
+      node.querySelector('[data-selector-mode]')?.addEventListener('change',e=>{inst.params.mode.value=e.target.value;this.parametersChanged(inst,'mode');this.live();});
       for(const input of node.querySelectorAll('[data-process-knob]'))input.addEventListener('input',()=>{
         const p=inst.params[input.dataset.processKnob];const n=Number(input.value);if(!Number.isFinite(n))return;
         p.value=Math.max(p.min,Math.min(p.max,n));this.parametersChanged(inst,input.dataset.processKnob);this.live();

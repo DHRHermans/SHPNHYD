@@ -1,0 +1,17 @@
+// Passive educational rotary drives: pressure torque minus load/friction determines flow.
+// Quasi-static fluid balance, first-order rotor response; no wave/inertia recovery model.
+import {line,circle,text,poly} from './symbols.js';
+import {RT,P_ATM,RHO_0} from './engine.js';
+import {shaft,shaftLoad} from './motor-mechanics.js';
+const range=(label,value,min,max,step,unit)=>({label,type:'range',value,min,max,step,unit});
+function operating(i,ctx,oil,pa,pb){
+ const dp=pa-pb,displacement=i.params.displacement.value/1e6,eff=i.params.efficiency.value,load=shaftLoad(i,ctx.sim.circuit,ctx.sim),available=Math.abs(dp)*displacement*eff/(2*Math.PI),drag=i.params.friction.value;
+ const blocked=i.faults.seized||i.faults.off,omega=blocked?0:Math.min(i.params.speed.value*3*Math.PI/30,Math.max(0,available-load.torque)/drag),rpm=Math.sign(dp)*omega*30/Math.PI;
+ const useful=displacement*rpm/60,leak=i.faults.off?0:dp*i.params.leakage.value*(i.faults.leak?10:1)/1e5/60000;
+ const volume=useful+leak,density=oil?1:Math.max(P_ATM,pa,pb)/RT;
+ return{rpm,q:volume*density,volume,available,load,blocked,dp};
+}
+function motor(oil){const id=oil?'h_motor':'air_motor',kind=oil?'hydraulic':'pneumatic';const d={id,name:oil?'Hydraulische rotatiemotor · omkeerbaar':'Pneumatische luchtmotor · omkeerbaar',short:oil?'Hydromotor':'Luchtmotor',group:oil?'Hydraulica-Motoren':'Pneumatische motoren',size:{w:130,h:105},ports:[{id:'A',x:25,y:0,dir:'up',kind},{id:'B',x:25,y:105,dir:'down',kind},shaft(125,52)],params:{tag:{label:'Aanduiding',type:'text',value:oil?'HM1':'PM1'},displacement:range('Slagvolume',oil?10:100,1,1000,1,'cm³/omw'),speed:range('Referentietoerental',oil?1000:1500,100,6000,50,'omw/min'),efficiency:range('Mechanisch rendement',.85,.1,1,.01,''),friction:range('Viskeuze aswrijving (model)',oil?.08:.03,.001,1,.001,'Nm·s/rad'),leakage:range(oil?'Interne lekkage per bar':'Lekkage bij inlaatvolume per bar',oil?.001:.01,0,1,.001,'l/min/bar'),torque:range('Referentiekoppel voor lastweergave',oil?10:5,.1,500,.1,'Nm')},faultTypes:['seized','leak','off'],initSim(i){Object.assign(i.sim,{rpm:0,q:0,direction:0,status:'Stilstand',loadTorque:0});},integrate(i,ctx){const pa=oil?ctx.hpressure(i,'A'):ctx.pressure(i,'A'),pb=oil?ctx.hpressure(i,'B'):ctx.pressure(i,'B'),o=operating(i,ctx,oil,pa,pb);i.sim.rpm+=(o.rpm-i.sim.rpm)*(1-Math.exp(-ctx.dt/(.05+o.load.inertia*.2)));if(Math.abs(i.sim.rpm)<.01)i.sim.rpm=0;i.sim.direction=Math.sign(i.sim.rpm);i.sim.q=oil?o.volume*60000:o.q/RHO_0*60000;i.sim.pressureA=(pa-P_ATM)/1e5;i.sim.pressureB=(pb-P_ATM)/1e5;i.sim.availableTorque=o.available;i.sim.loadTorque=o.load.torque;i.sim.status=i.faults.off?'Afgesloten':o.blocked?'Mechanisch geblokkeerd':Math.abs(o.rpm)<1?(o.available>0?'Stilstand / onvoldoende koppel':'Geen drukverschil'):o.rpm>0?'Rechtsom · A → B':'Linksom · B → A';},render(i){return line(25,0,25,20)+line(25,80,25,105)+circle(40,50,30)+poly([[25,29],[18,19],[32,19]],oil?'sym fill':'sym')+poly([[25,71],[18,81],[32,81]],oil?'sym fill':'sym')+line(70,52,125,52)+text(44,54,'M')+text(92,38,i.params.tag.value,'sym-tag')+text(70,99,`${Math.round(i.sim.rpm||0)} rpm`,'sym-tag');}};
+ const stamp=(i,st,ctx,work)=>{const a=oil?ctx.hnet(i,'A'):ctx.net(i,'A'),b=oil?ctx.hnet(i,'B'):ctx.net(i,'B'),pa=a==null?P_ATM:work[a],pb=b==null?P_ATM:work[b],o=operating(i,ctx,oil,pa,pb);const g=Math.abs(o.dp)>1e-6?Math.max(0,o.q/o.dp):0;st.conduct(a,b,g);};
+ if(oil)d.stampHydraulic=stamp;else d.stamp=stamp;return d;}
+export const FLUID_MOTOR_CATALOG=[motor(false),motor(true)];

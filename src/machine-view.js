@@ -1,4 +1,4 @@
-import {isMotor} from './power-network.js';
+import {isRotaryMotor as isMotor} from './power-network.js';
 import { ProcessControls } from './process-controls.js';
 import { ActuatorView } from './actuator-view.js';
 import { MACHINE_PARTS, MACHINE_BINDINGS, newMachineScene, sceneBinding, sceneParts } from './machine-scene.js';

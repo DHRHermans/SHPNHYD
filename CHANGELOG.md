@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0 — Pressostaten, schakelaars en tijdrelais
+
+- Lucht- en oliepressostaat met wisselcontact 11–12/14, schakeldruk en hysterese.
+- Tuimel-, sleutel-, voet- en trekkoordschakelaar; keuzeschakelaar Hand–0–Auto.
+- TP-pulsrelais, knipperrelais, retentief tijdrelais met bedrade reset en teleruptor.
+- Fysieke bediening, instelbare tijden in het simulatiescherm en drie nieuwe voorbeelden.
+- Omkeerbare luchtmotor en hydromotor met druk-/debietmodel, mechanische as, lastkoppeling en twee voorbeelden.
+- Motorlast in Nm typen en expliciet bevestigen, in plaats van een schuifregelaar.
+- 202 tests in 19 testgroepen.
+
 ## 1.4.0 — Uitgebreid motoratelier
 
 - 230 V-monofasemotor en driefasenmotor met zes klemmen; de getekende ster-/driehoekbruggen bepalen de aansluiting.

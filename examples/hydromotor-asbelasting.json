@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i8",
+      "type": "h_pump",
+      "x": 30,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 8,
+        "motor": "",
+        "nominalRpm": 1450,
+        "reverse": "no",
+        "running": "on"
+      }
+    },
+    {
+      "id": "i9",
+      "type": "h_tank",
+      "x": 30,
+      "y": 380,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i10",
+      "type": "h_motor",
+      "x": 260,
+      "y": 150,
+      "rot": 0,
+      "params": {
+        "tag": "HM1",
+        "displacement": 10,
+        "speed": 1000,
+        "efficiency": 0.85,
+        "friction": 0.08,
+        "leakage": 0.001,
+        "torque": 10
+      }
+    },
+    {
+      "id": "i11",
+      "type": "industrial_load",
+      "x": 470,
+      "y": 150,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 3,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i16",
+      "type": "h_relief",
+      "x": 160,
+      "y": 300,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 100
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i8",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i10",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i10",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i9",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i10",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i11",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i8",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i9",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i8",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i16",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i16",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i9",
+        "port": "T"
+      }
+    }
+  ]
+}

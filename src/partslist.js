@@ -9,6 +9,9 @@
 
 /** Parameters worth printing per type. Everything else is noise on a BOM. */
 const SPEC_KEYS = {
+  air_pressostat:['setpoint','hysteresis'],h_pressostat:['setpoint','hysteresis'],
+  selector_3:['mode'],timer_pulse:['delay'],timer_blink:['delay','offTime'],timer_retentive:['delay'],
+  air_motor:['displacement','efficiency','speed'],h_motor:['displacement','efficiency','speed'],
   industrial_supply_1p:['voltage','system','neutral'],industrial_mains:['voltage','system','neutral'],
   industrial_motor_1p:['voltage','speed','current','torque'],industrial_motor_6:['windingVoltage','speed','current','torque'],
   industrial_breaker:['rated','curve','delay'],industrial_motor_protector:['rated','curve','delay'],

@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i19",
+      "type": "rail_24v",
+      "x": 370,
+      "y": 30,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i20",
+      "type": "rail_0v",
+      "x": 370,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i21",
+      "type": "lamp",
+      "x": 370,
+      "y": 310,
+      "rot": 0,
+      "params": {
+        "tag": "P1"
+      }
+    },
+    {
+      "id": "i22",
+      "type": "air_pressostat",
+      "x": 180,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "BP1",
+        "setpoint": 5,
+        "hysteresis": 1
+      }
+    },
+    {
+      "id": "i26",
+      "type": "supply",
+      "x": 20,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i19",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i22",
+        "port": "11"
+      }
+    },
+    {
+      "from": {
+        "inst": "i22",
+        "port": "14"
+      },
+      "to": {
+        "inst": "i21",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i21",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i20",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i26",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i22",
+        "port": "P"
+      }
+    }
+  ]
+}

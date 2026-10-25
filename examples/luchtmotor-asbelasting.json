@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i1",
+      "type": "supply",
+      "x": 30,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i2",
+      "type": "silencer",
+      "x": 30,
+      "y": 380,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i3",
+      "type": "air_motor",
+      "x": 260,
+      "y": 150,
+      "rot": 0,
+      "params": {
+        "tag": "PM1",
+        "displacement": 100,
+        "speed": 1500,
+        "efficiency": 0.85,
+        "friction": 0.03,
+        "leakage": 0.01,
+        "torque": 5
+      }
+    },
+    {
+      "id": "i4",
+      "type": "industrial_load",
+      "x": 470,
+      "y": 150,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 1,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i1",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i3",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i4",
+        "port": "shaft"
+      }
+    }
+  ]
+}

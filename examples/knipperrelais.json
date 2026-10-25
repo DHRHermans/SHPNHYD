@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i42",
+      "type": "rail_24v",
+      "x": 370,
+      "y": 30,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i43",
+      "type": "rail_0v",
+      "x": 370,
+      "y": 410,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i44",
+      "type": "lamp",
+      "x": 370,
+      "y": 310,
+      "rot": 0,
+      "params": {
+        "tag": "P1"
+      }
+    },
+    {
+      "id": "i45",
+      "type": "switch_toggle",
+      "x": 370,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "S1"
+      }
+    },
+    {
+      "id": "i46",
+      "type": "timer_blink",
+      "x": 370,
+      "y": 200,
+      "rot": 0,
+      "params": {
+        "tag": "KT1",
+        "delay": 1,
+        "offTime": 1
+      }
+    },
+    {
+      "id": "i47",
+      "type": "contact_no",
+      "x": 560,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "KT1"
+      }
+    },
+    {
+      "id": "i48",
+      "type": "rail_24v",
+      "x": 560,
+      "y": 30,
+      "rot": 0,
+      "params": {}
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i42",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i45",
+        "port": "11"
+      }
+    },
+    {
+      "from": {
+        "inst": "i45",
+        "port": "14"
+      },
+      "to": {
+        "inst": "i46",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i46",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i43",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i48",
+        "port": "a"
+      },
+      "to": {
+        "inst": "i47",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i47",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i44",
+        "port": "a"
+      }
+    },
+    {
+      "from": {
+        "inst": "i44",
+        "port": "b"
+      },
+      "to": {
+        "inst": "i43",
+        "port": "a"
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import {isMotor} from './power-network.js';
+import {isRotaryMotor as isMotor} from './power-network.js';
 import { sceneBinding, sceneParts } from './machine-scene.js';
 import { applyControllerOutputs } from './ladder.js';
 

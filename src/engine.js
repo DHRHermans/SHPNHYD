@@ -856,6 +856,7 @@ export class Simulation {
       const s = inst.sim || {};
       if (s.closed != null) return !!s.closed;    // switches, contacts, sensors
       if (s.pressed != null) return !!s.pressed;  // buttons, hand levers
+      if (['timer_pulse','timer_blink','timer_retentive','timer_impulse'].includes(inst.type)) return !!s.out;
       if (s.on != null) return !!s.on;            // coils, lamps
       if (s.state != null) return s.state > 0;    // valve spool
     }

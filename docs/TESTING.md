@@ -4,7 +4,7 @@
 npm test          # or: node tests/run.js
 ```
 
-190 tests in 17 suites, no framework. A test framework would cost more than it saves here, and
+202 tests in 19 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
@@ -84,7 +84,7 @@ Chromium checks exercised palette click placement, drag/drop insertion, selectio
 
 ## Final 1.1 review
 
-The combined suite contains 190 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All eighteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
+The combined suite contains 202 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All eighteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
 
 CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.
 

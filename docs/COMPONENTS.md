@@ -1,4 +1,4 @@
-# Component library — 106 components
+# Component library — 119 components
 
 Each entry is one record in a catalog file: symbol, ports, physics and plausible faults. See
 [the component contract](ARCHITECTURE.md#the-component-contract) for how to add one.
@@ -98,3 +98,11 @@ Sixteen additions in `catalog-drives.js` extend the original motor model:
 | `air_compressor` | Motor-driven air source with pressure demand and receiver volume |
 
 Existing three-phase/DC motors gain a separate mechanical shaft. Existing hydraulic pumps gain an optional shaft/motor binding; unbound older pump circuits retain their own-drive behaviour. These ports cannot be connected to fluid, 24 V or mains conductors.
+
+### Switchgear and fluid rotary drives
+
+- Pneumatic and hydraulic pressostats: pressure port P, changeover contact 11/12/14, adjustable threshold and hysteresis.
+- Maintained toggle/key/pull-cord switches; momentary foot switch. Changeover terminals 11/12/14.
+- Hand–0–Auto selector with separate Hand and Auto contact paths.
+- Real 24 V coil timers: fixed pulse TP, asymmetric flasher, retentive on-delay with wired reset, impulse relay/teleruptor. Matching-tag standard relay contacts carry their output.
+- Reversible pneumatic and hydraulic motors: A/B fluid ports, shaft connection, displacement, efficiency, friction and leakage. Couple the existing mechanical load by shaft or motor tag. Load torque is entered numerically and applied with confirmation.

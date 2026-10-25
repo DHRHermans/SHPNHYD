@@ -1551,6 +1551,8 @@ const pressureSwitch = {
 import { HYDRAULIC_CATALOG } from './catalog-hydraulic.js';
 import { DIGITAL_CATALOG } from './catalog-digital.js';
 import { ELECTRONICS_CATALOG } from './catalog-electronics.js';
+import { FLUID_MOTOR_CATALOG } from './catalog-fluid-motors.js';
+import { SWITCHGEAR_CATALOG } from './catalog-switchgear.js';
 import { DRIVE_CATALOG } from './catalog-drives.js';
 import { INDUSTRIAL_CATALOG } from './catalog-industrial.js';
 import { CONTROL_IO_CATALOG } from './controller-io.js';
@@ -1576,6 +1578,8 @@ export const CATALOG = [
   ...ELECTRONICS_CATALOG,
   ...INDUSTRIAL_CATALOG,
   ...DRIVE_CATALOG,
+  ...SWITCHGEAR_CATALOG,
+  ...FLUID_MOTOR_CATALOG,
   ...CONTROL_IO_CATALOG,
 ];
 

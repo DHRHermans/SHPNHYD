@@ -11,7 +11,7 @@ export function componentFlows(sim){
   }
   if(ports.length&&!d.fluidExtras&&(oil?d.stampHydraulic:d.stamp)){
    const pressure=n=>n==null?P_ATM:(oil?sim.ph[n]:sim.p[n])??P_ATM;
-   const methods={restrict:(a,b,C,crit)=>{const q=massFlow(pressure(a),pressure(b),C,crit);add(a,q);add(b,-q);},restrictToFixed:(a,C,crit,p)=>add(a,massFlow(pressure(a),p,C,crit)),orifice:(a,b,K)=>{const q=orificeFlow(pressure(a),pressure(b),K);add(a,q);add(b,-q);},orificeToFixed:(a,K,p)=>add(a,orificeFlow(pressure(a),p,K)),toFixed:(a,g,p)=>add(a,g*(pressure(a)-p)),inject:(a,q)=>add(a,-q)};
+   const methods={conduct:(a,b,g)=>{const q=g*(pressure(a)-pressure(b));add(a,q);add(b,-q);},restrict:(a,b,C,crit)=>{const q=massFlow(pressure(a),pressure(b),C,crit);add(a,q);add(b,-q);},restrictToFixed:(a,C,crit,p)=>add(a,massFlow(pressure(a),p,C,crit)),orifice:(a,b,K)=>{const q=orificeFlow(pressure(a),pressure(b),K);add(a,q);add(b,-q);},orificeToFixed:(a,K,p)=>add(a,orificeFlow(pressure(a),p,K)),toFixed:(a,g,p)=>add(a,g*(pressure(a)-p)),inject:(a,q)=>add(a,-q)};
    const st=new Proxy(methods,{get:(o,k)=>o[k]||(()=>0)});
    // Some stamps retain working diagnostics; run those on a detached instance copy.
    try{const copy={...inst,sim:structuredClone(inst.sim),params:structuredClone(inst.params),faults:{...inst.faults}};(oil?d.stampHydraulic:d.stamp)(copy,st,ctx,oil?sim.ph:sim.p);}catch{for(const p of ports)values.delete(key(inst.id,p.id));}
