@@ -1,3 +1,4 @@
+import {conditioningExample,accumulatorExample} from './examples-conditioning.js';
 import {fluidMotorExample} from './examples-switchgear.js';
 import {switchgearExample} from './examples-switchgear.js';
 import {advancedDriveExample} from './examples-drives.js';
@@ -238,6 +239,10 @@ export class Circuit {
 // ---------------------------------------------------------------------------
 
 export const EXAMPLES = {
+  hydraulicAccumulator:{name:'Hydraulische druktank: laden en ontladen',description:'Open de afsluitkraan om de blaasaccumulator te laden. Sluit daarna de pomp af en bekijk hoe opgeslagen olie de hydromotor aandrijft.',build:()=>accumulatorExample(Circuit)},
+  airService:{name:'Luchtverzorging: filter, waterafscheider, droger en smering',description:'Verzorgingsketen voor een luchtmotor. Bekijk drukverlies en onderzoek een verstopt filter.',build:()=>conditioningExample(Circuit)},
+  oilCooling:{name:'Olieverzorging: retourfilter en radiator',description:'Hydromotor met retourfilter, filterbypass en oliekoeler. Temperatuur is een lokaal onderwijsmodel.',build:()=>conditioningExample(Circuit,true)},
+  airReceiver:{name:'Persluchtreservoir: vullen en opgeslagen lucht gebruiken',description:'Open de 2/2-afsluitkraan om het vat te vullen; sluit ze en laat de luchtmotor op de opgeslagen lucht draaien.',build:()=>conditioningExample(Circuit,false,true)},
   airMotor:{name:'Luchtmotor: asbelasting en vrije uitlaat',description:'Persluchtbron naar A, B via geluiddemper naar buiten. Wissel A en B om de draairichting om te keren.',build:()=>fluidMotorExample(Circuit,false)},
   hydraulicMotor:{name:'Hydromotor: pomp, drukbegrenzing en aslast',description:'Pomp naar A, B naar tank. De druk levert koppel; een mechanisch gekoppelde last beïnvloedt het toerental.',build:()=>fluidMotorExample(Circuit,true)},
   airPressostat:{name:'Pressostaat: luchtdruk schakelt een lamp',description:'Wisselcontact 11–12/14 met instelbare schakeldruk en hysterese. Verander de brondruk.',build:()=>switchgearExample(Circuit)},

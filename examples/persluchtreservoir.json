@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i33",
+      "type": "supply",
+      "x": 60,
+      "y": 120,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i34",
+      "type": "silencer",
+      "x": 800,
+      "y": 400,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i35",
+      "type": "air_motor",
+      "x": 800,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "PM1",
+        "displacement": 100,
+        "speed": 1500,
+        "efficiency": 0.85,
+        "friction": 0.03,
+        "leakage": 0.01,
+        "torque": 5
+      }
+    },
+    {
+      "id": "i36",
+      "type": "industrial_load",
+      "x": 1000,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 0.5,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i40",
+      "type": "air_filter",
+      "x": 180,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LF1",
+        "flow": 600,
+        "drop": 0.15,
+        "dirt": 0,
+        "micron": 40
+      }
+    },
+    {
+      "id": "i42",
+      "type": "air_shutoff",
+      "x": 370,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LV1",
+        "flow": 1000,
+        "drop": 0.1
+      }
+    },
+    {
+      "id": "i43",
+      "type": "air_receiver",
+      "x": 560,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "R1",
+        "volume": 10
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i35",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i34",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i35",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i36",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i33",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i40",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i40",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i42",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i42",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i43",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i43",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i35",
+        "port": "A"
+      }
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i17",
+      "type": "h_pump",
+      "x": 60,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 8,
+        "motor": "",
+        "nominalRpm": 1450,
+        "reverse": "no",
+        "running": "on"
+      }
+    },
+    {
+      "id": "i18",
+      "type": "h_tank",
+      "x": 60,
+      "y": 500,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i19",
+      "type": "h_motor",
+      "x": 450,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "HM1",
+        "displacement": 10,
+        "speed": 1000,
+        "efficiency": 0.85,
+        "friction": 0.08,
+        "leakage": 0.001,
+        "torque": 10
+      }
+    },
+    {
+      "id": "i20",
+      "type": "industrial_load",
+      "x": 700,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 3,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i25",
+      "type": "h_relief",
+      "x": 250,
+      "y": 300,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 100
+      }
+    },
+    {
+      "id": "i28",
+      "type": "h_return_filter",
+      "x": 450,
+      "y": 350,
+      "rot": 0,
+      "params": {
+        "tag": "OF1",
+        "flow": 20,
+        "drop": 0.5,
+        "dirt": 0,
+        "micron": 10,
+        "bypass": 3
+      }
+    },
+    {
+      "id": "i29",
+      "type": "h_cooler",
+      "x": 650,
+      "y": 350,
+      "rot": 0,
+      "params": {
+        "tag": "OF2",
+        "flow": 20,
+        "drop": 0.5,
+        "inletTemperature": 70,
+        "ambient": 20,
+        "capacity": 5000,
+        "transfer": 120
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i17",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i19",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i19",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i20",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i17",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i18",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i17",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i25",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i25",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i18",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i19",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i28",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i28",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i29",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i29",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i18",
+        "port": "T"
+      }
+    }
+  ]
+}

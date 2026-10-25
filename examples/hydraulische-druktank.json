@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i90",
+      "type": "h_pump",
+      "x": 30,
+      "y": 80,
+      "rot": 0,
+      "params": {
+        "tag": "0P1",
+        "flow": 8,
+        "motor": "",
+        "nominalRpm": 1450,
+        "reverse": "no",
+        "running": "on"
+      }
+    },
+    {
+      "id": "i91",
+      "type": "h_tank",
+      "x": 60,
+      "y": 500,
+      "rot": 0,
+      "params": {
+        "tag": "0T1"
+      }
+    },
+    {
+      "id": "i92",
+      "type": "h_motor",
+      "x": 600,
+      "y": 180,
+      "rot": 0,
+      "params": {
+        "tag": "HM1",
+        "displacement": 10,
+        "speed": 1000,
+        "efficiency": 0.85,
+        "friction": 0.08,
+        "leakage": 0.001,
+        "torque": 10
+      }
+    },
+    {
+      "id": "i93",
+      "type": "industrial_load",
+      "x": 850,
+      "y": 150,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 3,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i98",
+      "type": "h_relief",
+      "x": 160,
+      "y": 300,
+      "rot": 0,
+      "params": {
+        "tag": "0V1",
+        "setpoint": 100
+      }
+    },
+    {
+      "id": "i101",
+      "type": "h_shutoff",
+      "x": 200,
+      "y": 100,
+      "rot": 0,
+      "params": {
+        "tag": "HV1",
+        "flow": 40,
+        "drop": 0.1
+      }
+    },
+    {
+      "id": "i102",
+      "type": "h_accumulator",
+      "x": 420,
+      "y": 20,
+      "rot": 0,
+      "params": {
+        "tag": "ACC1",
+        "volume": 1,
+        "precharge": 30,
+        "exponent": 1.2,
+        "flow": 20,
+        "rated": 250
+      }
+    },
+    {
+      "id": "i103",
+      "type": "h_gauge",
+      "x": 560,
+      "y": 50,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "max": 250
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i92",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i91",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i92",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i93",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i91",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i98",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i98",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i91",
+        "port": "T"
+      }
+    },
+    {
+      "from": {
+        "inst": "i90",
+        "port": "P"
+      },
+      "to": {
+        "inst": "i101",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i101",
+        "port": "T"
+      },
+      "to": {
+        "inst": "i92",
+        "port": "A"
+      }
+    },
+    {
+      "from": {
+        "inst": "i92",
+        "port": "A"
+      },
+      "to": {
+        "inst": "i102",
+        "port": "P"
+      }
+    },
+    {
+      "from": {
+        "inst": "i92",
+        "port": "A"
+      },
+      "to": {
+        "inst": "i103",
+        "port": "P"
+      }
+    }
+  ]
+}

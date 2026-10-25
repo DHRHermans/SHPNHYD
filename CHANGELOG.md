@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 — Lucht- en olieverzorging
+
+- Filters voor lucht en hydraulische druk-, aanzuig- en retourleidingen, met werkelijk drukverlies, instelbare vervuiling en filterbypass.
+- Waterafscheider, luchtdroger, olienevelaar, buffervat en handmatige 2/2-afsluitkranen voor lucht en olie.
+- Lucht- en oliekoelers/radiatoren en olieverwarmer, met lokaal temperatuurmodel.
+- Perslucht-druktank en hydraulische blaasaccumulator met gasvoordruk, laad-/ontlaaddebiet en zichtbaar olievolume.
+- Fysieke componentbeelden, vier overzichtelijke voorbeelden en bijgewerkte handleiding.
+- Volledige regressiecontrole, 214 tests in 21 testgroepen.
+
 ## 1.5.0 — Pressostaten, schakelaars en tijdrelais
 
 - Lucht- en oliepressostaat met wisselcontact 11–12/14, schakeldruk en hysterese.

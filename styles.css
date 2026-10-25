@@ -1189,3 +1189,18 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .brand .save-status{max-width:none;white-space:nowrap;font-size:9px}
 .wire.mechanical{stroke:#527d77;stroke-width:4;stroke-dasharray:10 4}.port-dot.mechanical{fill:#527d77;stroke:#254f49;stroke-width:2}.port-dot.motor{stroke:#8963a9}
 .process-card select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--line);border-radius:5px;padding:5px;font-size:11px;color:var(--text);background:white}
+
+/* Clear numerical motor-load entry and consistent control-card fields. */
+.process-card [data-load-form]{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:9px;background:#f3f8f3}
+.process-card [data-load-form] label{margin:0}
+.process-card [data-load-torque]{width:100%;box-sizing:border-box;margin:6px 0;padding:9px;border:1px solid #a8c5b8;border-radius:6px;background:white;color:var(--text);font:inherit;font-variant-numeric:tabular-nums}
+.process-card [data-load-form] button{padding:10px 12px;border:1px solid var(--accent);border-radius:7px;background:var(--accent);color:white;font:inherit;cursor:pointer}
+.process-card [data-load-confirmation]{margin:0;overflow-wrap:anywhere}
+.process-card [data-process-state]{line-height:1.6;overflow-wrap:anywhere}
+.process-card [data-load-form] button:focus-visible,.process-card [data-load-torque]:focus-visible{outline:3px solid #87bca3;outline-offset:2px}
+/* Keep labels, numeric fields and service controls readable in the dashboard. */
+.simulation-dashboard .process-grid{grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px}
+.simulation-dashboard .process-card{padding:12px}
+.simulation-dashboard .process-card label{font-size:12px!important;margin:8px 0!important}
+.simulation-dashboard .process-card [data-process-state],.simulation-dashboard .process-card [data-process-action]{font-size:11px}
+.simulation-dashboard .process-card>p:not([data-process-action]){font-size:11px}

@@ -9,6 +9,9 @@
 
 /** Parameters worth printing per type. Everything else is noise on a BOM. */
 const SPEC_KEYS = {
+  h_accumulator:['volume','precharge','exponent','rated'],
+  air_filter:['flow','drop','micron'],h_filter:['flow','drop','micron','bypass'],h_suction_filter:['flow','drop','micron'],h_return_filter:['flow','drop','micron','bypass'],
+  air_separator:['flow','drop'],air_dryer:['flow','drop'],air_lubricator:['flow','drop','dose'],air_receiver:['volume'],air_cooler:['flow','drop','transfer'],h_cooler:['flow','drop','transfer'],h_heater:['flow','drop','power'],
   air_pressostat:['setpoint','hysteresis'],h_pressostat:['setpoint','hysteresis'],
   selector_3:['mode'],timer_pulse:['delay'],timer_blink:['delay','offTime'],timer_retentive:['delay'],
   air_motor:['displacement','efficiency','speed'],h_motor:['displacement','efficiency','speed'],

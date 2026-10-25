@@ -1,4 +1,4 @@
-# Component library — 119 components
+# Component library — 133 components
 
 Each entry is one record in a catalog file: symbol, ports, physics and plausible faults. See
 [the component contract](ARCHITECTURE.md#the-component-contract) for how to add one.
@@ -106,3 +106,11 @@ Existing three-phase/DC motors gain a separate mechanical shaft. Existing hydrau
 - Hand–0–Auto selector with separate Hand and Auto contact paths.
 - Real 24 V coil timers: fixed pulse TP, asymmetric flasher, retentive on-delay with wired reset, impulse relay/teleruptor. Matching-tag standard relay contacts carry their output.
 - Reversible pneumatic and hydraulic motors: A/B fluid ports, shaft connection, displacement, efficiency, friction and leakage. Couple the existing mechanical load by shaft or motor tag. Load torque is entered numerically and applied with confirmation.
+
+### Fluid conditioning
+
+13 components: air filter, water separator, dryer, lubricator, aftercooler, receiver and shutoff; hydraulic pressure/suction/return filters, cooler, heater and shutoff. All flow-through devices introduce solved pressure loss. Dirt reduces filter area; pressure and return filters have a parallel differential-pressure bypass. Micron ratings and dosing are documentation, without particle/humidity chemistry. Cooler/heater temperatures are local lumped models with explicit inlet temperature, actual solved flow, heat capacity and heat transfer. No circuit-wide temperature propagation or cavitation model is implied.
+
+### Pressure tanks
+
+The pneumatic receiver is also labelled as a pressure tank. The hydraulic bladder accumulator (`h_accumulator`) stores an explicitly integrated oil volume behind a polytropic gas spring. Its single oil port accepts charge above the current gas pressure and returns stored oil when line pressure falls. Flow is bounded by available oil and remaining capacity; an empty bladder does not emit precharge pressure into the oil circuit. Nominal volume, gauge precharge, exponent, connector rating and working-pressure monitoring are configurable. No implicit relief or isolation valve is present.

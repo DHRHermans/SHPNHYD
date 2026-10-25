@@ -4,7 +4,7 @@
 npm test          # or: node tests/run.js
 ```
 
-202 tests in 19 suites, no framework. A test framework would cost more than it saves here, and
+214 tests in 21 suites, no framework. A test framework would cost more than it saves here, and
 this keeps `node tests/run.js` the whole story. Suites are discovered rather than listed: a
 new area drops in as `tests/gate-*.js` and runs, with no shared registry file for parallel
 work to collide on.
@@ -82,9 +82,9 @@ Chromium validation checked that the drawing uses the full available height with
 
 Chromium checks exercised palette click placement, drag/drop insertion, selection, Delete, timer editing and connected wire geometry. Print previews for circuit, GRAFCET and Ladder contained the SH logo and no editor controls; Ctrl+P opened the branded preview. A real A4 landscape PDF was generated from the print document to verify layout and extractable labels/logo text. Multi-network Ladder pagination was checked separately. These checks were repeated against the versioned Pages artifact.
 
-## Final 1.1 review
+## Current regression review
 
-The combined suite contains 202 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All eighteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
+The combined suite contains 214 executed tests. Browser checks cover manual and automatic machine operation, physical controller pins and program bindings, valve variant selection and interactive internal port editing, the palette and branded printing. All eighteen lesson links and referenced local images/modules were checked. Inspector text values are escaped so imported tag names cannot inject markup into property fields.
 
 CI checks Node.js 18, 20, 22 and 24; the Pages build uses Node.js 22. The final local run used Node.js 24.
 
@@ -97,3 +97,7 @@ The simulation dashboard was checked in Chromium for full-width layout and simul
 The learning release was exercised with a real lesson through input, end-position and return observations, reflection and reload recovery; live 24 V two-lead measurements and model probes; 1 ms / 100 ms stepping; flow activity; concealed fault reveal/repair; pointer-driven card order, groups and scale; and help/stepping in a synchronized second window. Earlier local versions and recorded snapshots were restored without browser errors.
 
 The motor workshop browser checks cover all eight added examples, physical start buttons, live breaker-knob adjustment without unintended switching, star/delta indication, motor-driven pump delivery, temperature contact operation, PT100 display and assigning a load to a motor directly in the process view. Mechanical shaft connections are separately typed; the automated gate also checks that original motor examples remain operational.
+
+## Fluid service release 1.6
+
+214 automated tests in 21 suites. Additional checks open all 43 built-in circuits after JSON roundtrip and run their initial solver steps. Browser regressions exercise the learning workspace, shared simulation popup, physical motor controls, Ladder editing and branded print preview for circuit/GRAFCET/Ladder. New service circuits cover live filter fouling, a running hydraulic motor with cooler, reservoir isolation and desktop/mobile card layout. The filter bypass uses an affine pressure/flow branch with matching current-source offset to avoid threshold oscillation in the nonlinear solver. Local documentation links and module syntax are checked as part of the review.

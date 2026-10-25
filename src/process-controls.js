@@ -9,8 +9,10 @@ const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 export function processStatus(inst,def){
   const s=inst.sim,parts=[];
   if(def.manual)parts.push(`Hefboom: ${s.lever<0?'links':s.lever>0?'rechts':'midden'}`);
-  if(def.interactive&&!def.manual)parts.push(s.pressed?'Ingedrukt / ingeschakeld':'Losgelaten / uitgeschakeld');
+  if(def.interactive&&!def.manual)parts.push(inst.type.endsWith('_shutoff')?(s.pressed?'Kraan open':'Kraan dicht'):(s.pressed?'Ingedrukt / ingeschakeld':'Losgelaten / uitgeschakeld'));
   if(s.position!=null)parts.push(`Stand: ${s.position}`);
+  if(s.oilLitres!=null)parts.push(`Opgeslagen olie ${s.oilLitres.toFixed(2)} l · gas ${s.gasPressure.toFixed(1)} bar`);
+  if(s.overpressure)parts.push('Boven ingestelde werkdruk');
   if(s.pressure!=null)parts.push(`${s.pressure.toFixed(1)} bar`);
   if(s.elapsed!=null)parts.push(`Tijd: ${s.elapsed.toFixed(2)} s`);
   if(s.out!=null)parts.push(s.out?'Uitgang actief':'Uitgang uit');
@@ -18,12 +20,15 @@ export function processStatus(inst,def){
   if(s.on!=null)parts.push(s.on?'Bekrachtigd':'Niet bekrachtigd');
   if(s.closed!=null)parts.push(s.closed?'Contact gesloten':'Contact open');
   if(s.tripped!=null)parts.push(s.tripped?'Thermisch uitgeschakeld':'Thermisch gereed');
+  if(s.dp!=null)parts.push(`Drukverschil ${s.dp.toFixed(2)} bar`);
+  if(s.bypassOpen!=null)parts.push(s.bypassOpen?'Filterbypass open':'Filterbypass dicht');
+  if(s.heatPower!=null)parts.push(`Warmteafvoer ${s.heatPower.toFixed(0)} W (lokaal model)`);
   if(s.temperature!=null)parts.push(`${s.temperature.toFixed(1)} °C`);
   if(s.resistance!=null)parts.push(`${s.resistance.toFixed(1)} Ω`);
   if(s.current!=null)parts.push(`${s.current.toFixed(1)} A (model)`);
   if(s.driveStatus)parts.push(s.driveStatus);
   if(s.reason)parts.push(s.reason);
-  if(typeof s.q==='number')parts.push(`${s.q.toFixed(1)} l/min`);
+  if(typeof s.q==='number')parts.push(`${s.q.toFixed(1)} ${def.ports.some(p=>p.kind==='pneumatic')&&!def.ports.some(p=>p.kind==='hydraulic')?'l/min ANR':'l/min'}`);
   if(s.torque!=null)parts.push(`${s.torque.toFixed(1)} Nm`);
   if(s.heat!=null)parts.push(`Belasting ${Math.round(s.heat*100)} %`);
   return parts.join(' · ');
@@ -34,15 +39,15 @@ export class ProcessControls {
   draw(){
     this.dispose();
     const parts=this.circuit().instances.filter(i=>!isVisualActuator(i));
-    const primary=i=>{const d=BY_ID.get(i.type);return ['h_pump','air_compressor'].includes(i.type)||d.interactive||d.geom||/ventiel|sensor|schakelaar|drukknop|spoel|lamp|relais|contactor|contact|automaat|beveilig/i.test(d.name);};
+    const primary=i=>{const d=BY_ID.get(i.type);return ['h_pump','air_compressor','air_receiver','h_accumulator'].includes(i.type)||d.interactive||d.geom||/afsluitkraan|filter|afscheider|droger|smeertoestel|koeler|verwarmer|ventiel|sensor|schakelaar|drukknop|spoel|lamp|relais|contactor|contact|automaat|beveilig/i.test(d.name);};
     const card=i=>{
-      const def=BY_ID.get(i.type),knobs=Object.entries(i.params).filter(([key,p])=>!(i.type==='industrial_load'&&key==='torque')&&p.type==='range'&&['opening','pressure','setpoint','rated','torque','hysteresis','delay','offTime'].includes(key));
+      const def=BY_ID.get(i.type),knobs=Object.entries(i.params).filter(([key,p])=>i.type!=='h_accumulator'&&!(i.type==='industrial_load'&&key==='torque')&&p.type==='range'&&['opening','pressure','setpoint','rated','torque','hysteresis','delay','offTime','dirt','inletTemperature','ambient','power'].includes(key));
       const buttons=def.interactive?(def.manual?'<button data-operate="-1">◀ Links vasthouden</button><button data-operate="1">Rechts vasthouden ▶</button>':'<button data-operate="1"></button>'):`<p class="process-automatic">${knobs.length?'Handmatig instelbaar via schuif':'Volgt het schema / de besturing'}</p>`;
       const drive=instDrive(i,this.circuit());
       const binding=i.params.motor?`<label>${esc(i.params.motor.label)}<select data-drive-motor ${drive.wired?'disabled':''}><option value="">${i.type==='h_pump'?'Eigen aandrijving':'Geen motor gekozen'}</option>${this.circuit().instances.filter(isMotor).map(m=>`<option value="${esc(m.params.tag.value)}" ${(drive.wired?drive.motor?.params.tag.value:i.params.motor.value)===m.params.tag.value?'selected':''}>${esc(m.params.tag.value)}</option>`).join('')}</select></label>${drive.wired?'<p>Mechanische asverbinding uit het schema heeft voorrang.</p>':''}`:'';
       return `<article class="process-card" data-process="${esc(i.id)}"><h4>${esc(i.params.tag?.value||def.short)}</h4><p>${esc(def.short)}</p><div class="process-device ${def.interactive?'process-device-operable':''}"><div data-process-physical>${physicalComponentSVG(i,def,this.simulation())}</div><div class="process-buttons">${def.interactive?buttons:''}</div></div><p data-process-action>${def.interactive?'Bedien het fysieke onderdeel hierboven.':knobs.length?'Instelbaar met de draaiknop en schuif.':'Volgt het schema / de besturing'}</p>${def.manual?'<p>Veerterugstelling: loslaten = middenstand.</p>':''}${binding}${i.type==='industrial_load'?`<form data-load-form><label>Lastkoppel <input data-load-torque type="number" min="${i.params.torque.min}" max="${i.params.torque.max}" step="${i.params.torque.step}" value="${i.params.torque.value}" required aria-label="Lastkoppel in Nm"> Nm</label><button type="submit">Last bevestigen</button><p data-load-confirmation role="status">Ingestelde last: ${i.params.torque.value} Nm</p></form>`:''}${i.type==='selector_3'?`<label>Gekozen stand<select data-selector-mode><option value="hand" ${i.params.mode.value==='hand'?'selected':''}>Hand</option><option value="auto" ${i.params.mode.value==='auto'?'selected':''}>Auto</option></select></label>`:''}${knobs.map(([key,p])=>`<label>${esc(p.label)} <output data-knob-value="${key}"></output><input data-process-knob="${key}" type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.value}"></label>`).join('')}<div data-process-state></div><div data-process-ports></div></article>`;
     };
-    this.host.innerHTML=`<section class="process-overview"><h3>Bediening en ventielen uit mijn schema</h3><p>Bedien handmatige onderdelen hier rechtstreeks. Houd drukknoppen en veerteruggestelde hefbomen ingedrukt; vergrendelende knoppen blijven staan tot je opnieuw drukt. Elektrische ventielen volgen hun spoelen en sensoren volgen hun schema.</p><div class="process-grid">${parts.filter(primary).map(card).join('')}</div>${parts.some(i=>!primary(i))?`<details class="process-other"><summary>Voedingen en overige schemaonderdelen</summary><div class="process-grid">${parts.filter(i=>!primary(i)).map(card).join('')}</div></details>`:''}${parts.length?'':'<p>Plaats drukknoppen, ventielen of andere onderdelen in Schakeling; ze verschijnen hier automatisch.</p>'}</section>`;
+    this.host.innerHTML=`<section class="process-overview"><h3>Bediening en componenten uit mijn schema</h3><p>Bedien handmatige onderdelen hier rechtstreeks. Houd drukknoppen en veerteruggestelde hefbomen ingedrukt; vergrendelende knoppen blijven staan tot je opnieuw drukt. Elektrische ventielen volgen hun spoelen en sensoren volgen hun schema.</p><div class="process-grid">${parts.filter(primary).map(card).join('')}</div>${parts.some(i=>!primary(i))?`<details class="process-other"><summary>Voedingen en overige schemaonderdelen</summary><div class="process-grid">${parts.filter(i=>!primary(i)).map(card).join('')}</div></details>`:''}${parts.length?'':'<p>Plaats drukknoppen, ventielen of andere onderdelen in Schakeling; ze verschijnen hier automatisch.</p>'}</section>`;
     for(const node of this.host.querySelectorAll('[data-process]')){
       const inst=this.circuit().byId(node.dataset.process),def=BY_ID.get(inst.type);
       node.querySelector('[data-drive-motor]')?.addEventListener('change',e=>{inst.params.motor.value=e.target.value;this.parametersChanged(inst,'motor');this.live();});
@@ -82,7 +87,7 @@ export class ProcessControls {
       card.querySelector('[data-process-ports]').textContent=def.ports.filter(p=>!['motor','mechanical'].includes(p.kind)).map(p=>p.kind==='electric'?`${p.id}: ${sim.volts(inst.id,p.id).toFixed(1)} V`:`${p.id}: ${(p.kind==='hydraulic'?sim.hgauge(inst.id,p.id):sim.gauge(inst.id,p.id)).toFixed(1)} bar`).join(' · ');
       for(const button of card.querySelectorAll('[data-operate]')){
         const active=def.manual?inst.sim.lever===Number(button.dataset.operate):!!inst.sim.pressed;button.setAttribute('aria-pressed',String(active));
-        if(!def.manual)button.textContent=inst.type==='estop'?(active?'Noodstop ontgrendelen':'Noodstop indrukken'):['industrial_breaker','industrial_motor_protector'].includes(inst.type)?(inst.sim.tripped?'Beveiliging resetten (na afkoelen)':active?'Uitschakelen':'Inschakelen'):inst.type==='industrial_load'?(active?'Belasting losnemen':'Belasting aanleggen'):inst.type==='industrial_overload'?'Thermisch relais resetten':def.toggle?(active?'Uitschakelen / vrijgeven':'Inschakelen / vergrendelen'):'Indrukken (vasthouden)';
+        if(!def.manual)button.textContent=inst.type==='estop'?(active?'Noodstop ontgrendelen':'Noodstop indrukken'):['industrial_breaker','industrial_motor_protector'].includes(inst.type)?(inst.sim.tripped?'Beveiliging resetten (na afkoelen)':active?'Uitschakelen':'Inschakelen'):inst.type.endsWith('_shutoff')?(active?'Kraan sluiten':'Kraan openen'):inst.type==='industrial_load'?(active?'Belasting losnemen':'Belasting aanleggen'):inst.type==='industrial_overload'?'Thermisch relais resetten':def.toggle?(active?'Uitschakelen / vrijgeven':'Inschakelen / vergrendelen'):'Indrukken (vasthouden)';
       }
       if(def.interactive)card.querySelector('[data-process-action]').textContent=def.manual?'Houd de linker- of rechterkant van de hefboom ingedrukt.':card.querySelector('[data-operate]').textContent;
       for(const output of card.querySelectorAll('[data-knob-value]')){const p=inst.params[output.dataset.knobValue];output.textContent=String(p.value)+(p.unit?' '+p.unit:'');}

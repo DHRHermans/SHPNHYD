@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "instances": [
+    {
+      "id": "i1",
+      "type": "supply",
+      "x": 60,
+      "y": 120,
+      "rot": 0,
+      "params": {
+        "tag": "0Z1",
+        "pressure": 6
+      }
+    },
+    {
+      "id": "i2",
+      "type": "silencer",
+      "x": 880,
+      "y": 400,
+      "rot": 0,
+      "params": {}
+    },
+    {
+      "id": "i3",
+      "type": "air_motor",
+      "x": 880,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "PM1",
+        "displacement": 100,
+        "speed": 1500,
+        "efficiency": 0.85,
+        "friction": 0.03,
+        "leakage": 0.01,
+        "torque": 5
+      }
+    },
+    {
+      "id": "i4",
+      "type": "industrial_load",
+      "x": 1100,
+      "y": 130,
+      "rot": 0,
+      "params": {
+        "tag": "LAST1",
+        "motor": "",
+        "kind": "constant",
+        "torque": 0.5,
+        "inertia": 0.1,
+        "enabled": "on"
+      }
+    },
+    {
+      "id": "i8",
+      "type": "air_filter",
+      "x": 180,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LF1",
+        "flow": 600,
+        "drop": 0.15,
+        "dirt": 0,
+        "micron": 40
+      }
+    },
+    {
+      "id": "i10",
+      "type": "air_separator",
+      "x": 350,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LF2",
+        "flow": 600,
+        "drop": 0.15,
+        "dirt": 0
+      }
+    },
+    {
+      "id": "i11",
+      "type": "air_dryer",
+      "x": 520,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LF3",
+        "flow": 600,
+        "drop": 0.15,
+        "dirt": 0
+      }
+    },
+    {
+      "id": "i12",
+      "type": "air_lubricator",
+      "x": 690,
+      "y": 110,
+      "rot": 0,
+      "params": {
+        "tag": "LF4",
+        "flow": 600,
+        "drop": 0.15,
+        "dirt": 0,
+        "dose": 2
+      }
+    }
+  ],
+  "wires": [
+    {
+      "from": {
+        "inst": "i3",
+        "port": "B"
+      },
+      "to": {
+        "inst": "i2",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i3",
+        "port": "shaft"
+      },
+      "to": {
+        "inst": "i4",
+        "port": "shaft"
+      }
+    },
+    {
+      "from": {
+        "inst": "i1",
+        "port": "1"
+      },
+      "to": {
+        "inst": "i8",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i8",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i10",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i10",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i11",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i11",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i12",
+        "port": "1"
+      }
+    },
+    {
+      "from": {
+        "inst": "i12",
+        "port": "2"
+      },
+      "to": {
+        "inst": "i3",
+        "port": "A"
+      }
+    }
+  ]
+}
