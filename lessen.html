@@ -8,7 +8,7 @@
   <style>
     *{box-sizing:border-box}body{margin:0;background:#f1f6f4;color:#153b40;font:16px/1.6 system-ui,sans-serif}
     header,main,footer{max-width:1160px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center}
-    a{color:#076d67;text-underline-offset:4px}header a{text-decoration:none;font-weight:700}
+    a{color:#076d67;text-underline-offset:4px}header a{text-decoration:none;font-weight:700}header{gap:16px;flex-wrap:wrap}header nav{display:flex;gap:12px;flex-wrap:wrap}
     .intro{padding:40px 0 32px;max-width:740px}.eyebrow{color:#087f78;text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:750}
     h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-.04em;margin:16px 0}h2{font-size:21px;line-height:1.3;margin:12px 0}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}article{background:#fff;border:1px solid #d5e4de;border-radius:18px;padding:26px;display:flex;flex-direction:column}
@@ -18,7 +18,7 @@
   </style>
 </head>
 <body>
-  <header><strong>SH TechniekLab / Het techniekatelier</strong><a href="index.html">Naar het werkvlak →</a></header>
+  <header><strong>SH TechniekLab / Het techniekatelier</strong><nav aria-label="Navigatie"><a href="https://dhrhermans.github.io/Projecthub/" target="_blank" rel="noopener noreferrer">← Projecthub</a> · <a href="index.html">Naar het werkvlak →</a></nav></header>
   <main>
     <section class="intro"><span class="eyebrow">Van schema naar inzicht</span><h1>Bouwen. Schakelen.<br>Begrijpen.</h1><p>Eigen Nederlandstalige oefeningen voor pneumatiek, hydrauliek en industriële motorbesturing. Open een schema, voorspel wat er gebeurt en controleer je voorspelling in de simulator.</p></section>
     <aside class="note"><strong>Nieuw: het Leeratelier.</strong> Gebruik begeleide opdrachten met hints, onderdeeluitleg, stapbediening, meetgereedschap en storingszoeken. <a href="index.html?example=direct&amp;workspace=machine&amp;learn=lesson">Open het Leeratelier →</a></aside>

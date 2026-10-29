@@ -1204,3 +1204,8 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .simulation-dashboard .process-card label{font-size:12px!important;margin:8px 0!important}
 .simulation-dashboard .process-card [data-process-state],.simulation-dashboard .process-card [data-process-action]{font-size:11px}
 .simulation-dashboard .process-card>p:not([data-process-action]){font-size:11px}
+
+/* Direct access to the project landing page without leaving the current drawing. */
+.hub-link{flex-shrink:0;display:inline-flex;align-items:center;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#f1f8f4;color:var(--accent);font-size:12px;font-weight:650;text-decoration:none;white-space:nowrap}
+.hub-link:hover{background:#e1f0e8;border-color:var(--accent)}
+.hub-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
